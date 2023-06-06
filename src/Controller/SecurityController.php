@@ -5,31 +5,33 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+
 
 class SecurityController extends AbstractController
 {
-    /**
-     * This controller allow us to login
-     *
-     * @param AuthenticationUtils $authenticationUtils
-     * @return Response
-     */
-    #[Route('/connexion', name: 'security.login', methods: ['GET', 'POST'])]
+    #[Route('/connexion', name: 'security.login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        return $this->render('pages/security/login.html.twig', [
-            'last_username' => $authenticationUtils->getLastUsername(),
-            'error' => $authenticationUtils->getLastAuthenticationError()
-        ]);
+
+        if ($this->getUser()) {return $this->redirectToRoute('user_gestion'); }
+
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+
+
+        return $this->render('pages/security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
 
-    
+
     #[Route('/deconnexion', 'security.logout')]
     public function logout()
     {
