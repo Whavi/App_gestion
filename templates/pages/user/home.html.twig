@@ -1,0 +1,22 @@
+{% extends "layouts/connected/baseConnected.html.twig" %}
+{% block title %} Gestion de fourniture - SIF {% endblock %}
+
+
+
+{% block body %}
+<h2 class = "text-center mt-4"> Liste de fourniture dans la base de donnée
+    <table class="table table-dark mt-5 w-75 mx-auto h5">
+        <thead>
+          <tr>
+            <th>Identifiant</th>
+            <th>Nom</th>
+            <th>Catégorie</th>
+          </tr>
+        </thead>
+    {% for liste in listes %}
+    <tr class = "text-center"> <td>{{liste.identifiant}}</td> <td>{{liste.name}}</td> <td>{{liste.category}}</td> </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
+
+

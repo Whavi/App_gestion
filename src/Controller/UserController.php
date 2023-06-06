@@ -6,7 +6,9 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserPasswordType;
 use App\Form\UserType;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -54,6 +56,28 @@ class UserController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+
+    #[Route('/gestion', name: 'user_gestion', methods: ['GET', 'POST'])]
+    public function gestion(ProductRepository $productRepository) {
+
+        $lists = $productRepository->findAllOrderedByProductName();
+
+        return $this->render('pages/user/home.html.twig', [
+            'listes' => $lists,
+        ],
+        );
+
+    }
+
+    #[Route('/gestion/addItem', name: 'user_gestion_newItem', methods: ['GET', 'POST'])]
+    public function add_item(){
+
+        return $this->render('pages/user/newItem.html.twig'
+        );
+
+    }
+
 
 
 }

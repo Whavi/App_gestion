@@ -6,20 +6,20 @@
 <header class="site-navbar mt-2 bg-dark text-white">
 <div class="container-fluid">
   <div class="row align-items-center">
-    <div class="site-logo col-6"><a href="index.html">SIF</a>
+    <div class="site-logo col-6"><a href="{{path ("user_gestion")}}">SIF</a>
     </div>
     <nav class="mx-auto site-navigation">
       <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
-        <li><a href="{{path ("app_main")}}" class="nav-link active">Accueil</a></li>
-        <li><a href="{{path ("app_main")}}">Liste</a></li>
-        <li><a href="{{path ("security.login")}}">Contact</a></li>
+        <li><a href="{{path ("user_gestion")}}" class="nav-link active">Gestion</a></li>
+        <li><a href="{{path ("user_gestion")}}">Liste</a></li>
+        <li><a href="{{path ("user_gestion")}}">Contact</a></li>
       </ul>
     </nav>
     
     <div class="right-cta-menu text-right d-flex aligin-items-center col-6">
       <div class="ml-auto">
-        <a href="{{path ("security.registration")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Add new item</a>
-        <a href="{{path ("security.registration")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Log Out</a>
+        <a href="{{path ("user_gestion_newItem")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Add new item</a>
+        <a href="{{path ("security.logout")}}" class="btn btn-secondary border-width-2 d-none d-lg-inline-block"></span>Log Out</a>
       </div>
     </div>
   </div>
