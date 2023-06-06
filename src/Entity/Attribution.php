@@ -20,23 +20,23 @@ class Attribution
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateRestitution = null;
 
-    #[ORM\ManyToOne(inversedBy: 'attributions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?product $id_product = null;
-
-    #[ORM\ManyToOne(inversedBy: 'attributions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?collaborateur $id_collaborateur = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $create_At = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $update_At = null;
+    private ?\DateTimeImmutable $updateAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'attributions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?user $byUser = null;
+    private ?Product $fk_product = null;
+
+    #[ORM\ManyToOne(inversedBy: 'attributions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Collaborateur $fk_collaborateur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'attributions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $byUser = null;
 
     public function getId(): ?int
     {
@@ -67,60 +67,60 @@ class Attribution
         return $this;
     }
 
-    public function getIdProduct(): ?product
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->id_product;
+        return $this->createdAt;
     }
 
-    public function setIdProduct(?product $id_product): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        $this->id_product = $id_product;
-
-        return $this;
-    }
-
-    public function getIdCollaborateur(): ?collaborateur
-    {
-        return $this->id_collaborateur;
-    }
-
-    public function setIdCollaborateur(?collaborateur $id_collaborateur): self
-    {
-        $this->id_collaborateur = $id_collaborateur;
-
-        return $this;
-    }
-
-    public function getCreateAt(): ?\DateTimeImmutable
-    {
-        return $this->create_At;
-    }
-
-    public function setCreateAt(\DateTimeImmutable $create_At): self
-    {
-        $this->create_At = $create_At;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     public function getUpdateAt(): ?\DateTimeImmutable
     {
-        return $this->update_At;
+        return $this->updateAt;
     }
 
-    public function setUpdateAt(\DateTimeImmutable $update_At): self
+    public function setUpdateAt(\DateTimeImmutable $updateAt): self
     {
-        $this->update_At = $update_At;
+        $this->updateAt = $updateAt;
 
         return $this;
     }
 
-    public function getByUser(): ?user
+    public function getFkProduct(): ?Product
+    {
+        return $this->fk_product;
+    }
+
+    public function setFkProduct(?Product $fk_product): self
+    {
+        $this->fk_product = $fk_product;
+
+        return $this;
+    }
+
+    public function getFkCollaborateur(): ?Collaborateur
+    {
+        return $this->fk_collaborateur;
+    }
+
+    public function setFkCollaborateur(?Collaborateur $fk_collaborateur): self
+    {
+        $this->fk_collaborateur = $fk_collaborateur;
+
+        return $this;
+    }
+
+    public function getByUser(): ?User
     {
         return $this->byUser;
     }
 
-    public function setByUser(?user $byUser): self
+    public function setByUser(?User $byUser): self
     {
         $this->byUser = $byUser;
 

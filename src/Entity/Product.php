@@ -15,22 +15,22 @@ class Product
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 45)]
+    #[ORM\Column(length: 55)]
     private ?string $identifiant = null;
 
-    #[ORM\Column(length: 45)]
+    #[ORM\Column(length: 55)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 45)]
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\Column(length: 55)]
     private ?string $category = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $create_At = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $update_At = null;
-
-    #[ORM\OneToMany(mappedBy: 'id_product', targetEntity: Attribution::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'fk_product', targetEntity: Attribution::class, orphanRemoval: true)]
     private Collection $attributions;
 
     public function __construct()
@@ -67,6 +67,30 @@ class Product
         return $this;
     }
 
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
     public function getCategory(): ?string
     {
         return $this->category;
@@ -75,30 +99,6 @@ class Product
     public function setCategory(string $category): self
     {
         $this->category = $category;
-
-        return $this;
-    }
-
-    public function getCreateAt(): ?\DateTimeImmutable
-    {
-        return $this->create_At;
-    }
-
-    public function setCreateAt(\DateTimeImmutable $create_At): self
-    {
-        $this->create_At = $create_At;
-
-        return $this;
-    }
-
-    public function getUpdateAt(): ?\DateTimeImmutable
-    {
-        return $this->update_At;
-    }
-
-    public function setUpdateAt(\DateTimeImmutable $update_At): self
-    {
-        $this->update_At = $update_At;
 
         return $this;
     }
@@ -115,7 +115,7 @@ class Product
     {
         if (!$this->attributions->contains($attribution)) {
             $this->attributions->add($attribution);
-            $attribution->setIdProduct($this);
+            $attribution->setFkProduct($this);
         }
 
         return $this;
@@ -125,8 +125,8 @@ class Product
     {
         if ($this->attributions->removeElement($attribution)) {
             // set the owning side to null (unless already changed)
-            if ($attribution->getIdProduct() === $this) {
-                $attribution->setIdProduct(null);
+            if ($attribution->getFkProduct() === $this) {
+                $attribution->setFkProduct(null);
             }
         }
 

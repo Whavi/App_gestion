@@ -15,16 +15,16 @@ class Departement
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 45)]
+    #[ORM\Column(length: 55)]
     private ?string $nom = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $create_At = null;
+    private ?\DateTimeImmutable $createAt = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $update_At = null;
+    private ?\DateTimeImmutable $updateAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'id_depart', targetEntity: Collaborateur::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'fk_depart', targetEntity: Collaborateur::class, orphanRemoval: true)]
     private Collection $collaborateurs;
 
     public function __construct()
@@ -51,24 +51,24 @@ class Departement
 
     public function getCreateAt(): ?\DateTimeImmutable
     {
-        return $this->create_At;
+        return $this->createAt;
     }
 
-    public function setCreateAt(\DateTimeImmutable $create_At): self
+    public function setCreateAt(\DateTimeImmutable $createAt): self
     {
-        $this->create_At = $create_At;
+        $this->createAt = $createAt;
 
         return $this;
     }
 
     public function getUpdateAt(): ?\DateTimeImmutable
     {
-        return $this->update_At;
+        return $this->updateAt;
     }
 
-    public function setUpdateAt(\DateTimeImmutable $update_At): self
+    public function setUpdateAt(\DateTimeImmutable $updateAt): self
     {
-        $this->update_At = $update_At;
+        $this->updateAt = $updateAt;
 
         return $this;
     }
@@ -85,7 +85,7 @@ class Departement
     {
         if (!$this->collaborateurs->contains($collaborateur)) {
             $this->collaborateurs->add($collaborateur);
-            $collaborateur->setIdDepart($this);
+            $collaborateur->setFkDepart($this);
         }
 
         return $this;
@@ -95,8 +95,8 @@ class Departement
     {
         if ($this->collaborateurs->removeElement($collaborateur)) {
             // set the owning side to null (unless already changed)
-            if ($collaborateur->getIdDepart() === $this) {
-                $collaborateur->setIdDepart(null);
+            if ($collaborateur->getFkDepart() === $this) {
+                $collaborateur->setFkDepart(null);
             }
         }
 

@@ -27,7 +27,7 @@ class RegistrationType extends AbstractType
                 ],
                 'label' => 'Nom',
                 'label_attr' => [
-                    'class' => 'form_label'
+                    'class' => 'form_label mt-4'
                 ],
                 'required' => true,
                 'constraints' => [
@@ -45,7 +45,7 @@ class RegistrationType extends AbstractType
                 ],
                 'label' => 'Prénom',
                 'label_attr' => [
-                    'class' => 'form_label'
+                    'class' => 'form_label mt-4'
                 ],
                 'required' => true,
                 'constraints' => [
@@ -64,7 +64,7 @@ class RegistrationType extends AbstractType
                     ],
                     'label' => 'Email',
                     'label_attr' => [
-                        'class' => 'form_label'
+                        'class' => 'form_label mt-4'
                     ],
                     'constraints' => [
                         new Assert\NotBlank(),
@@ -77,17 +77,30 @@ class RegistrationType extends AbstractType
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options' => [
-                    'label' => "Mot de passe"
+                    'attr' => [
+                        'class' => 'form-control'
+                    ],
+                    'label' => "Mot de passe",
+                    'label_attr' => [
+                        'class' => 'form_label mt-4 ',
+                    ]
                 ],
+
+
                 'second_options' => [
-                    'label' => "Confirmer le mot de passe"
+                    'attr' => [
+                        'class' => 'form-control'
+                    ],
+                    'label' => "Confirmer le mot de passe",
+                    'label_attr' => [
+                        'class' => 'form_label mt-4',
                     ],
                     'invalid_message' => 'Les mots de passe ne correspondent pas',
                     'required' => true,
-            ])
+            ]])
             ->add('Submit', SubmitType::class,[
                 'attr' => [
-                    'class' => 'btn btn-primary'
+                    'class' => 'btn btn-primary mt-4'
                     ]
             ])
         ;
@@ -96,7 +109,7 @@ class RegistrationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => collaborateur::class,
+            'data_class' => User::class,
         ]);
     }
 }
