@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\DepartementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DepartementRepository::class)]
@@ -15,17 +16,17 @@ class Departement
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 55)]
+    #[ORM\Column(length: 45)]
     private ?string $nom = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createAt = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $updateAt = null;
-
-    #[ORM\OneToMany(mappedBy: 'fk_depart', targetEntity: Collaborateur::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'departement', targetEntity: Collaborateur::class, orphanRemoval: true)]
     private Collection $collaborateurs;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updateAt = null;
 
     public function __construct()
     {
@@ -49,30 +50,6 @@ class Departement
         return $this;
     }
 
-    public function getCreateAt(): ?\DateTimeImmutable
-    {
-        return $this->createAt;
-    }
-
-    public function setCreateAt(\DateTimeImmutable $createAt): self
-    {
-        $this->createAt = $createAt;
-
-        return $this;
-    }
-
-    public function getUpdateAt(): ?\DateTimeImmutable
-    {
-        return $this->updateAt;
-    }
-
-    public function setUpdateAt(\DateTimeImmutable $updateAt): self
-    {
-        $this->updateAt = $updateAt;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Collaborateur>
      */
@@ -85,7 +62,7 @@ class Departement
     {
         if (!$this->collaborateurs->contains($collaborateur)) {
             $this->collaborateurs->add($collaborateur);
-            $collaborateur->setFkDepart($this);
+            $collaborateur->setDepartement($this);
         }
 
         return $this;
@@ -95,10 +72,34 @@ class Departement
     {
         if ($this->collaborateurs->removeElement($collaborateur)) {
             // set the owning side to null (unless already changed)
-            if ($collaborateur->getFkDepart() === $this) {
-                $collaborateur->setFkDepart(null);
+            if ($collaborateur->getDepartement() === $this) {
+                $collaborateur->setDepartement(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreateAt(): ?\DateTimeInterface
+    {
+        return $this->createAt;
+    }
+
+    public function setCreateAt(\DateTimeInterface $createAt): self
+    {
+        $this->createAt = $createAt;
+
+        return $this;
+    }
+
+    public function getUpdateAt(): ?\DateTimeInterface
+    {
+        return $this->updateAt;
+    }
+
+    public function setUpdateAt(\DateTimeInterface $updateAt): self
+    {
+        $this->updateAt = $updateAt;
 
         return $this;
     }

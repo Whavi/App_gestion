@@ -3,8 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Model\SearchDataProduct;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use \Knp\Component\Pager\PaginatorInterface;
+
+
+
 
 /**
  * @extends ServiceEntityRepository<Product>
@@ -39,16 +44,34 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
-
-
-    public function findAllOrderedByProductName(): array
+    public function findAllOrderedByProductIdentifiant(): array
    {
-        $queryBuilder =$this->createQueryBuilder('i')
-           ->orderBy('i.nom', 'ASC');
-
-        return $queryBuilder
+       return $this->createQueryBuilder('p')
+           ->orderBy('p.identifiant', 'ASC')
            ->getQuery()
-           ->getResult();
+           ->getResult()
+       ;
+   }
+
+   public function findBySearch(SearchDataProduct $searchDataProduct) : PaginatorInterface {
+        $productRepository = $this->createQueryBuilder('p')
+                ->where('p.nom LIKE :nom')
+                ->setParameter('nom', '%NOM%')
+                ;
+                
+                if(!empty($searchDataProduct->nom)){
+                    $productRepository = $productRepository
+                    ->andWhere('p.nom LIKE :nom')
+                    ->setParameter('nom', "%($searchDataProduct->nom)%");
+                }
+
+                $productRepository = $productRepository
+                ->getQuery()
+                ->getResult();
+
+                $pagination = $this->paginate($productRepository, $searchDataProduct->page, 9);
+
+                return $pagination;
    }
 
 //    /**

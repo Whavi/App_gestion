@@ -1,6 +1,6 @@
 {% block stylesheets %}
-<link rel="stylesheet" href="navbar/css/bootstrap.min.css">
-<link rel="stylesheet" href="navbar/css/style.css">
+<link rel="stylesheet" href="/navbar/css/bootstrap.min.css">
+<link rel="stylesheet" href="/navbar/css/style.css">
 {% endblock %}
 
 <header class="site-navbar mt-2 bg-dark text-white">
@@ -11,8 +11,9 @@
     <nav class="mx-auto site-navigation">
       <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
         <li><a href="{{path ("user_gestion")}}" class="nav-link active">Gestion</a></li>
-        <li><a href="{{path ("user_gestion")}}">Liste</a></li>
-        <li><a href="{{path ("user_gestion")}}">Contact</a></li>
+        <li><a href="{{path ("user_gestion_collaborateur")}}">Collaborateur</a></li>
+        <li><a href="{{path ("user_gestion_utilisateur")}}">Compte Utilisateur</a></li>
+        <li><a href="{{path ("user_gestion")}}">Autre</a></li>
       </ul>
     </nav>
     

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AttributionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,33 +16,91 @@ class Attribution
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(inversedBy: 'attributions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Collaborateur $collaborateur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'attributions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $byUser = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTime $updatedAt = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateAttribution = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateRestitution = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $updateAt = null;
-
     #[ORM\ManyToOne(inversedBy: 'attributions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Product $fk_product = null;
+    private ?Product $product = null;
 
-    #[ORM\ManyToOne(inversedBy: 'attributions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Collaborateur $fk_collaborateur = null;
-
-    #[ORM\ManyToOne(inversedBy: 'attributions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $byUser = null;
+    
+    public function __construct()
+    {
+       $this->createdAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+
+    public function getCollaborateur(): ?Collaborateur
+    {
+        return $this->collaborateur;
+    }
+
+    public function setCollaborateur(?Collaborateur $collaborateur): self
+    {
+        $this->collaborateur = $collaborateur;
+
+        return $this;
+    }
+
+    public function getByUser(): ?User
+    {
+        return $this->byUser;
+    }
+
+    public function setByUser(?User $byUser): self
+    {
+        $this->byUser = $byUser;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
     public function getDateAttribution(): ?\DateTimeInterface
@@ -67,63 +127,16 @@ class Attribution
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getProduct(): ?Product
     {
-        return $this->createdAt;
+        return $this->product;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setProduct(?Product $product): self
     {
-        $this->createdAt = $createdAt;
+        $this->product = $product;
 
         return $this;
     }
 
-    public function getUpdateAt(): ?\DateTimeImmutable
-    {
-        return $this->updateAt;
-    }
-
-    public function setUpdateAt(\DateTimeImmutable $updateAt): self
-    {
-        $this->updateAt = $updateAt;
-
-        return $this;
-    }
-
-    public function getFkProduct(): ?Product
-    {
-        return $this->fk_product;
-    }
-
-    public function setFkProduct(?Product $fk_product): self
-    {
-        $this->fk_product = $fk_product;
-
-        return $this;
-    }
-
-    public function getFkCollaborateur(): ?Collaborateur
-    {
-        return $this->fk_collaborateur;
-    }
-
-    public function setFkCollaborateur(?Collaborateur $fk_collaborateur): self
-    {
-        $this->fk_collaborateur = $fk_collaborateur;
-
-        return $this;
-    }
-
-    public function getByUser(): ?User
-    {
-        return $this->byUser;
-    }
-
-    public function setByUser(?User $byUser): self
-    {
-        $this->byUser = $byUser;
-
-        return $this;
-    }
 }

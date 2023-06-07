@@ -38,6 +38,24 @@ class CollaborateurRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    public function findAllOrderedByCollaborateurName(): array
+   {
+       return $this->createQueryBuilder('c')
+           ->orderBy('c.nom', 'ASC')
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+    public function findAllOrderedByCollaborateurNumber(): array
+   {
+       return $this->createQueryBuilder('c')
+           ->orderBy('c.id', 'ASC')
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+
+    
 
 //    /**
 //     * @return Collaborateur[] Returns an array of Collaborateur objects

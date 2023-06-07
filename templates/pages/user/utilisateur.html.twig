@@ -1,0 +1,26 @@
+{% extends "layouts/connected/baseConnected.html.twig" %}
+{% block title %} Gestion de fourniture - SIF {% endblock %}
+
+
+
+{% block body %}
+<h2 class = "text-center mt-4"> Gestion des comptes Utilisateurs
+    <table class="table table-dark mt-5 w-75 mx-auto h5">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+    {% for user in users %}
+    <tr class = "text-center"> 
+      <td>{{user.nom}}</td> 
+      <td>{{user.prenom}}</td> 
+      <td>{{user.email}}</td> 
+      <td>{{user.roles}}</td> 
+    </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

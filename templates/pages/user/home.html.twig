@@ -4,8 +4,15 @@
 
 
 {% block body %}
-<h2 class = "text-center mt-4"> Liste de fourniture dans la base de donnée
-    <table class="table table-dark mt-5 w-75 mx-auto h5">
+
+<div>
+{% include 'layouts/connected/_searchbar.html.twig'with {
+  form:form
+} %}
+</div>
+
+<h2 class = "text-center mt-3"> Liste de fourniture dans la base de donnée
+    <table class="table table-dark mt-3 w-75 mx-auto h5">
         <thead>
           <tr>
             <th>Identifiant</th>
@@ -14,9 +21,16 @@
           </tr>
         </thead>
     {% for liste in listes %}
-    <tr class = "text-center"> <td>{{liste.identifiant}}</td> <td>{{liste.nom}}</td> <td>{{liste.category}}</td> </tr>
+    <tr class = "text-center"> 
+      <td>{{liste.identifiant}}</td> 
+      <td>{{liste.nom}}</td> 
+      <td>{{liste.category}}</td> 
+    </tr>
     {% endfor %}
     </table>
+    <div class = " navigation flex justify-content-center mb-8">
+      {{ knp_pagination_render(listes)}}
+    </div>
 {% endblock %}
 
 

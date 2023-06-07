@@ -15,17 +15,20 @@ class Collaborateur
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 55)]
+    #[ORM\Column(length: 45)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 55)]
+    #[ORM\Column(length: 45)]
     private ?string $prenom = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $email = null;
 
     #[ORM\ManyToOne(inversedBy: 'collaborateurs')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Departement $fk_depart = null;
+    private ?Departement $departement = null;
 
-    #[ORM\OneToMany(mappedBy: 'fk_collaborateur', targetEntity: Attribution::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'collaborateur', targetEntity: Attribution::class, orphanRemoval: true)]
     private Collection $attributions;
 
     public function __construct()
@@ -62,14 +65,26 @@ class Collaborateur
         return $this;
     }
 
-    public function getFkDepart(): ?Departement
+    public function getEmail(): ?string
     {
-        return $this->fk_depart;
+        return $this->email;
     }
 
-    public function setFkDepart(?Departement $fk_depart): self
+    public function setEmail(string $email): self
     {
-        $this->fk_depart = $fk_depart;
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getDepartement(): ?Departement
+    {
+        return $this->departement;
+    }
+
+    public function setDepartement(?Departement $departement): self
+    {
+        $this->departement = $departement;
 
         return $this;
     }
@@ -86,7 +101,7 @@ class Collaborateur
     {
         if (!$this->attributions->contains($attribution)) {
             $this->attributions->add($attribution);
-            $attribution->setFkCollaborateur($this);
+            $attribution->setCollaborateur($this);
         }
 
         return $this;
@@ -96,8 +111,8 @@ class Collaborateur
     {
         if ($this->attributions->removeElement($attribution)) {
             // set the owning side to null (unless already changed)
-            if ($attribution->getFkCollaborateur() === $this) {
-                $attribution->setFkCollaborateur(null);
+            if ($attribution->getCollaborateur() === $this) {
+                $attribution->setCollaborateur(null);
             }
         }
 

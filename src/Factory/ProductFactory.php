@@ -53,10 +53,10 @@ final class ProductFactory extends ModelFactory
 
         return [
             'category' => self::faker()->text(10),
-            'createdAt' => self::faker()->dateTime('+1days'),
-            'identifiant' => self::faker()->text(8),
-            'nom' => self::faker()->firstName(10),
-            'updatedAt' => self::faker()->dateTime('+1days'),
+            'createdAt' => self::faker()->dateTime(),
+            'identifiant' => self::faker()->randomNumber(8),
+            'nom' => self::faker()->text(10),
+            'updatedAt' => self::faker()->dateTime(),
         ];
     }
 
