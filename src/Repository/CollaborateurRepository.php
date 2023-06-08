@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Collaborateur;
+use App\Entity\Departement;
 use App\Model\SearchDataCollaborateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,12 +40,13 @@ class CollaborateurRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    public function findAllOrderedByCollaborateurName(): array
+    public function findAllOrderedByInnerJoinCollaborateurName(): array
    {
        return $this->createQueryBuilder('c')
-           ->orderBy('c.nom', 'ASC')
-           ->getQuery()
-           ->getResult()
+        ->select("d.nom")
+        ->innerJoin(Departement::class, 'd', "WITH", 'c.id = c.departement')
+        ->getQuery()
+        ->getResult()
        ;
    }
     public function findAllOrderedByCollaborateurNumber(): array

@@ -17,7 +17,7 @@ class SearchTypeUser extends AbstractType
         $builder
             ->add('nom', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Recherche via un mot clé...',
+                    'placeholder' => 'Recherche par nom ...',
                 ],
                 'empty_data' => '',
                 'required' => false
