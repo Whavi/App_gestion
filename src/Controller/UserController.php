@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
+
 use App\Entity\User;
 use App\Form\SearchType;
 use App\Form\UserPasswordType;
@@ -66,7 +66,7 @@ class UserController extends AbstractController
 
     #[Route('/gestion', name: 'user_gestion')]
      ##[IsGranted('ROLE_USER')]
-    public function gestion(ProductRepository $productRepository, Request $request, PaginatorInterface $paginatorInterface) {
+     public function gestion(ProductRepository $productRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
         $data = $productRepository->findAllOrderedByProductIdentifiant();
 
@@ -80,21 +80,23 @@ class UserController extends AbstractController
         $form = $this->createForm(SearchType::class, $searchDataProduct);
 
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $searchDataProduct->page = $request->query->getInt('page', 1);
-            $productRepository = $productRepository->findBySearch($searchDataProduct);
-
-            return $this->render('pages/user/home.html.twig', [ 
-                'form' => $form->createView(),
-                'listes' => $posts,]);
-
-        }
-
+            if($form->isSubmitted() && $form->isValid()){
+                $data = $productRepository->findAllOrderedByAllProduct($searchDataProduct);
+            
+                $posts = $paginatorInterface->paginate(
+                    $data,
+                    $request->query->getInt('page', 1),
+                    6);
+                
+                return $this->render('pages/user/home.html.twig', [ 
+                    'form' => $form->createView(),
+                    'listes' => $posts,]);
+                }
+                
         return $this->render('pages/user/home.html.twig', [ 
             'form' => $form->createView(),
             'listes' => $posts,]);
-
-    }
+        }
 
 
     #[Route('/gestion/compte/collaborateur', name: 'user_gestion_collaborateur')]

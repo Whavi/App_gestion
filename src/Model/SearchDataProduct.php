@@ -9,5 +9,4 @@ class SearchDataProduct
 
     /** @var string */
     public string $nom = '';
-
 }
