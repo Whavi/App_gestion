@@ -5,7 +5,7 @@
 
 {% block body %}
 
-<h2 class = "text-center mt-4"> Liste de fourniture dans la base de donnée
+<h2 class = "text-center mt-3"> Liste de fourniture dans la base de donnée
 
   <div>
     {% include 'layouts/connected/_searchbar.html.twig'with {
@@ -13,13 +13,19 @@
     } %}
     </div>
 
-    <table class="table table-dark table-bordered table-hover mt-4 w-75 mx-auto h5">
+    <div class="d-flex flex-row mx-auto col-9 ">
+      <div class="ml-auto">
+    <a href="{{path ("user_gestion_newItem")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Create new item</a>
+  </div>
+</div>
+
+    <table class="table table-dark table-bordered table-hover mt-2 w-75 mx-auto h5">
         <thead class= "table table-light">
           <tr>
-            <th>Identifiant</th>
-            <th>Nom</th>
-            <th>Catégorie</th>
-            <th>Action</th>
+            <th class ="w-auto">Identifiant</th>
+            <th class ="w-auto">Nom</th>
+            <th class ="w-auto">Catégorie</th>
+            <th class ="w-25">Action</th>
           </tr>
         </thead>
     {% for liste in listes %}
@@ -27,6 +33,8 @@
       <td>{{liste.identifiant}}</td> 
       <td>{{liste.nom}}</td> 
       <td>{{liste.category}}</td> 
+      <td><button type="submit" class="btn btn-danger btn-sm w-auto "> DELETE </button>
+        <button type="submit" class="btn btn-outline-primary btn-sm w-auto  "> EDIT </button></td> 
     </tr>
     {% endfor %}
     </table>

@@ -20,10 +20,10 @@
     <thead class= "table table-light">
           <tr>
             <th class ="w-25">Nom</th>
-            <th class ="w-25">Prenom</th>
+            <th class ="w-auto">Prenom</th>
             <th class ="w-25">Email</th> 
             <th class ="w-25">Contract</th>
-            <th class ="w-25">Département</th>
+            <th class ="w-auto">Département</th>
             <th class ="w-100">Action</th>
           </tr>
         </thead>
@@ -35,8 +35,8 @@
         <td>{{collaborateur.email}}</td>
         <td>En cours</td>
         <td>{{collaborateur.id}}</td>
-        <td><button type="submit" class="btn btn-danger "> DELETE </button>
-          <button type="submit" class="btn btn-outline-primary mt-2 "> EDIT </button></td>
+        <td><button type="submit" class="btn btn-danger btn-sm w-auto "> DELETE </button>
+          <button type="submit" class="btn btn-outline-primary btn-sm w-auto"> EDIT </button></td> 
     
     </tr>
     {% endfor %}
