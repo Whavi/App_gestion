@@ -1,5 +1,5 @@
 {% extends "layouts/connected/baseConnected.html.twig" %}
-{% block title %} Gestion de fourniture - SIF {% endblock %}
+{#{% block title %} Gestion de fourniture - SIF {% endblock %}#}
 
 
 
@@ -10,26 +10,34 @@
       form:form
     } %}
     </div>
+    <div class="d-flex flex-row mx-auto col-9 ">
+      <div class="ml-auto">
+    <a href="{{path ("user_gestion_newItem")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Create new collaborateur</a>
+  </div>
+</div>
 
-    <table class="table table-dark table-bordered table-hover mt-4 w-75 mx-auto h5">
-      <thead class= "table table-light">
-          <tr class ="w-25" >
+ <table class="table table-dark table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
+    <thead class= "table table-light">
+          <tr>
             <th class ="w-25">Nom</th>
             <th class ="w-25">Prenom</th>
             <th class ="w-25">Email</th> 
             <th class ="w-25">Contract</th>
             <th class ="w-25">Département</th>
-            <th>Action</th>
+            <th class ="w-100">Action</th>
           </tr>
         </thead>
     {% for collaborateur in collaborateurs %}
+   
     <tr class = "text-center">
         <td>{{collaborateur.nom}}</td>
         <td>{{collaborateur.prenom}}</td>
         <td>{{collaborateur.email}}</td>
+        <td>En cours</td>
         <td>{{collaborateur.id}}</td>
-        <td>{{collaborateur.id}}</td>
-
+        <td><button type="submit" class="btn btn-danger "> DELETE </button>
+          <button type="submit" class="btn btn-outline-primary mt-2 "> EDIT </button></td>
+    
     </tr>
     {% endfor %}
     </table>

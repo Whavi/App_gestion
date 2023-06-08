@@ -121,7 +121,7 @@ class UserController extends AbstractController
     public function gestion_collaborateur(CollaborateurRepository $CollaborateurRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
 
-        $NameCollborateur = $CollaborateurRepository->findAllOrderedByInnerJoinCollaborateurName();
+        // $NameCollborateur = $CollaborateurRepository->findAllOrderedByInnerJoinCollaborateurName();
         $data = $CollaborateurRepository->findAllOrderedByCollaborateurNumber();
 
         $posts = $paginatorInterface->paginate(
@@ -145,13 +145,13 @@ class UserController extends AbstractController
                 
                 return $this->render('pages/user/collaborateur.html.twig', [ 
                     'form' => $form->createView(),
-                    'Collaborateur_name' => $NameCollborateur,
+                    // 'Collaborateur_name' => $NameCollborateur,
                     'collaborateurs' => $posts,]);
                 }
 
         return $this->render('pages/user/collaborateur.html.twig', [
             'form' => $form->createView(),
-            'Collaborateur_name' => $NameCollborateur,
+            // 'Collaborateur_name' => $NameCollborateur,
             'collaborateurs' => $posts,
         ],
         );
