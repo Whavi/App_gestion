@@ -31,7 +31,6 @@ class SearchTypeCollaborateur extends AbstractType
             'data_class' => SearchDataCollaborateur::class,
             'method' => 'GET',
             'csrf_protection' => false
-
         ]);
     }
 }
