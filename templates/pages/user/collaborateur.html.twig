@@ -5,13 +5,21 @@
 
 {% block body %}
 <h2 class = "text-center mt-4 "> Gestion des collaborateurs
-    <table class="table table-dark mt-5 w-75 mx-auto h5">
-        <thead>
+  <div>
+    {% include 'layouts/connected/_searchbar.html.twig'with {
+      form:form
+    } %}
+    </div>
+
+    <table class="table table-dark table-bordered table-hover mt-4 w-75 mx-auto h5">
+      <thead class= "table table-light">
           <tr class ="w-25" >
             <th class ="w-25">Nom</th>
             <th class ="w-25">Prenom</th>
-            <th class ="w-25">Email</th>
-            <th class ="w-25">Collaborateur</th>
+            <th class ="w-25">Email</th> 
+            <th class ="w-25">Contract</th>
+            <th class ="w-25">Département</th>
+            <th>Action</th>
           </tr>
         </thead>
     {% for collaborateur in collaborateurs %}
@@ -20,8 +28,12 @@
         <td>{{collaborateur.prenom}}</td>
         <td>{{collaborateur.email}}</td>
         <td>{{collaborateur.id}}</td>
+        <td>{{collaborateur.id}}</td>
 
     </tr>
     {% endfor %}
     </table>
+    <div class = " pagination text-center mt-4 navigation flex justify-center">
+      {{ knp_pagination_render(collaborateurs)}}
+    </div>
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Model\SearchDataUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -42,13 +43,33 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
     }
 
-    public function findAllOrderedByUserName(): array
+    public function findAllOrderedByRank(): array
    {
        return $this->createQueryBuilder('U')
-           ->orderBy('U.nom', 'ASC')
+           ->orderBy('U.id', 'ASC')
            ->getQuery()
            ->getResult()
        ;
+   }
+
+   public function findAllOrderedByNameUser(SearchDataUser $SearchDataUser)
+   {
+
+    $productRepository = $this->createQueryBuilder('u');
+
+    if(!empty(($SearchDataUser->nom or $SearchDataUser->prenom or $SearchDataUser->email))){
+        $productRepository = $productRepository
+        ->andWhere('u.nom LIKE :nom OR u.prenom LIKE :prenom OR u.email LIKE :email' )
+        ->setParameter('nom', "%$SearchDataUser->nom%")
+        ->setParameter('prenom', "%($SearchDataUser->prenom)%")
+        ->setParameter('email', "%($SearchDataUser->email)%")
+
+        ->orderBy('u.id', 'ASC');
+    }
+    //  dd($productRepository->getQuery()->getDQL());
+
+            return $productRepository->getQuery()->getResult();;
+
    }
 
 

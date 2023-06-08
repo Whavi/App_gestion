@@ -4,10 +4,14 @@ namespace App\Controller;
 
 
 use App\Entity\User;
-use App\Form\SearchType;
+use App\Form\SearchTypeCollaborateur;
+use App\Form\SearchTypeProduct;
+use App\Form\SearchTypeUser;
 use App\Form\UserPasswordType;
 use App\Form\UserType;
 use App\Model\SearchDataProduct;
+use App\Model\SearchDataCollaborateur;
+use App\Model\SearchDataUser;
 use App\Repository\CollaborateurRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
@@ -64,6 +68,8 @@ class UserController extends AbstractController
     }
 
 
+
+
     #[Route('/gestion', name: 'user_gestion')]
      ##[IsGranted('ROLE_USER')]
      public function gestion(ProductRepository $productRepository, Request $request, PaginatorInterface $paginatorInterface) {
@@ -77,11 +83,11 @@ class UserController extends AbstractController
         );
 
         $searchDataProduct = new SearchDataProduct();
-        $form = $this->createForm(SearchType::class, $searchDataProduct);
+        $form = $this->createForm(SearchTypeProduct::class, $searchDataProduct);
 
         $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){
-                $data = $productRepository->findAllOrderedByAllProduct($searchDataProduct);
+                $data = $productRepository->findAllOrderedByNameProduct($searchDataProduct);
             
                 $posts = $paginatorInterface->paginate(
                     $data,
@@ -99,36 +105,117 @@ class UserController extends AbstractController
         }
 
 
-    #[Route('/gestion/compte/collaborateur', name: 'user_gestion_collaborateur')]
-    public function gestion_collaborateur(CollaborateurRepository $CollaborateurRepository) {
 
-        $collaborateur = $CollaborateurRepository->findAllOrderedByCollaborateurNumber();
+
+
+
+
+
+
+
+
+
+
+
+    #[Route('/gestion/compte/collaborateur', name: 'user_gestion_collaborateur')]
+    public function gestion_collaborateur(CollaborateurRepository $CollaborateurRepository, Request $request, PaginatorInterface $paginatorInterface) {
+
+        $data = $CollaborateurRepository->findAllOrderedByCollaborateurNumber();
+
+        $posts = $paginatorInterface->paginate(
+            $data,
+            $request->query->getInt('page', 1),
+            6
+        );
+
+
+        $searchDataCollaborateur = new SearchDataCollaborateur();
+        $form = $this->createForm(SearchTypeCollaborateur::class, $searchDataCollaborateur);
+
+        $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                $data = $CollaborateurRepository->findAllOrderedByNameCollaborateur($searchDataCollaborateur);
+            
+                $posts = $paginatorInterface->paginate(
+                    $data,
+                    $request->query->getInt('page', 1),
+                    6);
+                
+                return $this->render('pages/user/collaborateur.html.twig', [ 
+                    'form' => $form->createView(),
+                    'collaborateurs' => $posts,]);
+                }
 
         return $this->render('pages/user/collaborateur.html.twig', [
-            'collaborateurs' => $collaborateur,
+            'form' => $form->createView(),
+            'collaborateurs' => $posts,
         ],
         );
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     #[Route('/gestion/compte/utilisateur', name: 'user_gestion_utilisateur')]
-    public function gestion_cpt_utilisateur(UserRepository $UserRepository) {
+    public function gestion_cpt_utilisateur(UserRepository $UserRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
-        $users = $UserRepository->findAllOrderedByUserName();
+        $users = $UserRepository->findAllOrderedByRank();
+
+        $posts = $paginatorInterface->paginate(
+            $users,
+            $request->query->getInt('page', 1),
+            6
+        );
+
+        $searchDataUser = new SearchDataUser();
+        $form = $this->createForm(SearchTypeUser::class, $searchDataUser);
+
+        $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                $data = $UserRepository->findAllOrderedByNameUser($searchDataUser);
+            
+                $posts = $paginatorInterface->paginate(
+                    $data,
+                    $request->query->getInt('page', 1),
+                    6);
+
 
         return $this->render('pages/user/utilisateur.html.twig', [
-            'users' => $users,
+            'form' => $form->createView(),
+            'users' => $posts,
         ],
         );
 
     }
+    return $this->render('pages/user/utilisateur.html.twig', [
+        'form' => $form->createView(),
+        'users' => $posts,
+    ]);
+}
+
+
+
+
+
+
 
 
     #[Route('/gestion/addItem', name: 'user_gestion_newItem')]
     public function add_item(){
 
-        return $this->render('pages/user/newItem.html.twig'
-        );
+        return $this->render('pages/user/newItem.html.twig');
 
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Collaborateur;
+use App\Model\SearchDataCollaborateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -53,6 +54,27 @@ class CollaborateurRepository extends ServiceEntityRepository
            ->getQuery()
            ->getResult()
        ;
+   }
+
+   public function findAllOrderedByNameCollaborateur(SearchDataCollaborateur $searchDataCollaborateur)
+   {
+
+    $collaborateurRepository = $this->createQueryBuilder('c');
+
+    if(!empty(($searchDataCollaborateur->nom) or ($searchDataCollaborateur->prenom) or ($searchDataCollaborateur->email) or ($searchDataCollaborateur->id))){
+        $collaborateurRepository = $collaborateurRepository
+        ->andWhere('c.nom LIKE :nom OR c.prenom LIKE :prenom OR c.email LIKE :email OR c.id LIKE :id' )
+        ->setParameter('nom', "%$searchDataCollaborateur->nom%")
+        ->setParameter('prenom', "%($searchDataCollaborateur->prenom)%")
+        ->setParameter('email', "%($searchDataCollaborateur->email)%")
+        ->setParameter('id', "%($searchDataCollaborateur->id)%")
+        ->orderBy('c.id', 'ASC');
+    }
+     //dd($productRepository->getQuery()->getDQL());
+
+            return $collaborateurRepository->getQuery()
+            ->getResult();;
+
    }
 
     

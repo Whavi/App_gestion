@@ -2,18 +2,15 @@
 
 namespace App\Form;
 
-use App\Entity\Product;
-use App\Model\SearchData;
-use App\Model\SearchDataProduct;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Model\SearchDataUser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormTypeInterface;
 
 
-class SearchType extends AbstractType
+
+class SearchTypeUser extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -30,7 +27,7 @@ class SearchType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => SearchDataProduct::class,
+            'data_class' => SearchDataUser::class,
             'method' => 'GET',
             'csrf_protection' => false
 

@@ -53,24 +53,22 @@ class ProductRepository extends ServiceEntityRepository
        ;
    }
 
-   public function findAllOrderedByAllProduct(SearchDataProduct $searchDataProduct)
+   public function findAllOrderedByNameProduct(SearchDataProduct $searchDataProduct)
    {
 
     $productRepository = $this->createQueryBuilder('p');
 
-    if(!empty($searchDataProduct->nom)){
+    if(!empty(($searchDataProduct->nom or $searchDataProduct->identifiant))){
         $productRepository = $productRepository
-        ->andWhere('p.nom LIKE :nom')
+        ->andWhere('p.nom LIKE :nom OR p.identifiant LIKE :identifiant' )
         ->setParameter('nom', "%$searchDataProduct->nom%")
+        ->setParameter('identifiant', "%($searchDataProduct->identifiant)%")
+
         ->orderBy('p.identifiant', 'ASC');
-
     }
-            
-            
-    // dd($productRepository->getQuery()->getDQL());
+    //  dd($productRepository->getQuery()->getDQL());
 
-            return $productRepository->getQuery()
-            ->getResult();;
+            return $productRepository->getQuery()->getResult();;
 
    }
 

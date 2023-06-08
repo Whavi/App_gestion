@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class SearchDataProduct
+class SearchDataCollaborateur
 {
     /** @var int */
     public $page = 1;
@@ -10,6 +10,10 @@ class SearchDataProduct
     /** @var string */
     public string $nom = '';
 
-    public string $identifiant = '';
+    public string $prenom = '';
+
+    public string $email = '';
+
+    public string $id = '';
 
 }
