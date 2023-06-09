@@ -105,7 +105,7 @@ class UserController extends AbstractController
         }
     
     #[Route('/gestion/delete/{id}', name: 'user_gestion_delete')]
-    public function gestion_collaborateur_delete(Product $product, Request $request) : Response {
+    public function gestionProductDelete(Product $product, Request $request) : Response {
         $em = $this->getDoctrine->getManager();
         $em->remove($product);
         $em->flush();
@@ -164,7 +164,7 @@ class UserController extends AbstractController
     
     
      #[Route('/gestion/compte/collaborateur/delete/{id}', name: 'user_gestion_collaborateur_delete')]
-    public function gestion_collaborateur_delete(Collaborateur $Collaborateur, Request $request) : Response {
+    public function gestionCollaborateurDelete(Collaborateur $Collaborateur, Request $request) : Response {
         $em = $this->getDoctrine->getManager();
         $em->remove($Collaborateur);
         $em->flush();
@@ -218,7 +218,7 @@ class UserController extends AbstractController
 }
     
     #[Route('/gestion/compte/utilisateur/delete/{id}', name: 'user_gestion_utilisateur_delete')]
-    public function gestion_collaborateur_delete(User $User, Request $request) : Response {
+    public function gestionUserDelete(User $User, Request $request) : Response {
         $em = $this->getDoctrine->getManager();
         $em->remove($User);
         $em->flush();
