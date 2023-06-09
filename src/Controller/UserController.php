@@ -103,12 +103,16 @@ class UserController extends AbstractController
             'form' => $form->createView(),
             'listes' => $posts,]);
         }
-
-
-
-
-
-
+    
+    #[Route('/gestion/delete/{id}', name: 'user_gestion_delete')]
+    public function gestion_collaborateur_delete(Product $product, Request $request) : Response {
+        $em = $this->getDoctrine->getManager();
+        $em->remove($product);
+        $em->flush();
+        
+        $this->flash('Produit supprimé avec succes');
+        return $this->redirectToRoute('user_gestion');
+    }
 
 
 
@@ -157,13 +161,17 @@ class UserController extends AbstractController
         );
 
     }
-
-
-
-
-
-
-
+    
+    
+     #[Route('/gestion/compte/collaborateur/delete/{id}', name: 'user_gestion_collaborateur_delete')]
+    public function gestion_collaborateur_delete(Collaborateur $Collaborateur, Request $request) : Response {
+        $em = $this->getDoctrine->getManager();
+        $em->remove($Collaborateur);
+        $em->flush();
+        
+        $this->flash('Collaborateur supprimé avec succes');
+        return $this->redirectToRoute('user_gestion_collaborateur');
+    }
 
 
 
@@ -208,6 +216,16 @@ class UserController extends AbstractController
         'users' => $posts,
     ]);
 }
+    
+    #[Route('/gestion/compte/utilisateur/delete/{id}', name: 'user_gestion_utilisateur_delete')]
+    public function gestion_collaborateur_delete(User $User, Request $request) : Response {
+        $em = $this->getDoctrine->getManager();
+        $em->remove($User);
+        $em->flush();
+        
+        $this->flash('Utilisateur supprimé avec succes');
+        return $this->redirectToRoute('user_gestion_utilisateur');
+    }
 
 
 
