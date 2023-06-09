@@ -40,7 +40,7 @@
       <td>{{user.email}}</td> 
       <td>{{user.password}}</td> 
       <td>EN COURS</td> 
-      <td><button type="submit" class="btn btn-danger btn-sm w-auto"> DELETE </button>
+      <td><button type="submit" href=" {{path('user_gestion_utilisateur_delete', {'id': user.id }) }}"class="btn btn-danger btn-sm w-auto"> DELETE </button>
         <button type="submit" class="btn btn-outline-primary btn-sm w-auto "> EDIT </button></td> 
     </tr>
     {% endfor %}
