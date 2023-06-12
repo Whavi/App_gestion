@@ -15,6 +15,7 @@ use App\Form\SearchTypeCollaborateur;
 use App\Form\SearchTypeDepartement;
 use App\Form\SearchTypeProduct;
 use App\Form\SearchTypeUser;
+use App\Form\UserFormCollaborateurType;
 use App\Form\UserFormDepartementType;
 use App\Form\UserFormItemType;
 use App\Form\UserPasswordType;
@@ -246,7 +247,23 @@ class UserController extends AbstractController
     #[Route('/gestion/compte/collaborateur/addItem', name: 'user_gestion_newItemCollaborateur')]
     public function addItemCollaborateur(EntityManagerInterface $manager, Request $request) : Response {
 
-        return $this->render('pages/user/newItem.html.twig');
+        $form = $this->createForm(UserFormCollaborateurType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $collaborateur = new Collaborateur();
+            $collaborateur->setNom($data->getNom());
+            $collaborateur->setPrenom($data->getPrenom());
+            $collaborateur->setEmail($data->getEmail());
+            $collaborateur->setDepartement($data->getDepartement());
+            $manager->persist($collaborateur);
+            $manager->flush();
+            return $this->redirectToRoute('user_gestion_departement');
+    }
+    return $this->render('pages/user/newItem/Collaborateur.html.twig', [
+        'form' => $form->createView()
+    ]);
     }
 
 
