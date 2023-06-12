@@ -1,0 +1,50 @@
+{% extends "layouts/connected/baseConnected.html.twig" %}
+{% block title %} Gestion de fourniture - SIF {% endblock %}
+
+
+
+{% block body %}
+<h2 class = "text-center mt-4"> Gestion des comptes Utilisateurs </h2>
+
+
+{% for message in app.flashes('success') %}
+  <div class="alert alert-success">{{message}}</div>
+{%endfor%} 
+
+
+  <div class ="text-center">
+    {% include 'layouts/connected/_searchbar.html.twig'with {
+      form:form
+    } %}
+    </div>
+
+
+    <div class="d-flex flex-row mx-auto col-9 ">
+      <div class="ml-auto">
+    <a href="{{path ("user_gestion_newItemDepartement")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Create new departement</a>
+    
+  </div>
+</div>
+
+
+  <table class="table table-dark table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
+    <thead class= "table table-light">
+          <tr>
+            <th class ="w-25" >#</th>
+            <th class ="w-auto">Nom</th>
+            <th class ="w-25" >Action</th>
+          </tr>
+        </thead>
+    {% for departement in departements %}
+    <tr class = "text-center"> 
+      <td>{{departement.id}}</td>
+      <td>{{departement.nom}}</td> 
+      <td><a type="submit" href="{{path('user_gestion_departement_delete', {'id': departement.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
+        <a type="submit" href="{{path('user_gestion_departement_edit', {'id': departement.id }) }}" class="btn btn-outline-primary btn-sm w-auto "> EDIT </a></td> 
+    </tr>
+    {% endfor %}
+    </table>
+    <div class = "mt-4 text-center ">
+      {{ knp_pagination_render(departements)}}
+    </div>
+{% endblock %}

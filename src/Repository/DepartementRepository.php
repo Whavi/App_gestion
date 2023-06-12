@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Departement;
+use App\Model\SearchDataDepartement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -38,6 +39,33 @@ class DepartementRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function findAllOrderedByDepartementRank(): array
+   {
+       return $this->createQueryBuilder('d')
+           ->orderBy('d.id', 'ASC')
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+
+   public function findAllOrderedByNameDepartement(SearchDataDepartement $searchDataDepartement)
+   {
+
+    $repositoryDepartement = $this->createQueryBuilder('d');
+
+    if(!empty($searchDataDepartement->nom)){
+        $repositoryDepartement = $repositoryDepartement
+        ->andWhere('d.nom LIKE :nom')
+        ->setParameter('nom', "%$searchDataDepartement->nom%")
+
+        ->orderBy('d.id', 'ASC');
+    }
+    //  dd($productRepository->getQuery()->getDQL());
+
+            return $repositoryDepartement->getQuery()->getResult();;
+
+   }
 
 //    /**
 //     * @return Departement[] Returns an array of Departement objects

@@ -11,6 +11,6 @@ class ProductFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        ProductFactory::createMany(20);
+        ProductFactory::createMany(5);
     }
 }
