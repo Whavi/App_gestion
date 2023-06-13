@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -25,8 +26,6 @@ class SecurityController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        $lastUsername;
-
         return $this->render('pages/security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
@@ -42,7 +41,7 @@ class SecurityController extends AbstractController
 
 
     #[Route('/inscription', 'security.registration', methods: ['GET', 'POST'])]
-    public function registration(Request $request, EntityManagerInterface $manager): Response
+    public function registration(Request $request,UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $manager): Response
     {
         $user = new User();
         $user->setRoles(['ROLE_USER']);
@@ -52,7 +51,12 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
-
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                ));
+            
             $this->addFlash(
                 'success',
                 'Votre compte a bien été créé.'

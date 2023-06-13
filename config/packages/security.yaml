@@ -11,24 +11,22 @@ security:
                 class: App\Entity\User
                 property: email
         # used to reload user from session & other features (e.g. switch_user)
-        # used to reload user from session & other features (e.g. switch_user)
-        # used to reload user from session & other features (e.g. switch_user)
-        # used to reload user from session & other features (e.g. switch_user)
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            custom_authenticator: App\Security\SocialConnectAuthenticator
             lazy: true
             provider: app_user_provider
-            
+            custom_authenticator: App\Security\SocialConnectAuthenticator
             logout:
                 path: security.logout
-            
+        secured_area:
+            form_login:    
+                enable_csrf: true
            
 
-            # activate different ways to authenticate
+            # activate ifferent ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html

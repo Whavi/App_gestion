@@ -62,17 +62,6 @@ class AttributionRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findAllOrderedByInnerJoinByUser(): array
-    {
-        return $this->createQueryBuilder('a')
-         ->select('u.nom')
-         ->select('u.prenom')
-         ->innerJoin(User::class, 'u', 'WITH', 'u.id = a.id')
-         ->getQuery()
-         ->getResult()
-        ;
-    }
-
     public function findAllOrderedByInnerJoinCollaborateur(): array
     {
         return $this->createQueryBuilder('a')
