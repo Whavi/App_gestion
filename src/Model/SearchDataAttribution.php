@@ -8,8 +8,6 @@ class SearchDataAttribution
     public $page = 1;
 
     /** @var string */
-    
-    public string $byUser = '';
-    public string $product = '';
+    public string $nom = ""; 
 
 }

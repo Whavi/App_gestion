@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Attribution;
+use App\Form\EditFormAttributionType;
 use App\Form\SearchTypeAttributionType;
+use App\Form\UserFormAttributionType;
 use App\Repository\AttributionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -27,22 +30,22 @@ class AttributionController extends AbstractController
             6
         );
 
-    //     $searchDataAttribution = new SearchDataAttribution();
-    //     $form = $this->createForm(SearchTypeAttributionType::class, $searchDataAttribution);
+        // $searchDataAttribution = new SearchDataAttribution();
+        // $form = $this->createForm(SearchTypeAttributionType::class, $searchDataAttribution);
 
-    //     $form->handleRequest($request);
-    //         if($form->isSubmitted() && $form->isValid()){
-    //             $data = $attributionRepository->findAllOrderedByNameDepartement($searchDataAttribution);
+        // $form->handleRequest($request);
+        //     if($form->isSubmitted() && $form->isValid()){
+        //         $data = $attributionRepository->findAllOrderedByNameAttribution($searchDataAttribution);
             
-    //             $posts = $paginatorInterface->paginate(
-    //                 $data,
-    //                 $request->query->getInt('page', 1),
-    //                 6);
+        //         $posts = $paginatorInterface->paginate(
+        //             $data,
+        //             $request->query->getInt('page', 1),
+        //             6);
 
 
-    //     return $this->render('pages/user/departement.html.twig', [
-    //         'form' => $form->createView(),
-    //         'attributions' => $posts,
+        // return $this->render('pages/user/attribution.html.twig', [
+        //     'form' => $form->createView(),
+        //     'attributions' => $posts,
     //     ],
     //     );
     // }
@@ -72,15 +75,16 @@ class AttributionController extends AbstractController
     public function gestionAttributionEdit($id,AttributionRepository $attributionRepository, Request $request, EntityManagerInterface $manager) : Response {
         $attribution = $attributionRepository->find($id);
 
-        $form = $this->createForm(EditFormDepartementType::class, $attribution);
+        $form = $this->createForm(EditFormAttributionType::class, $attribution);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
+            $attribution->setUpdatedAt(new \DateTime());
 
             $this->addFlash(
                 'success',
-                'Votre compte a bien été modifier.'
+                'Votre attribution a bien été modifier.'
             );
 
             $manager->persist($data);
@@ -98,21 +102,22 @@ class AttributionController extends AbstractController
     #[Route('/gestion/attribution/addAttribution', name: 'user_gestion_newItemAttribution')]
     public function addItemAttribution(EntityManagerInterface $em, Request $request) : Response {
         
-        // $form = $this->createForm(UserFormDepartementType::class);
-        // $form->handleRequest($request);
+        $form = $this->createForm(UserFormAttributionType::class);
+        $form->handleRequest($request);
 
-        // if ($form->isSubmitted() && $form->isValid()) {
-        //     $data = $form->getData();
-        //     $departement = new Departement();
-        //     $departement->setNom($data->getNom());
-        //     $departement->setCreateAt(new \DateTime());
-        //     $departement->setUpdateAt(new \DateTime());
-        //     $em->persist($departement);
-        //     $em->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $attribution = new Attribution();
+            $attribution->setCreatedAt(new \DateTime());
+            $attribution->setUpdatedAt(new \DateTime());
+            $attribution->setCollaborateur($data->getCollaborateur());
+            $attribution->setDateAttribution($data->getDateAttribution());
+            $attribution->setDateRestitution($data->getDateRestitution());
+            $em->persist($attribution);
+            $em->flush();
             return $this->redirectToRoute('user_gestion_attribution');
-    // }
-    // return $this->render('pages/user/newItem/Departement.html.twig', [
-    //     'form' => $form->createView()]);
     }
-
+    return $this->render('pages/user/newItem/Attribution.html.twig', [
+        'form' => $form->createView()]);
+    }
 }

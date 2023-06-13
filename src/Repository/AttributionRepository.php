@@ -6,6 +6,7 @@ use App\Entity\Attribution;
 use App\Entity\Collaborateur;
 use App\Entity\Product;
 use App\Entity\User;
+use App\Model\SearchDataAttribution;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -61,6 +62,26 @@ class AttributionRepository extends ServiceEntityRepository
          ->getResult()
         ;
     }
+
+    public function findAllOrderedByNameAttribution(SearchDataAttribution $searchDataAttribution)
+   {
+
+    $collaborateurRepository = $this->createQueryBuilder('a');
+    if(!empty(($searchDataAttribution->nom))){
+        $collaborateurRepository = $collaborateurRepository
+        ->andWhere('a.nom LIKE :nom' )
+        ->setParameter('nom', "%$searchDataAttribution->nom%")
+        ->orderBy('a.id', 'ASC');
+    }
+    $collaborateurRepository = $collaborateurRepository
+    ->select('c.nom')
+    ->innerJoin(Collaborateur::class, 'c', 'WITH', 'c.id = a.id');
+     //dd($productRepository->getQuery()->getDQL());
+
+    return $collaborateurRepository->getQuery()
+        ->getResult();;
+
+   }
 
     public function findAllOrderedByInnerJoinCollaborateur(): array
     {

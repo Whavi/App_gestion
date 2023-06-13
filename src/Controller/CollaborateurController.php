@@ -83,7 +83,7 @@ class CollaborateurController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'Votre compte a bien été modifier.'
+                'Votre collaborateur a bien été modifier.'
             );
 
             $manager->persist($collab);

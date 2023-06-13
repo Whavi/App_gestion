@@ -25,19 +25,19 @@
         <thead class= "table table-light">
           <tr>
             <th class ="w-auto">Collaborateur</th>
-            <th class ="w-auto">Produit</th>
-            <th class ="w-auto">Date d'attribution</th>
-            <th class ="w-auto">Date de restitution</th>
-            <th class ="w-auto h-auto">Action</th>
+            <th class ="w-25">Produit</th>
+            <th class ="w-25">Date d'attribution</th>
+            <th class ="w-25">Date de restitution</th>
+            <th class ="w-auto">Action</th>
           </tr>
         </thead>
 
     {% for attribution in attributions %}
     <tr class = "text-center"> 
-      <td class ="w-auto">{{attribution.collaborateur}}</td> 
-      <td class ="w-auto">{{attribution.product}}</td> 
-      <td class ="w-auto">{{attribution.dateAttribution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}}</td> 
-      <td class ="w-auto">{{attribution.dateRestitution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}}</td> 
+      <td class ="">{{attribution.collaborateur}}</td> 
+      <td class ="">{{attribution.product}}</td> 
+      <td class ="">{{attribution.dateAttribution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}}</td> 
+      <td class ="">{{attribution.dateRestitution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}}</td> 
       <td><a type="submit" href="{{path('user_gestion_attribution_delete', {'id': attribution.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
         <a type="submit" href="{{path('user_gestion_attribution_edit', {'id': attribution.id }) }}" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a></td> 
     </tr>

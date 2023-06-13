@@ -80,7 +80,7 @@ class ProductController extends AbstractController
 
            $this->addFlash(
                'success',
-               'Votre compte a bien été modifier.'
+               'Votre produit a bien été modifier.'
            );
 
            $manager->persist($productdata);

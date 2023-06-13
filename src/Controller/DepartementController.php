@@ -82,7 +82,7 @@ class DepartementController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'Votre compte a bien été modifier.'
+                'Votre département a bien été modifier.'
             );
 
             $manager->persist($data);
