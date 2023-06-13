@@ -107,11 +107,12 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $userItem = new User();
-            $userItem->setNom($data['nom']);
-            $userItem->setPrenom($data['prenom']);
-            $userItem->setEmail($data['email']);
-            $userItem->setPassword($data['password']);
-            $userItem->setRoles($data['roles']);
+            $userItem->setNom($data->getNom());
+            $userItem->setPrenom($data->getPrenom());
+            $userItem->setRoles($data->getRoles());
+            $userItem->setEmail($data->getEmail());
+            $userItem->setPassword($data->getPassword());
+            
             $em->persist($userItem);
             $em->flush();
             return $this->redirectToRoute('user_gestion_utilisateur');

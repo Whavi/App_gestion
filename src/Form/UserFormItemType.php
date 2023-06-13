@@ -72,22 +72,7 @@ class UserFormItemType extends AbstractType
                 new Assert\Length(['min' => 2, 'max' => '180'])
             ] 
             ])
-            ->add('roles', ChoiceType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'label_attr' => [
-                    'class' => 'form_label mt-4'
-                ],
-                'choices' => [
-                    'Utilisateur' => "['ROLE_USER']",
-                    'Administrateur' => "['ROLE_ADMIN']",
-                    ],
-                'placeholder' => 'Choisissez un groupe',
-                'required' => true,    
-                    
-                    ])
-
+            
 
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
