@@ -19,7 +19,7 @@ class Departement
     #[ORM\Column(length: 45)]
     private ?string $nom = null;
 
-    #[ORM\OneToMany(mappedBy: 'departement', targetEntity: Collaborateur::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'departement', targetEntity: Collaborateur::class, orphanRemoval: true ,)]
     private Collection $collaborateurs;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -103,4 +103,5 @@ class Departement
 
         return $this;
     }
+
 }

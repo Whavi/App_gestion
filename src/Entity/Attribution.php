@@ -17,11 +17,11 @@ class Attribution
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'attributions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Collaborateur $collaborateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'attributions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $byUser = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
