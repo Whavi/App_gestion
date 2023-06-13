@@ -23,10 +23,7 @@ class CollaborateurController extends AbstractController
     #[Route('/gestion/compte/collaborateur', name: 'user_gestion_collaborateur')]
     public function gestion_collaborateur(CollaborateurRepository $CollaborateurRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
-
-        $NameCollborateur = $CollaborateurRepository->findAllOrderedByInnerJoinDepartement();
         $data = $CollaborateurRepository->findAllOrderedByCollaborateurNumber();
-
         $posts = $paginatorInterface->paginate(
             $data,
             $request->query->getInt('page', 1),
@@ -48,13 +45,11 @@ class CollaborateurController extends AbstractController
                 
                 return $this->render('pages/user/collaborateur.html.twig', [ 
                     'form' => $form->createView(),
-                    'CollaborateurName' => $NameCollborateur,
                     'collaborateurs' => $posts,]);
                 }
 
         return $this->render('pages/user/collaborateur.html.twig', [
             'form' => $form->createView(),
-            'Collaborateurname' => $NameCollborateur,
             'collaborateurs' => $posts,
         ],
         );

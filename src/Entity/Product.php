@@ -40,6 +40,9 @@ class Product
         $this->createdAt = new \DateTime();
 
     }
+    public function __toString() {
+        return "Nom : ".$this->nom ." Catégorie : ".$this->category;
+    }
 
 
     public function getId(): ?int

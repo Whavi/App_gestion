@@ -3,6 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Attribution;
+use App\Entity\Collaborateur;
+use App\Entity\Product;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,6 +50,61 @@ class AttributionRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    public function findAllOrderedByInnerJoinProduit(): array
+    {
+        return $this->createQueryBuilder('a')
+         ->select('p.nom')
+         ->select('p.category')
+         ->innerJoin(Product::class, 'p', 'WITH', 'p.id = a.id')
+         ->getQuery()
+         ->getResult()
+        ;
+    }
+
+    public function findAllOrderedByInnerJoinByUser(): array
+    {
+        return $this->createQueryBuilder('a')
+         ->select('u.nom')
+         ->select('u.prenom')
+         ->innerJoin(User::class, 'u', 'WITH', 'u.id = a.id')
+         ->getQuery()
+         ->getResult()
+        ;
+    }
+
+    public function findAllOrderedByInnerJoinCollaborateur(): array
+    {
+        return $this->createQueryBuilder('a')
+         ->select('c.nom')
+         ->select('c.prenom')
+         ->innerJoin(Collaborateur::class, 'c', 'WITH', 'c.id = a.id')
+         ->getQuery()
+         ->getResult()
+        ;
+    }
+
+
+    // public function findAllOrderedByInnerJoinDepartement(): array
+    // {
+    //     return $this->createQueryBuilder('c')
+    //      ->select('d.nom')
+    //      ->innerJoin(Departement::class, 'd', 'WITH', 'd.id = c.id')
+    //      ->getQuery()
+    //      ->getResult()
+    //     ;
+    // }
+
+    // public function findAllOrderedByInnerJoinDepartement(): array
+    // {
+    //     return $this->createQueryBuilder('c')
+    //      ->select('d.nom')
+    //      ->innerJoin(Departement::class, 'd', 'WITH', 'd.id = c.id')
+    //      ->getQuery()
+    //      ->getResult()
+    //     ;
+    // }
+ 
 
 //    /**
 //     * @return Attribution[] Returns an array of Attribution objects

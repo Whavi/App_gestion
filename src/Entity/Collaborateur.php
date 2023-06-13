@@ -36,6 +36,11 @@ class Collaborateur
         $this->attributions = new ArrayCollection();
     }
 
+    public function __toString() {
+        return "Nom : ".$this->nom . "\n " ." Prénom : ".$this->prenom;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
