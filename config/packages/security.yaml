@@ -11,6 +11,10 @@ security:
                 class: App\Entity\User
                 property: email
         # used to reload user from session & other features (e.g. switch_user)
+        # used to reload user from session & other features (e.g. switch_user)
+        # used to reload user from session & other features (e.g. switch_user)
+        # used to reload user from session & other features (e.g. switch_user)
+        # used to reload user from session & other features (e.g. switch_user)
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -18,9 +22,12 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            custom_authenticator: App\Security\SocialConnectAuthenticator
+            form_login:
+                login_path: security.login
+                check_path: security.login
             logout:
                 path: security.logout
+
         secured_area:
             form_login:    
                 enable_csrf: true

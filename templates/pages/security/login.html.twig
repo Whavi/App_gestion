@@ -9,7 +9,7 @@
 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
 
-<form  method="post">
+<form method="post">
 	<div class="form-group">
 		<label for="username" class="form-label mt-4">Adresse email</label>
 		<input type="email" class="form-control" id="username" name="_username" placeholder="exemple@secours-islamique.org" value="{{ last_username }}">
@@ -20,6 +20,8 @@
 		<input type="password" class="form-control" id="password" name="_password" placeholder="********">
 	</div>
 	<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+	<input type="hidden" name="_target_path" value="/gestion">
+	
 	<button type="submit" class="btn btn-primary mt-4"> Se connecter </button>
 </form>
 

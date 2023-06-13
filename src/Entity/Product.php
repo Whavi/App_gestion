@@ -41,7 +41,7 @@ class Product
 
     }
     public function __toString() {
-        return "Nom : ".$this->nom ." Catégorie : ".$this->category;
+        return "Nom : ".$this->nom . " | "." Catégorie : ".$this->category;
     }
 
 
