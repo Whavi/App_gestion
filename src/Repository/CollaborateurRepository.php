@@ -57,6 +57,15 @@ class CollaborateurRepository extends ServiceEntityRepository
            ->getResult()
        ;
    }
+   public function findAllOrderedByInnerJoinDepartement(): array
+   {
+       return $this->createQueryBuilder('c')
+        ->select('d.nom')
+        ->innerJoin(Departement::class, 'd', 'WITH', 'd.id = c.id')
+        ->getQuery()
+        ->getResult()
+       ;
+   }
 
    public function findAllOrderedByNameCollaborateur(SearchDataCollaborateur $searchDataCollaborateur)
    {

@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Form\SearchTypeAttributionType;
 use App\Repository\AttributionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use App\Model\SearchDataAttribution;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,12 +27,12 @@ class AttributionController extends AbstractController
             6
         );
 
-    //     $searchDataDepartement = new SearchDataDepartement();
-    //     $form = $this->createForm(SearchTypeDepartement::class, $searchDataDepartement);
+    //     $searchDataAttribution = new SearchDataAttribution();
+    //     $form = $this->createForm(SearchTypeAttributionType::class, $searchDataAttribution);
 
     //     $form->handleRequest($request);
     //         if($form->isSubmitted() && $form->isValid()){
-    //             $data = $attributionRepository->findAllOrderedByNameDepartement($searchDataDepartement);
+    //             $data = $attributionRepository->findAllOrderedByNameDepartement($searchDataAttribution);
             
     //             $posts = $paginatorInterface->paginate(
     //                 $data,

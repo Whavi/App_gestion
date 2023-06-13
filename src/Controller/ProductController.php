@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Form\EditFormProductType;
 use App\Form\SearchTypeProduct;
+use App\Form\UserFormProductType;
 use App\Model\SearchDataProduct;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;

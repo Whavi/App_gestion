@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Collaborateur;
 use App\Entity\Departement;
+use App\Form\EditFormCollaborateurType;
 use App\Form\SearchTypeCollaborateur;
+use App\Form\UserFormCollaborateurType;
 use App\Model\SearchDataCollaborateur;
 use App\Repository\CollaborateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,7 +24,7 @@ class CollaborateurController extends AbstractController
     public function gestion_collaborateur(CollaborateurRepository $CollaborateurRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
 
-        // $NameCollborateur = $CollaborateurRepository->findAllOrderedByInnerJoinCollaborateurName();
+        $NameCollborateur = $CollaborateurRepository->findAllOrderedByInnerJoinDepartement();
         $data = $CollaborateurRepository->findAllOrderedByCollaborateurNumber();
 
         $posts = $paginatorInterface->paginate(
@@ -46,13 +48,13 @@ class CollaborateurController extends AbstractController
                 
                 return $this->render('pages/user/collaborateur.html.twig', [ 
                     'form' => $form->createView(),
-                    // 'Collaborateur_name' => $NameCollborateur,
+                    'CollaborateurName' => $NameCollborateur,
                     'collaborateurs' => $posts,]);
                 }
 
         return $this->render('pages/user/collaborateur.html.twig', [
             'form' => $form->createView(),
-            // 'Collaborateur_name' => $NameCollborateur,
+            'Collaborateurname' => $NameCollborateur,
             'collaborateurs' => $posts,
         ],
         );

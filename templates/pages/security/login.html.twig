@@ -5,10 +5,11 @@
 {% block body %}
 <div class="container">
 	<h1 class="mt-4">Formulaire de connnexion</h1>
-<form method="post">
 {% if error %}
 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
+
+<form  method="post">
 	<div class="form-group">
 		<label for="username" class="form-label mt-4">Adresse email</label>
 		<input type="email" class="form-control" id="username" name="_username" placeholder="exemple@secours-islamique.org" value="{{ last_username }}">
@@ -21,6 +22,8 @@
 	<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 	<button type="submit" class="btn btn-primary mt-4"> Se connecter </button>
 </form>
-</div>
+
 {% endblock %}
+
+
 

@@ -41,6 +41,7 @@ class Product
 
     }
 
+
     public function getId(): ?int
     {
         return $this->id;
