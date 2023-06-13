@@ -39,6 +39,15 @@ class AttributionRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllOrderedByAttributionDateTime(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->orderBy('a.dateAttribution', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return Attribution[] Returns an array of Attribution objects
 //     */
