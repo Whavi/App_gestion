@@ -35,7 +35,6 @@
             <th>Prénom</th>
             <th>Email</th>
             <th>Mot de passe</th>
-            <th>Role</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -46,7 +45,6 @@
       <td>{{user.prenom}}</td> 
       <td>{{user.email}}</td> 
       <td>{{user.password}}</td> 
-      <td>EN COURS</td> 
       <td><a type="submit" href="{{path('user_gestion_utilisateur_delete', {'id': user.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
         <a type="submit" href="{{path('user_gestion_utilisateur_edit', {'id': user.id }) }}" class="btn btn-outline-primary btn-sm w-auto "> EDIT </a></td> 
     </tr>
