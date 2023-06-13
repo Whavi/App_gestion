@@ -250,13 +250,16 @@ class UserController extends AbstractController
         $form = $this->createForm(UserFormCollaborateurType::class);
         $form->handleRequest($request);
 
+        $departement = new Departement();
+
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $collaborateur = new Collaborateur();
             $collaborateur->setNom($data->getNom());
             $collaborateur->setPrenom($data->getPrenom());
             $collaborateur->setEmail($data->getEmail());
-            $collaborateur->setDepartement($data->getDepartement());
+            $collaborateur->setDepartement($data->getDepartement($departement));
+    
             $manager->persist($collaborateur);
             $manager->flush();
             return $this->redirectToRoute('user_gestion_departement');

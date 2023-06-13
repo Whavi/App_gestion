@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Collaborateur;
 use App\Entity\Departement;
+use App\Repository\DepartementRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -16,6 +18,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class UserFormCollaborateurType extends AbstractType
 {
+
+    public function __construct(private DepartementRepository $departementRepository)
+    {
+        $this->departementRepository = $departementRepository;
+    }
+
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -70,18 +79,25 @@ class UserFormCollaborateurType extends AbstractType
             ] 
             ])
 
-            ->add('departement', ChoiceType::class, [
-            'mapped' => false,
+            ->add('departement', EntityType::class, [
+            'class' => Departement::class,
             'attr' => [
                 'class' => 'form-control',
             ],
             'label_attr' => [
                 'class' => 'form_label mt-4'
             ],
-            'choices' => [
-                'Informatique' => '1',
-            ]
-            ,
+            
+            'query_builder' => function (DepartementRepository $dr) {
+                return $dr->createQueryBuilder('d')
+                    ->orderBy('d.nom', 'ASC');
+            },
+            'choice_value' => function (?Departement $entity) {
+                return $entity ? $entity->getId() : '';
+            },
+
+            'choice_label' => 'nom',
+
             'placeholder' => 'Choisissez un groupe',
             'required' => true,    
                 
@@ -92,7 +108,7 @@ class UserFormCollaborateurType extends AbstractType
             'attr' => [
                 'class' => 'btn btn-primary mt-4'
                 ]
-        ])        
+            ])        
         ;
     }
 
