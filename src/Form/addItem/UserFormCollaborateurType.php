@@ -19,12 +19,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class UserFormCollaborateurType extends AbstractType
 {
 
-    public function __construct(private DepartementRepository $departementRepository)
-    {
-        $this->departementRepository = $departementRepository;
-    }
-
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
