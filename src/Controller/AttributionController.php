@@ -105,8 +105,6 @@ class AttributionController extends AbstractController
         $form = $this->createForm(UserFormAttributionType::class);
         $form->handleRequest($request);
 
-        $product = new Product();
-
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $attribution = new Attribution();
