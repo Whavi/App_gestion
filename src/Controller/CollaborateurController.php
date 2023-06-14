@@ -47,7 +47,6 @@ class CollaborateurController extends AbstractController
                 
                 return $this->render('pages/user/collaborateur.html.twig', [ 
                     'form' => $form->createView(),
-                    
                     'collaborateurs' => $posts,]);
                 }
 
@@ -119,7 +118,7 @@ class CollaborateurController extends AbstractController
     
             $manager->persist($collaborateur);
             $manager->flush();
-            return $this->redirectToRoute('user_gestion_departement');
+            return $this->redirectToRoute('user_gestion_collaborateur');
     }
     return $this->render('pages/user/newItem/Collaborateur.html.twig', [
         'form' => $form->createView()
