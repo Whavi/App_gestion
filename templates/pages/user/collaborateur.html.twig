@@ -2,12 +2,11 @@
 {#{% block title %} Gestion de fourniture - SIF {% endblock %}#}
 
 
-
 {% block body %}
 <h2 class = "text-center mt-4 "> Gestion des collaborateurs </h2>
 
 {% for message in app.flashes('success') %}
-  <div class="alert alert-success">{{message}}</div>
+<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3" >{{message}}</div>
 {%endfor%} 
 
   <div class = "text-center">
@@ -48,7 +47,7 @@
 
         <td>{{collaborateur.departement}}</td>
         <td><a type="submit" href=" {{path('user_gestion_collaborateur_delete', {'id': collaborateur.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
-          <a type="submit"  href=" {{path('user_gestion_collaborateur_edit', {'id': collaborateur.id }) }}"" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a></td> 
+          <a type="submit"  href=" {{path('user_gestion_collaborateur_edit', {'id': collaborateur.id }) }}"" class="btn btn-outline-primary btn-sm w-auto mt-2"> EDIT </a></td> 
     
     </tr>
     {% endfor %}

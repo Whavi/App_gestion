@@ -43,7 +43,7 @@ class ProductController extends AbstractController
                $posts = $paginatorInterface->paginate(
                    $data,
                    $request->query->getInt('page', 1),
-                   6);
+                   15);
                
                return $this->render('pages/user/home.html.twig', [ 
                    'form' => $form->createView(),
@@ -74,7 +74,7 @@ class ProductController extends AbstractController
    }
 
    #[Route('/gestion/edit/{id}', name: 'user_gestion_edit')]
-   #[IsGranted('ROLE_ADMIN')]
+//    #[IsGranted('ROLE_ADMIN')]
    public function gestionProductEdit($id, ProductRepository $productRepository, Request $request, EntityManagerInterface $manager) : Response {
       $product = $productRepository->find($id);
 

@@ -8,7 +8,7 @@
 
 
 {% for message in app.flashes('success') %}
-  <div class="alert alert-success">{{message}}</div>
+<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3" >{{message}}</div>
 {%endfor%} 
 
 
@@ -40,7 +40,7 @@
       <td>{{departement.id}}</td>
       <td>{{departement.nom}}</td> 
       <td><a type="submit" href="{{path('user_gestion_departement_delete', {'id': departement.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
-        <a type="submit" href="{{path('user_gestion_departement_edit', {'id': departement.id }) }}" class="btn btn-outline-primary btn-sm w-auto "> EDIT </a></td> 
+        <a type="submit" href="{{path('user_gestion_departement_edit', {'id': departement.id }) }}" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a></td> 
     </tr>
     {% endfor %}
     </table>
