@@ -115,6 +115,11 @@ class CollaborateurController extends AbstractController
             $collaborateur->setPrenom($data->getPrenom());
             $collaborateur->setEmail($data->getEmail());
             $collaborateur->setDepartement($data->getDepartement($departement));
+
+            $this->addFlash(
+                'success',
+                'Votre collaborateur a bien été crée.'
+            );
     
             $manager->persist($collaborateur);
             $manager->flush();

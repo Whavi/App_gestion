@@ -118,6 +118,12 @@ class ProductController extends AbstractController
            $product->setCategory($data->getCategory());
            $product->setUpdatedAt($data->getCreatedAt());
 
+
+           $this->addFlash(
+            'success',
+            'Votre produit a bien été crée.'
+        );
+
            $em->persist($product);
            $em->flush();
 

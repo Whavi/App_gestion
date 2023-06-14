@@ -125,7 +125,10 @@ class UserController extends AbstractController
                     $form->get('password')->getData()
                 ));
 
-            
+                $this->addFlash(
+                    'success',
+                    'Votre compte a bien été crée.'
+                );
             $em->persist($userItem);
             $em->flush();
             return $this->redirectToRoute('user_gestion_utilisateur');

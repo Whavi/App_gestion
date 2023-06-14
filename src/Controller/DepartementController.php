@@ -109,6 +109,12 @@ class DepartementController extends AbstractController
             $departement->setNom($data->getNom());
             $departement->setCreateAt(new \DateTime());
             $departement->setUpdateAt(new \DateTime());
+
+            $this->addFlash(
+                'success',
+                'Votre département a bien été crée.'
+            );
+
             $em->persist($departement);
             $em->flush();
             return $this->redirectToRoute('user_gestion_departement');

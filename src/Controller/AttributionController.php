@@ -114,6 +114,11 @@ class AttributionController extends AbstractController
             $attribution->setDateRestitution($data->getDateRestitution());
             $attribution->setCollaborateur($data->getCollaborateur());
             $attribution->setProduct($data->getProduct());
+            $this->addFlash(
+                'success',
+                'Votre attribution a bien été crée.'
+            );
+
             $em->persist($attribution);
             $em->flush();
             return $this->redirectToRoute('user_gestion_attribution');

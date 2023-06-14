@@ -66,6 +66,7 @@ class UserFormItemType extends AbstractType
                 'label_attr' => [
                     'class' => 'form_label mt-4'
                 ],
+                'required' => true,
                 'constraints' => [
                 new Assert\NotBlank(),
                 new Assert\Email(),
@@ -80,6 +81,7 @@ class UserFormItemType extends AbstractType
                     'attr' => [
                         'class' => 'form-control'
                     ],
+                    'invalid_message' => 'Les mots de passe ne correspondent pas',
                     'label' => "Mot de passe",
                     'label_attr' => [
                         'class' => 'form_label mt-4 ',
@@ -96,6 +98,7 @@ class UserFormItemType extends AbstractType
                     'invalid_message' => 'Les mots de passe ne correspondent pas',
                     'required' => true,
             ]])
+
             ->add('Submit', SubmitType::class,[
                 'attr' => [
                     'class' => 'btn btn-primary mt-4'
