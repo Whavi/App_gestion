@@ -42,8 +42,6 @@
         {% for collaborateur in collaborateur.attributions %}
             {% if collaborateur.id != ""%}
               {{ collaborateur.id }}
-            {%else%}
-              Aucune Attribution
             {% endif %}
         {% endfor %}
         </td>

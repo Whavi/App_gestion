@@ -8,6 +8,6 @@ class SearchDataAttribution
     public $page = 1;
 
     /** @var string */
-    public string $nom = ""; 
+    public string $id = ""; 
 
 }

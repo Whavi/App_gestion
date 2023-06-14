@@ -8,6 +8,7 @@ use App\Entity\Product;
 use App\Entity\User;
 use App\Model\SearchDataAttribution;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Select;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -67,11 +68,10 @@ class AttributionRepository extends ServiceEntityRepository
    {
     $collaborateurRepository = $this->createQueryBuilder('a');
 
-    if(!empty(($searchDataAttribution->nom))){
+    if(!empty(($searchDataAttribution->id))){
         $collaborateurRepository = $collaborateurRepository
-        ->innerJoin(Collaborateur::class, 'c', 'WITH', 'c.id = a.id')
-        ->andWhere('c.id LIKE :id' )
-        ->setParameter('id', "%$searchDataAttribution->nom%")
+        ->andWhere('a.id LIKE :id' )
+        ->setParameter('id', "%$searchDataAttribution->id%")
         ->orderBy('a.id', 'ASC');
 
     }else{
