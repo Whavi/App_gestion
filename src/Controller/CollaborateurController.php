@@ -43,7 +43,7 @@ class CollaborateurController extends AbstractController
                 $posts = $paginatorInterface->paginate(
                     $data,
                     $request->query->getInt('page', 1),
-                    6);
+                    15);
                 
                 return $this->render('pages/user/collaborateur.html.twig', [ 
                     'form' => $form->createView(),

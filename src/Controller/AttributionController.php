@@ -41,7 +41,7 @@ class AttributionController extends AbstractController
                 $posts = $paginatorInterface->paginate(
                     $data,
                     $request->query->getInt('page', 1),
-                    6);
+                    15);
 
         return $this->render('pages/user/attribution.html.twig', [
             'form' => $form->createView(),
