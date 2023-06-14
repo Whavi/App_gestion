@@ -7,7 +7,6 @@ use App\Model\SearchDataCollaborateur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 
@@ -21,9 +20,7 @@ class SearchTypeCollaborateur extends AbstractType
                 'attr' => [
                     'placeholder' => 'Recherche par nom ...',
                 ],
-                'data_class' => SearchDataCollaborateur::class,
-                'method' => 'GET',
-                'csrf_protection' => false,
+                
                 'empty_data' => '',
                 'required' => false
             ])
@@ -33,6 +30,9 @@ class SearchTypeCollaborateur extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'data_class' => SearchDataCollaborateur::class,
+            'method' => 'GET',
+            'csrf_protection' => false,
         ]);
     }
 }

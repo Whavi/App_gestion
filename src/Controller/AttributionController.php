@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Attribution;
+use App\Entity\Collaborateur;
+use App\Entity\Product;
 use App\Form\EditFormAttributionType;
 use App\Form\SearchTypeAttributionType;
 use App\Form\UserFormAttributionType;
@@ -22,7 +24,7 @@ class AttributionController extends AbstractController
     #[Route('/gestion/attribution', name: 'user_gestion_attribution')]
     public function gestionAttribution( AttributionRepository $attributionRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
-        $attribution = $attributionRepository->findAllOrderedByAttributionDateTime();
+        $attribution = $attributionRepository->findAllOrderedByAttributionId();
 
         $posts = $paginatorInterface->paginate(
             $attribution,
@@ -30,27 +32,25 @@ class AttributionController extends AbstractController
             6
         );
 
-        // $searchDataAttribution = new SearchDataAttribution();
-        // $form = $this->createForm(SearchTypeAttributionType::class, $searchDataAttribution);
+        $searchDataAttribution = new SearchDataAttribution();
+        $form = $this->createForm(SearchTypeAttributionType::class, $searchDataAttribution);
 
-        // $form->handleRequest($request);
-        //     if($form->isSubmitted() && $form->isValid()){
-        //         $data = $attributionRepository->findAllOrderedByNameAttribution($searchDataAttribution);
-            
-        //         $posts = $paginatorInterface->paginate(
-        //             $data,
-        //             $request->query->getInt('page', 1),
-        //             6);
+        $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                $data = $attributionRepository->findAllOrderedByNameAttribution($searchDataAttribution);
+                $posts = $paginatorInterface->paginate(
+                    $data,
+                    $request->query->getInt('page', 1),
+                    6);
 
-
-        // return $this->render('pages/user/attribution.html.twig', [
-        //     'form' => $form->createView(),
-        //     'attributions' => $posts,
-    //     ],
-    //     );
-    // }
+        return $this->render('pages/user/attribution.html.twig', [
+            'form' => $form->createView(),
+            'attributions' => $posts,
+        ],
+        );
+    }
     return $this->render('pages/user/attribution.html.twig', [
-        // 'form' => $form->createView(),
+        'form' => $form->createView(),
         'attributions' => $posts,
     ]);
 }
@@ -105,14 +105,17 @@ class AttributionController extends AbstractController
         $form = $this->createForm(UserFormAttributionType::class);
         $form->handleRequest($request);
 
+        $product = new Product();
+
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $attribution = new Attribution();
             $attribution->setCreatedAt(new \DateTime());
             $attribution->setUpdatedAt(new \DateTime());
-            $attribution->setCollaborateur($data->getCollaborateur());
             $attribution->setDateAttribution($data->getDateAttribution());
             $attribution->setDateRestitution($data->getDateRestitution());
+            $attribution->setCollaborateur($data->getCollaborateur());
+            $attribution->setProduct($data->getProduct());
             $em->persist($attribution);
             $em->flush();
             return $this->redirectToRoute('user_gestion_attribution');

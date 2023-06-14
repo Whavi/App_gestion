@@ -43,10 +43,10 @@ class AttributionRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllOrderedByAttributionDateTime(): array
+    public function findAllOrderedByAttributionId(): array
     {
         return $this->createQueryBuilder('a')
-            ->orderBy('a.dateAttribution', 'ASC')
+            ->orderBy('a.id', 'DESC')
             ->getQuery()
             ->getResult()
         ;
@@ -66,16 +66,14 @@ class AttributionRepository extends ServiceEntityRepository
     public function findAllOrderedByNameAttribution(SearchDataAttribution $searchDataAttribution)
    {
 
-    $collaborateurRepository = $this->createQueryBuilder('a');
+    $collaborateurRepository = $this->createQueryBuilder('a')
+    ->innerJoin(Collaborateur::class, 'c', 'WITH', 'c.id = a.id');
     if(!empty(($searchDataAttribution->nom))){
         $collaborateurRepository = $collaborateurRepository
-        ->andWhere('a.nom LIKE :nom' )
+        ->andWhere('c.nom LIKE :nom' )
         ->setParameter('nom', "%$searchDataAttribution->nom%")
         ->orderBy('a.id', 'ASC');
     }
-    $collaborateurRepository = $collaborateurRepository
-    ->select('c.nom')
-    ->innerJoin(Collaborateur::class, 'c', 'WITH', 'c.id = a.id');
      //dd($productRepository->getQuery()->getDQL());
 
     return $collaborateurRepository->getQuery()
