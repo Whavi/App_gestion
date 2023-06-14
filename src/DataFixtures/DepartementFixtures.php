@@ -10,6 +10,6 @@ class DepartementFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        DepartementFactory::createMany(5);
+        DepartementFactory::createMany(2);
     }
 }

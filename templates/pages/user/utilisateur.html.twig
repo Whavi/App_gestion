@@ -44,7 +44,7 @@
       <td>{{user.nom}}</td> 
       <td>{{user.prenom}}</td> 
       <td>{{user.email}}</td> 
-      <td>{{user.password}}</td> 
+      <td>{{user.plainpassword}}</td> 
       <td><a type="submit" href="{{path('user_gestion_utilisateur_delete', {'id': user.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
         <a type="submit" href="{{path('user_gestion_utilisateur_edit', {'id': user.id }) }}" class="btn btn-outline-primary btn-sm w-auto "> EDIT </a></td> 
     </tr>

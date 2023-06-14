@@ -58,7 +58,7 @@ class ProductController extends AbstractController
        }
    
    #[Route('/gestion/delete/{id}', name: 'user_gestion_delete')]
-   #[IsGranted('ROLE_ADMIN')]
+//    #[IsGranted('ROLE_ADMIN')]
    public function gestionProductDelete($id, ProductRepository $productRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
        $product = $productRepository->find($id);
        if ($product === null) {
@@ -104,7 +104,7 @@ class ProductController extends AbstractController
 
 
    #[Route('/gestion/addItem', name: 'user_gestion_newItemProduct')]
-   #[IsGranted('ROLE_ADMIN')]
+//    #[IsGranted('ROLE_ADMIN')]
    public function add_item(EntityManagerInterface $em, Request $request) : Response {
 
        $form = $this->createForm(UserFormProductType::class);

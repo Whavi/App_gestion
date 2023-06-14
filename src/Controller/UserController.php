@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
@@ -72,7 +73,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/gestion/compte/utilisateur/edit/{id}', name: 'user_gestion_utilisateur_edit')]
-    public function gestionUserEdit($id, UserRepository $userRepository, Request $request, EntityManagerInterface $manager) : Response {
+    public function gestionUserEdit($id, UserRepository $userRepository, Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $userPasswordHasher) : Response {
        $utilisateur = $userRepository->find($id);
 
         $form = $this->createForm(EditFormUserType::class, $utilisateur);
@@ -80,6 +81,12 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
             $user = $form->getData();
+            $user->setPlainpassword($user->getPassword());
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                ));
 
             $this->addFlash(
                 'success',
@@ -99,7 +106,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/gestion/compte/utilisateur/addUser', name: 'user_gestion_newItemUser')]
-    public function addItemUser(EntityManagerInterface $em, Request $request) : Response {
+    public function addItemUser(EntityManagerInterface $em, Request $request, UserPasswordHasherInterface $userPasswordHasher) : Response {
         
         $form = $this->createForm(UserFormItemType::class);
 
@@ -111,7 +118,13 @@ class UserController extends AbstractController
             $userItem->setPrenom($data->getPrenom());
             $userItem->setRoles($data->getRoles());
             $userItem->setEmail($data->getEmail());
-            $userItem->setPassword($data->getPassword());
+            $userItem->setPlainpassword($data->getPassword());
+            $userItem->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $data,
+                    $form->get('password')->getData()
+                ));
+
             
             $em->persist($userItem);
             $em->flush();

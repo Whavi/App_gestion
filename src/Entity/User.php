@@ -40,6 +40,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'byUser', targetEntity: Attribution::class, orphanRemoval: true)]
     private Collection $attributions;
 
+    #[ORM\Column(length: 255)]
+    private ?string $plainpassword = null;
+
     public function __construct()
     {
         $this->attributions = new ArrayCollection();
@@ -168,6 +171,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $attribution->setByUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPlainpassword(): ?string
+    {
+        return $this->plainpassword;
+    }
+
+    public function setPlainpassword(string $plainpassword): self
+    {
+        $this->plainpassword = $plainpassword;
 
         return $this;
     }

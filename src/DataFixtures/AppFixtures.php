@@ -14,7 +14,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         // Users
-        UserFactory::createMany(10);
+        UserFactory::createMany(5);
         // Admin 
         $users = [];
 

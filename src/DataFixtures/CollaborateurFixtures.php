@@ -10,6 +10,6 @@ class CollaborateurFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        CollaborateurFactory::createMany(20);
+        CollaborateurFactory::createMany(15);
     }
 }
