@@ -9,6 +9,5 @@ class SearchDataAttribution
 
     /** @var string */
     public string $nom = ""; 
-    public string $prenom ="";
 
 }

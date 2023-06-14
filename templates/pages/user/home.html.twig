@@ -19,7 +19,9 @@
 
     <div class="d-flex flex-row mx-auto col-9 ">
       <div class="ml-auto">
+       
     <a href="{{path ("user_gestion_newItemProduct")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Create new product</a>
+     
   </div>
 </div>
 
@@ -29,7 +31,7 @@
             <th class ="w-auto">Identifiant</th>
             <th class ="w-auto">Nom</th>
             <th class ="w-auto">Catégorie</th>
-            <th class ="w-25">Action</th>
+            <th class ="w-auto">Action</th>
           </tr>
         </thead>
     {% for liste in listes %}
@@ -37,8 +39,10 @@
       <td>{{liste.identifiant}}</td> 
       <td>{{liste.nom}}</td> 
       <td>{{liste.category}}</td> 
-      <td><a type="submit" href="{{path('user_gestion_delete', {'id': liste.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
-        <a type="submit" href="{{path('user_gestion_edit', {'id': liste.id }) }}" class="btn btn-outline-primary btn-sm w-auto  "> EDIT </a></td> 
+      <td>
+        <a type="submit" href="{{path('user_gestion_delete', {'id': liste.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
+        <a type="submit" href="{{path('user_gestion_edit', {'id': liste.id }) }}" class="btn btn-outline-primary btn-sm w-auto  "> EDIT </a>
+      </td> 
     </tr>
     {% endfor %}
     </table>

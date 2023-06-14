@@ -16,9 +16,9 @@ class SearchTypeAttributionType extends AbstractType
         $builder
         
         
-        ->add('nom', SearchType::class, [
+        ->add('nom', TextType::class, [
             'attr' => [
-                'placeholder' => 'Recherche par nom ...',
+                'placeholder' => 'Recherche par id ...',
             ],
             
             'empty_data' => '',

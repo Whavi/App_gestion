@@ -66,14 +66,16 @@ class AttributionRepository extends ServiceEntityRepository
     public function findAllOrderedByNameAttribution(SearchDataAttribution $searchDataAttribution)
    {
     $collaborateurRepository = $this->createQueryBuilder('a');
-    if(!empty(($searchDataAttribution->nom || $searchDataAttribution->prenom))){
+
+    if(!empty(($searchDataAttribution->nom))){
         $collaborateurRepository = $collaborateurRepository
         ->innerJoin(Collaborateur::class, 'c', 'WITH', 'c.id = a.id')
-        ->andWhere('c.nom LIKE :nom OR c.prenom LIKE :prenom' )
-        ->setParameter('nom', "%$searchDataAttribution->nom%")
-        ->setParameter('prenom', "%$searchDataAttribution->prenom%")
+        ->andWhere('c.id LIKE :id' )
+        ->setParameter('id', "%$searchDataAttribution->nom%")
         ->orderBy('a.id', 'ASC');
+
     }else{
+        
         $collaborateurRepository = $collaborateurRepository
         ->orderBy('a.id', 'DESC');
     }

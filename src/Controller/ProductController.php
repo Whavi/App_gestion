@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\User;
 use App\Form\EditFormProductType;
 use App\Form\SearchTypeProduct;
 use App\Form\UserFormProductType;
@@ -15,14 +16,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ProductController extends AbstractController
 {
     #[Route('/gestion', name: 'user_gestion')]
-    ##[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_USER')]
     public function gestion(ProductRepository $productRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
        $data = $productRepository->findAllOrderedByProductIdentifiant();
+       $role = new User();
 
        $posts = $paginatorInterface->paginate(
            $data,
@@ -44,15 +47,18 @@ class ProductController extends AbstractController
                
                return $this->render('pages/user/home.html.twig', [ 
                    'form' => $form->createView(),
+                   'role' => $role,
                    'listes' => $posts,]);
                }
                
        return $this->render('pages/user/home.html.twig', [ 
            'form' => $form->createView(),
+           'role' => $role,
            'listes' => $posts,]);
        }
    
    #[Route('/gestion/delete/{id}', name: 'user_gestion_delete')]
+   #[IsGranted('ROLE_ADMIN')]
    public function gestionProductDelete($id, ProductRepository $productRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
        $product = $productRepository->find($id);
        if ($product === null) {
@@ -68,6 +74,7 @@ class ProductController extends AbstractController
    }
 
    #[Route('/gestion/edit/{id}', name: 'user_gestion_edit')]
+   #[IsGranted('ROLE_ADMIN')]
    public function gestionProductEdit($id, ProductRepository $productRepository, Request $request, EntityManagerInterface $manager) : Response {
       $product = $productRepository->find($id);
 
@@ -97,6 +104,7 @@ class ProductController extends AbstractController
 
 
    #[Route('/gestion/addItem', name: 'user_gestion_newItemProduct')]
+   #[IsGranted('ROLE_ADMIN')]
    public function add_item(EntityManagerInterface $em, Request $request) : Response {
 
        $form = $this->createForm(UserFormProductType::class);
