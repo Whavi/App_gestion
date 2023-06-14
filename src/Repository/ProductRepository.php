@@ -66,8 +66,6 @@ class ProductRepository extends ServiceEntityRepository
 
         ->orderBy('p.identifiant', 'ASC');
     }
-    //  dd($productRepository->getQuery()->getDQL());
-
             return $productRepository->getQuery()->getResult();;
 
    }

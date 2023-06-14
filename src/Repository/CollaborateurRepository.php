@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+
 use App\Entity\Collaborateur;
 use App\Entity\Departement;
 use App\Model\SearchDataCollaborateur;
@@ -81,8 +82,6 @@ class CollaborateurRepository extends ServiceEntityRepository
         ->setParameter('id', "%($searchDataCollaborateur->id)%")
         ->orderBy('c.id', 'ASC');
     }
-     //dd($productRepository->getQuery()->getDQL());
-
             return $collaborateurRepository->getQuery()
             ->getResult();;
 

@@ -66,8 +66,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         ->orderBy('u.id', 'ASC');
     }
-    //  dd($productRepository->getQuery()->getDQL());
-
             return $productRepository->getQuery()->getResult();;
 
    }

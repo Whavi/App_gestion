@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Attribution;
 use App\Entity\Collaborateur;
 use App\Entity\Departement;
 use App\Form\EditFormCollaborateurType;
@@ -23,6 +24,7 @@ class CollaborateurController extends AbstractController
     #[Route('/gestion/compte/collaborateur', name: 'user_gestion_collaborateur')]
     public function gestion_collaborateur(CollaborateurRepository $CollaborateurRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
+        $attribution = new Attribution();
         $data = $CollaborateurRepository->findAllOrderedByCollaborateurNumber();
         $posts = $paginatorInterface->paginate(
             $data,
@@ -45,11 +47,13 @@ class CollaborateurController extends AbstractController
                 
                 return $this->render('pages/user/collaborateur.html.twig', [ 
                     'form' => $form->createView(),
+                    'attribution' => $attribution,
                     'collaborateurs' => $posts,]);
                 }
 
         return $this->render('pages/user/collaborateur.html.twig', [
             'form' => $form->createView(),
+            'attribution' => $attribution,
             'collaborateurs' => $posts,
         ],
         );

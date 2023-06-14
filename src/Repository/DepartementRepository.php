@@ -71,8 +71,6 @@ class DepartementRepository extends ServiceEntityRepository
 
         ->orderBy('d.id', 'ASC');
     }
-    //  dd($productRepository->getQuery()->getDQL());
-
             return $repositoryDepartement->getQuery()->getResult();;
 
    }

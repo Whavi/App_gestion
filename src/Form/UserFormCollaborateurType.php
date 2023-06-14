@@ -98,7 +98,7 @@ class UserFormCollaborateurType extends AbstractType
 
             'choice_label' => 'nom',
 
-            'placeholder' => 'Choisissez un groupe',
+            'placeholder' => 'Choisissez un département',
             'required' => true,    
                 
                 ])
