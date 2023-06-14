@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-
+use App\Entity\Attribution;
 use App\Entity\Collaborateur;
 use App\Entity\Departement;
 use App\Model\SearchDataCollaborateur;
@@ -86,6 +86,17 @@ class CollaborateurRepository extends ServiceEntityRepository
             ->getResult();;
 
    }
+
+   public function findAllOrderedByInnerJoinAttributionId(): array
+   {
+       return $this->createQueryBuilder('c')
+        ->select('a.id')
+        ->innerJoin(Attribution::class, 'a', 'WITH', 'a.id = c.id')
+        ->getQuery()
+        ->getResult()
+       ;
+   }
+
 
     
 
