@@ -1,34 +1,54 @@
-*{
+* {
+    font-family: Verdana, Arial, sans-serif;
     padding: 0;
     margin:0;
 }
-
-caption, tbody, td{
+caption, td, thead {
     padding: 5px;
-    border:2px solid black;
-    }
+    
+}
 
-.tableau-1, .tableau-2, .tableau-3{
-display: flex;
-justify-content: center;
-padding-top: 20px;
+td{
+    border:2px solid black;
 }
 
 .regle{
     padding: 10px;
     margin: 20px;
 }
+.regle p{
+    padding: 5px;
+
+}
+
 .titleRegle{
     padding-bottom: 10px;
     margin: 20px;
 }
 
-
 table{
-    width:80%;
+    width:95%;
     padding-left: 15px;
     margin-left: 15px;
     padding-right: 15px;
     margin-right: 15px;
+    padding: 5px;
+    border:2px solid black;
+}
 
+.vide-tableau1 {
+    background-color: white;
+    font-weight:bold;
+    table-layout: auto;
+}
+
+.gras-tableau{
+    font-weight:bold;
+}
+.vide-tableau3 {
+    border-style:none;
+    background-color: white;
+    font-weight:bold;
+    table-layout: auto;
+    width: 110px;
 }

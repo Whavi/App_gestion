@@ -84,6 +84,7 @@ class AttributionRepository extends ServiceEntityRepository
 
    }
 
+
     public function findAllOrderedByInnerJoinCollaborateur(): array
     {
         return $this->createQueryBuilder('a')
@@ -94,6 +95,18 @@ class AttributionRepository extends ServiceEntityRepository
          ->getResult()
         ;
     }
+
+    public function findAllOrderedByInnerJoinNameContent($id): array
+   {
+        return $this->createQueryBuilder('a')
+        ->select('c.nom, c.prenom')
+        ->innerJoin(Collaborateur::class, 'c', 'WITH', 'a.collaborateur = c.id')
+        ->where('a.id = :id')
+        ->setParameter('id', $id)
+        ->getQuery()
+        ->getResult()
+   ;
+   }
 
 
     // public function findAllOrderedByInnerJoinDepartement(): array

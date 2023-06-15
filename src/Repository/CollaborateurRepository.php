@@ -68,6 +68,20 @@ class CollaborateurRepository extends ServiceEntityRepository
        ;
    }
 
+
+// SELECT c.nom, c.prenom FROM attribution AS a INNER JOIN collaborateur AS c on c.id = a.collaborateur_id
+
+   public function findAllOrderedByInnerJoinNameContent(): array
+   {
+        return $this->createQueryBuilder('c')
+        ->select('c.nom, c.prenom')
+        ->innerJoin(Attribution::class, 'a', 'WITH', 'c.id = a.collaborateurs')
+        ->getQuery()
+        ->getResult()
+   ;
+   }
+
+
    public function findAllOrderedByNameCollaborateur(SearchDataCollaborateur $searchDataCollaborateur)
    {
 
