@@ -26,11 +26,11 @@
           <tr>
             <th class ="w-auto">#</th>
             <th class ="w-auto">Collaborateur</th>
-            <th class ="w-25">Nom Pr</th>
-            <th class ="w-25">Category Pr</th>
-            <th class ="w-25">Date d'attribution</th>
-            <th class ="w-25">Date de restitution</th>
-            <th class ="w-auto">Action</th>
+            <th class ="w-auto">Nom Pr</th>
+            <th class ="w-auto">Category Pr</th>
+            <th class ="w-auto">Date d'attribution</th>
+            <th class ="w-auto">Date de restitution</th>
+            <th class ="w-25">Action</th>
           </tr>
         </thead>
 
@@ -43,7 +43,8 @@
       <td class ="">{{attribution.dateAttribution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}}</td> 
       <td class ="">{{attribution.dateRestitution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}}</td> 
       <td><a type="submit" href="{{path('user_gestion_attribution_delete', {'id': attribution.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
-        <a type="submit" href="{{path('user_gestion_attribution_edit', {'id': attribution.id }) }}" class="btn btn-outline-primary btn-sm w-auto mt-1"> EDIT </a></td> 
+        <a type="submit" href="{{path('user_gestion_attribution_edit', {'id': attribution.id }) }}" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a>
+        <a type="submit" href="{{path('user_gestion_attribution_pdf', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto "> PDF </a></td>
     </tr>
 
     {% endfor %}

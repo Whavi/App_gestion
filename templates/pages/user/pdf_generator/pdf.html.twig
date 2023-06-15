@@ -1,0 +1,106 @@
+
+{% block stylesheet%} <link href="/public/css/bonDeCommande/style.css" rel="stylesheet"> {%endblock%}
+
+{% block body %}
+        <table class="table table-dark table-striped>
+            <tr>
+                <td><img src="/public/navbar/images/SIF.jpeg"> </td>
+                <td>Delivery Note (Bon de commande)</td>
+                <td></td>
+                <td>Réf.D'origine:</td>
+            </tr>    
+            {% for collaborateur in collaborateurs %}
+            <tr>
+                <td>Affecté à:</td>
+                <td>{{collaborateur.nom | upper}} {{collaborateur.prenom}}  </td>
+                <td></td>
+                <td></td>
+            </tr>
+            {%endfor%}
+            <tr>
+                <td>Date:</td>
+                <td>15/06/2023</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+
+
+        <table class="table table-dark">
+            <tr>
+                <td>Materiel</td>
+                <td>Description</td>
+                <td>Qté</td>
+                <td>Remarques</td>
+            </tr>
+            
+            <tr>
+                <td>ordinateur</td>
+                <td>
+                    <p></p>
+                    <p>Tag : P7F001</p>
+                    <p>REF Log : AFLAPHQ82</p>
+                    <p>+ chargeur d’origine + casque + souris + adaptateur usb </p>
+                </td>
+                <td> 1 </td>
+                <td> ok </td>
+            </tr>
+        </table>
+
+
+        <table class="table table-dark">
+                     
+                <td></td>
+                <td>Noms</td>
+                <td>Signature</td>
+                <td>Date</td>
+                
+            
+           
+                <tr>
+                    <td>Approuvé par</td>
+                    <td>Samir DERRAHI</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+    
+                <tr>
+                    <td>Donnée par</td>
+                    <td>Papa alassane DIOP</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% for collaborateur in collaborateurs %}
+                <tr>
+                    <td>Receveur</td>
+                    <td>{{collaborateur.nom | upper}} {{collaborateur.prenom}}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {%endfor%}
+
+        </table>
+   
+
+
+
+    <div class="regle">
+        <h1 class="titleRegle">Règle d'utilisation :</h1>
+        <p>1.	L’utilisation de l’ordinateur est strictement limitée à son utilisation professionnelle.</p>
+        <p>2.	Le bénéficiaire est seul responsable de son ordinateur, il doit veiller à le conserver en permanence dans un endroit sécurisé et ne jamais le laisser sans surveillance.</p>
+        <p>3.	Le bénéficiaire s’engage à informer le service informatique immédiatement en cas de dysfonctionnement, de vol ou de détérioration.</p>
+        <p>4.	En cas de vol ou de perte de matériel, le bénéficiaire doit fournir une déclaration de vol ou de perte établie par la police.</p>
+        <p>5.	Le Secours Islamique France étant le seul propriétaire de l’appareil, se réserve le droit à tout moment de le récupérer sans préavis ni indemnité.</p>
+        <p> 6.	Le bénéficiaire doit resituer le matériel au service informatique avant son départ définitif de l’organisation.</p>
+    </div>    
+    <div>
+        <p>Je confirme avoir pris connaissance des règles citées ci-dessous et je m’engage à les respecter :</p>
+    </div>
+
+    <div>
+        <p>Lu et approuvé</p>
+    </div>
+
+
+    
+{% endblock %}
