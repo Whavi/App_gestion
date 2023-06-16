@@ -22,7 +22,7 @@ class EditFormAttributionType extends AbstractType
         $builder
         ->add('collaborateur', EntityType::class, [
             'class' => Collaborateur::class,
-            'constraints' => new NotBlank(['message' => 'Please enter datetime.']),
+            'constraints' => new NotBlank(['message' => 'Please enter a collaborateur.']),
             'attr' => [
                 'class' => 'form-control',
             ],
@@ -34,7 +34,7 @@ class EditFormAttributionType extends AbstractType
         )
         ->add('Product', EntityType::class, [
             'class' => Product::class,
-            'constraints' => new NotBlank(['message' => 'Please enter datetime.']),
+            'constraints' => new NotBlank(['message' => 'Please enter a product.']),
             'attr' => [
                 'class' => 'form-control',
             ],
@@ -42,24 +42,8 @@ class EditFormAttributionType extends AbstractType
                 'class' => 'form_label mt-4'
             ],
             'placeholder' => 'Choisissez un produit',
-            'required' => true, ]
+            'required' => false, ]
         )
-
-        ->add('byuser', EntityType::class, [
-            'class' => User::class,
-            'constraints' => new NotBlank(['message' => 'Please enter datetime.']),
-            'attr' => [
-                'class' => 'form-control',
-            ],
-            'label_attr' => [
-                'class' => 'form_label mt-4'
-            ],
-            'label' => 'Utilistateur',
-            'placeholder' => 'Choisissez un utilisateur',
-            
-            'required' => true,   ]
-        )
-
 
         ->add('dateAttribution', DateType::class, [
             'widget' => 'single_text',
@@ -90,6 +74,7 @@ class EditFormAttributionType extends AbstractType
                 'class' => 'form_label mt-4'
             ],
             'label' => 'Description du produit',
+            'required' => false,
             ])
         ->add('remarque', TextType::class, [
             'attr' => [

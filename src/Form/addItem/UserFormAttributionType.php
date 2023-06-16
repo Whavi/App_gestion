@@ -38,16 +38,19 @@ class UserFormAttributionType extends AbstractType
             )
             ->add('Product', EntityType::class, [
                 'class' => Product::class,
+                'constraints' => new NotBlank(['message' => 'Please enter a Product.']),
                 'attr' => [
                     'class' => 'form-control',
                 ],
                 'label_attr' => [
                     'class' => 'form_label mt-4'
                 ],
+
                 'query_builder' => function (ProductRepository $pr) {
                     return $pr->createQueryBuilder('p')
                         ->orderBy('p.category', 'ASC');
                     },
+
                 'placeholder' => 'Choisissez un produit',
                 'required' => true, ]
             )
@@ -81,6 +84,7 @@ class UserFormAttributionType extends AbstractType
                     'class' => 'form_label mt-4'
                 ],
                 'label' => 'Description du produit',
+                'required' => false
                 ])
             ->add('remarque', TextType::class, [
                 'attr' => [
