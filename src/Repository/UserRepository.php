@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Attribution;
 use App\Entity\User;
 use App\Model\SearchDataUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -84,6 +85,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         $this->save($user, true);
     }
+
+
+    //SELECT u.nom, u.prenom FROM user AS u INNER JOIN attribution AS a ON a.by_user_id = u.id WHERE a.id = 69 
+    public function findAllOrderedByInnerJoinNameContent($id): array
+    {
+         return $this->createQueryBuilder('u')
+         ->select('u.nom, u.prenom')
+         ->innerJoin(Attribution::class, 'a', 'WITH', 'u.id = a.byUser')
+         ->where('a.id = :id')
+         ->setParameter('id', $id)
+         ->getQuery()
+         ->getResult()
+    ;
+    }
+ 
+
 
 //    /**
 //     * @return User[] Returns an array of User objects

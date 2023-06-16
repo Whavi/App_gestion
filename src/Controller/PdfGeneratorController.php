@@ -21,17 +21,15 @@ class PdfGeneratorController extends AbstractController
     #[Route('/pdf/{id<\d+>}', name: 'user_gestion_attribution_pdf')]
     public function index($id, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, AttributionRepository $attributionRepository, UserRepository $userRepository): Response
     {
-        $collaborateur = $collaborateurRepository->findAll();
-        $product = $productRepository->findAll();
-        $attribution = $attributionRepository->findAll();
-        $attributionName = $attributionRepository->findAllOrderedByInnerJoinNameContent($id);
-        $user = $userRepository->findAll();
+        $collaborateur = $collaborateurRepository->findAllOrderedByInnerJoinNameContent($id);
+        $product = $productRepository->findAllOrderedByInnerJoinProductContent($id);
+        $attribution = $attributionRepository->findAllOrderedByInnerJoinDateAttributionContent($id);
+        $user = $userRepository->findAllOrderedByInnerJoinNameContent($id);
 
 
         $data = [
-            'imageSrc'  => $this->imageToBase64(),
+            'imageSrc'  => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/navbar/images/SIF-Logo.png'),
             'collaborateurs' => $collaborateur,
-            'attributionNames' => $attributionName,
             'attributions' => $attribution,
             'products' => $product,
             'users' => $user,
@@ -66,10 +64,10 @@ class PdfGeneratorController extends AbstractController
         );
     }
  
-    private function imageToBase64() {
-        $path = $this->getParameter('kernel.project_dir').'/public/navbar/images/SIF-Logo.png';
-        $type = pathinfo($path, PATHINFO_EXTENSION);
-        $data = file_get_contents($path);
+    private function imageToBase64($path) {
+        $img = $path;
+        $type = pathinfo($img, PATHINFO_EXTENSION);
+        $data = file_get_contents($img);
         $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         return $base64;
     }

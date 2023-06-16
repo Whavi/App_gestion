@@ -26,6 +26,7 @@
           <tr>
             <th class ="w-auto">#</th>
             <th class ="w-auto">Collaborateur</th>
+            <th class ="w-auto">Affectation</th>
             <th class ="w-auto">Nom Pr</th>
             <th class ="w-auto">Category Pr</th>
             <th class ="w-auto">Date d'attribution</th>
@@ -38,6 +39,7 @@
     <tr class = "text-center "> 
       <td class ="">{{attribution.id}}</td> 
       <td class ="">{{attribution.collaborateur.nom}} {{attribution.collaborateur.prenom}}</td> 
+      <td class ="">{{attribution.byuser.nom}} {{attribution.byuser.prenom}}</td> 
       <td class ="">{{attribution.product.nom}}</td> 
       <td class ="">{{attribution.product.category}}</td> 
       <td class ="">{{attribution.dateAttribution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}}</td> 

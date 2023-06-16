@@ -48,7 +48,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->attributions = new ArrayCollection();
     }
     public function __toString() {
-        return "Nom : ".$this->nom . "\n " ." Prénom : ".$this->prenom;
+        return $this->nom ." ".$this->prenom;
     }
 
     public function getId(): ?int

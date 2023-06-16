@@ -96,11 +96,12 @@ class AttributionRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findAllOrderedByInnerJoinNameContent($id): array
+
+   // SELECT a.date_attribution FROM attribution AS a WHERE a.id = 69
+   public function findAllOrderedByInnerJoinDateAttributionContent($id): array
    {
         return $this->createQueryBuilder('a')
-        ->select('c.nom, c.prenom')
-        ->innerJoin(Collaborateur::class, 'c', 'WITH', 'a.collaborateur = c.id')
+        ->select('a.dateAttribution')
         ->where('a.id = :id')
         ->setParameter('id', $id)
         ->getQuery()

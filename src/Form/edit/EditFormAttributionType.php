@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Attribution;
 use App\Entity\Collaborateur;
 use App\Entity\Product;
+use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -20,6 +21,7 @@ class EditFormAttributionType extends AbstractType
         $builder
         ->add('collaborateur', EntityType::class, [
             'class' => Collaborateur::class,
+            'constraints' => new NotBlank(['message' => 'Please enter datetime.']),
             'attr' => [
                 'class' => 'form-control',
             ],
@@ -31,6 +33,7 @@ class EditFormAttributionType extends AbstractType
         )
         ->add('Product', EntityType::class, [
             'class' => Product::class,
+            'constraints' => new NotBlank(['message' => 'Please enter datetime.']),
             'attr' => [
                 'class' => 'form-control',
             ],
@@ -40,6 +43,21 @@ class EditFormAttributionType extends AbstractType
             'placeholder' => 'Choisissez un produit',
             'required' => true, ]
         )
+
+        ->add('byuser', EntityType::class, [
+            'class' => User::class,
+            'constraints' => new NotBlank(['message' => 'Please enter datetime.']),
+            'attr' => [
+                'class' => 'form-control',
+            ],
+            'label_attr' => [
+                'class' => 'form_label mt-4'
+            ],
+            'placeholder' => 'Choisissez un utilisateur',
+            
+            'required' => true,   ]
+        )
+
 
         ->add('dateAttribution', DateType::class, [
             'widget' => 'single_text',

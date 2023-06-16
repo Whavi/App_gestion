@@ -62,7 +62,7 @@
     <div  class=".tableau-1">
         <table >
             <tr >
-                <td valign="top"> <img src="../public/navbar/images/SIF-Logo.png" height="136" width="312"/></td>
+                <td valign="top"> <img src="{{imageSrc}}" height="136" width="312"/></td>
                 <td align="left" colspan="1"><strong> Delivery Note (Bon de commande)</strong></td>
                 <td align="left" valign = "top" >Réf.D'origine:</td>
             </tr>    
@@ -94,9 +94,9 @@
             </thead>
             {% for product in products %}
             <tr>
-                <td valign = "top">{{product.nom}}</td>
+                <td valign = "top">{{product.category}}</td>
                 <td valign = "top" >
-                    <p></p>
+                    <p>{{product.nom}}</p>
                     <p>REF Log : {{product.identifiant}}</p>
                     <p>+ chargeur d’origine + casque + souris + adaptateur usb </p>
                 </td>
@@ -133,10 +133,10 @@
                     <td> {{attribution.dateAttribution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}} </td>
                     {%endfor%}
                 </tr>
-                {% for attributionName in attributionNames %}
+                {% for collaborateur in collaborateurs %}
                 <tr>
                     <td class = "vide-tableau3" >Receveur</td>
-                    <td>{{attributionName.nom | upper}} {{attributionName.prenom}}</td>
+                    <td>{{collaborateur.nom | upper}} {{collaborateur.prenom}}</td>
                 {%endfor%}
                     <td></td>
                 {% for attribution in attributions %}

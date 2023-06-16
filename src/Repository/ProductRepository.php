@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Attribution;
 use App\Entity\Product;
 use App\Model\SearchDataProduct;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -53,9 +54,23 @@ class ProductRepository extends ServiceEntityRepository
        ;
    }
 
+
+   // SELECT p.nom, p.category, p.identifiant FROM product AS p INNER JOIN attribution AS a ON p.id = a.product_id WHERE a.id = 69
+   public function findAllOrderedByInnerJoinProductContent($id): array
+   {
+        return $this->createQueryBuilder('p')
+        ->select('p.nom, p.category, p.identifiant')
+        ->innerJoin(Attribution::class, 'a', 'WITH', 'p.id = a.product')
+        ->where('a.id = :id')
+        ->setParameter('id', $id)
+        ->getQuery()
+        ->getResult()
+   ;
+   }
+
+   
    public function findAllOrderedByNameProduct(SearchDataProduct $searchDataProduct)
    {
-
     $productRepository = $this->createQueryBuilder('p');
 
     if(!empty(($searchDataProduct->nom or $searchDataProduct->identifiant))){
