@@ -54,6 +54,7 @@ class EditFormAttributionType extends AbstractType
             'label_attr' => [
                 'class' => 'form_label mt-4'
             ],
+            'label' => 'Utilistateur',
             'placeholder' => 'Choisissez un utilisateur',
             
             'required' => true,   ]
@@ -88,6 +89,7 @@ class EditFormAttributionType extends AbstractType
             'label_attr' => [
                 'class' => 'form_label mt-4'
             ],
+            'label' => 'Description du produit',
             ])
 
         ->add('Submit', SubmitType::class,[

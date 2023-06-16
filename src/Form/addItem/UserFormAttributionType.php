@@ -80,6 +80,7 @@ class UserFormAttributionType extends AbstractType
                 'label_attr' => [
                     'class' => 'form_label mt-4'
                 ],
+                'label' => 'Description du produit',
                 ])
 
             ->add('Submit', SubmitType::class,[

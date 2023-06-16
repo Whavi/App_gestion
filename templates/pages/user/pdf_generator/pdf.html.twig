@@ -66,11 +66,13 @@
                 <td align="left" colspan="1"><strong> Delivery Note (Bon de commande)</strong></td>
                 <td align="left" valign = "top" >Réf.D'origine:</td>
             </tr>    
-            {% for user in users %}
+            {% for collaborateur in collaborateurs %}
             <tr>
                 <td class ="vide-tableau1">Affecté à </td>
-                <td colspan="3">{{user.nom | upper}} {{user.prenom}}</td>
+                <td colspan="3"> {{collaborateur.nom | upper}} {{collaborateur.prenom}}</td>
             </tr>
+            
+            
             {%endfor%}
             <tr>
                 <td class ="vide-tableau1" >Date:</td>
