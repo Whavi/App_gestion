@@ -1,5 +1,4 @@
 # Application de gestion d'inventaire 
-----------------
 
 ## Base de donnée :
 
