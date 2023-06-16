@@ -1,5 +1,5 @@
 ----------------
-# Application de gestion d'inventaire 
+# Application de gestion d'inventaire (Symfony)
 
 ## Base de donnée :
 
