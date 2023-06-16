@@ -11,6 +11,6 @@ Pour la base de donnée rendez-vous sur [DB](https://dbdiagram.io/d/648cc21e02bd
 
 ## Installation pré-requis :
 
-Pour les installations importante vous avez besoin de docker, compose et le Framework de Symfony
+Pour les installations importante vous avez besoin de docker, composer et le Framework de Symfony
 
 ----------------
