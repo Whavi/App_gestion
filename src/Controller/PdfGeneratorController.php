@@ -26,6 +26,7 @@ class PdfGeneratorController extends AbstractController
         $attribution = $attributionRepository->findAllOrderedByInnerJoinDateAttributionContent($id);
         $descriptionAttribution = $attributionRepository->findAllOrderedByDescriptionAttribution($id);
         $user = $userRepository->findAllOrderedByInnerJoinNameContent($id);
+        $remarque = $attributionRepository->findAllOrderedByInnerJoinRemarqueContent($id);
 
 
         $data = [
@@ -35,6 +36,7 @@ class PdfGeneratorController extends AbstractController
             'descriptions' => $descriptionAttribution,
             'products' => $product,
             'users' => $user,
+            'remarques' => $remarque,
             
         ];
         $html =  $this->renderView('pages/user/pdf_generator/pdf.html.twig', $data);
@@ -57,8 +59,7 @@ class PdfGeneratorController extends AbstractController
         $dompdf->output();
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-        
-         
+
         return new Response (
             $dompdf->stream('Bon_de_commande', ["Attachment" => false]),
             Response::HTTP_OK,

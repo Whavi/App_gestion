@@ -91,7 +91,16 @@ class EditFormAttributionType extends AbstractType
             ],
             'label' => 'Description du produit',
             ])
-
+        ->add('remarque', TextType::class, [
+            'attr' => [
+                'class' => 'form-control',
+            ],
+            'label_attr' => [
+                'class' => 'form_label mt-4'
+            ],
+            'label' => 'Remarque du produit',
+            'required' => false
+            ])
         ->add('Submit', SubmitType::class,[
             'attr' => [
                 'class' => 'btn btn-primary mt-4'

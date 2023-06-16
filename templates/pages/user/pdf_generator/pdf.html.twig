@@ -108,8 +108,14 @@
                     <p>Aucune description</p>
                 {% endif %}
                 </td>
+                {% endfor %}
                 <td valign = "top"> 1 </td>
-                <td valign = "top" > ok </td>
+                {% for remarque in remarques %}
+                {% if remarque.remarque != "" %}
+                <td valign = "top" >{{remarque.remarque}} </td>
+                {% else %}
+                <td valign = "top" >Aucune remarque</td>
+                {% endif %}
             </tr>
             {%endfor%}
         </table>

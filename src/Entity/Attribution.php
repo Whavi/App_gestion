@@ -43,6 +43,9 @@ class Attribution
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $descriptionProduct = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $remarque = null;
+
     
     public function __construct()
     {
@@ -152,6 +155,18 @@ class Attribution
     public function setDescriptionProduct(?string $descriptionProduct): self
     {
         $this->descriptionProduct = $descriptionProduct;
+
+        return $this;
+    }
+
+    public function getRemarque(): ?string
+    {
+        return $this->remarque;
+    }
+
+    public function setRemarque(?string $remarque): self
+    {
+        $this->remarque = $remarque;
 
         return $this;
     }

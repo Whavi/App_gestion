@@ -114,6 +114,19 @@ class CollaborateurRepository extends ServiceEntityRepository
    }
 
 
+// SELECT c.email FROM collaborateur AS c INNER JOIN attribution AS a ON c.id = a.collaborateur_id WHERE a.id = 69
+   public function findAllOrderedByCollaborateurEmail($id) : array
+   {
+        return $this->createQueryBuilder('c')
+        ->select('c.email')
+        ->innerJoin(Attribution::class, 'a', 'WITH', 'c.id = a.collaborateur')
+        ->where('a.id = :id')
+        ->setParameter('id', $id)
+        ->getQuery()
+        ->getResult()
+        ;
+   }
+
     
 
 //    /**

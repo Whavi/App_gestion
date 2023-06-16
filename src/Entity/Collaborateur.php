@@ -37,6 +37,7 @@ class Collaborateur
     }
 
     public function __toString() {
+
         return $this->nom." ".$this->prenom;
     }
 

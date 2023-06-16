@@ -120,6 +120,16 @@ class AttributionRepository extends ServiceEntityRepository
         ->getResult()
    ;
    }
+   public function findAllOrderedByInnerJoinRemarqueContent($id): array
+   {
+        return $this->createQueryBuilder('a')
+        ->select('a.remarque')
+        ->where('a.id = :id')
+        ->setParameter('id', $id)
+        ->getQuery()
+        ->getResult()
+   ;
+   }
 
 
 
