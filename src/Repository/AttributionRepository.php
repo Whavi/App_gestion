@@ -97,7 +97,7 @@ class AttributionRepository extends ServiceEntityRepository
     }
 
 
-   // SELECT a.date_attribution FROM attribution AS a WHERE a.id = 69
+   // SELECT a.date_attribution FROM attribution AS a WHERE a.id = $id
    public function findAllOrderedByInnerJoinDateAttributionContent($id): array
    {
         return $this->createQueryBuilder('a')
@@ -108,6 +108,19 @@ class AttributionRepository extends ServiceEntityRepository
         ->getResult()
    ;
    }
+
+   // SELECT a.date_attribution FROM attribution AS a WHERE a.id = $id
+   public function findAllOrderedByDescriptionAttribution($id): array
+   {
+        return $this->createQueryBuilder('a')
+        ->select('a.descriptionProduct')
+        ->where('a.id = :id')
+        ->setParameter('id', $id)
+        ->getQuery()
+        ->getResult()
+   ;
+   }
+
 
 
     // public function findAllOrderedByInnerJoinDepartement(): array

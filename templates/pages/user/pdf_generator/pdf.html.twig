@@ -98,7 +98,13 @@
                 <td valign = "top" >
                     <p>{{product.nom}}</p>
                     <p>REF Log : {{product.identifiant}}</p>
-                    <p>+ chargeur d’origine + casque + souris + adaptateur usb </p>
+            {%endfor%}
+            {% for description in descriptions %}
+                {% if description.descriptionProduct != ""%}
+                    <p>{{description.descriptionProduct}}</p>
+                {%else%}
+                    <p>Aucune description</p>
+                {% endif %}
                 </td>
                 <td valign = "top"> 1 </td>
                 <td valign = "top" > ok </td>

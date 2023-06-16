@@ -40,6 +40,9 @@ class Attribution
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $descriptionProduct = null;
+
     
     public function __construct()
     {
@@ -137,6 +140,18 @@ class Attribution
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
+
+        return $this;
+    }
+
+    public function getDescriptionProduct(): ?string
+    {
+        return $this->descriptionProduct;
+    }
+
+    public function setDescriptionProduct(?string $descriptionProduct): self
+    {
+        $this->descriptionProduct = $descriptionProduct;
 
         return $this;
     }

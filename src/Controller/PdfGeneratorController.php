@@ -24,6 +24,7 @@ class PdfGeneratorController extends AbstractController
         $collaborateur = $collaborateurRepository->findAllOrderedByInnerJoinNameContent($id);
         $product = $productRepository->findAllOrderedByInnerJoinProductContent($id);
         $attribution = $attributionRepository->findAllOrderedByInnerJoinDateAttributionContent($id);
+        $descriptionAttribution = $attributionRepository->findAllOrderedByDescriptionAttribution($id);
         $user = $userRepository->findAllOrderedByInnerJoinNameContent($id);
 
 
@@ -31,6 +32,7 @@ class PdfGeneratorController extends AbstractController
             'imageSrc'  => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/navbar/images/SIF-Logo.png'),
             'collaborateurs' => $collaborateur,
             'attributions' => $attribution,
+            'descriptions' => $descriptionAttribution,
             'products' => $product,
             'users' => $user,
             
