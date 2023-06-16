@@ -40,7 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'byUser', targetEntity: Attribution::class, orphanRemoval: true)]
     private Collection $attributions;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $plainpassword = null;
 
     public function __construct()
