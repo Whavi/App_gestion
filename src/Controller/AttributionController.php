@@ -8,16 +8,23 @@ use App\Entity\Product;
 use App\Form\EditFormAttributionType;
 use App\Form\SearchTypeAttributionType;
 use App\Form\UserFormAttributionType;
-use App\Repository\AttributionRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Knp\Component\Pager\PaginatorInterface;
 use App\Model\SearchDataAttribution;
+use App\Repository\AttributionRepository;
+use App\Repository\CollaborateurRepository;
+use App\Repository\ProductRepository;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Controller\PdfGeneratorController;
+
 
 class AttributionController extends AbstractController
 {
@@ -99,6 +106,21 @@ class AttributionController extends AbstractController
               ]);
     }
 
+
+
+    #[Route('/gestion/attribution/send-email/{id}', name: 'user_gestion_send_mail')]
+    public function sendEmail($id, MailerInterface $mailer): Response
+    {
+        $email = (new Email())
+            ->from('it@secours-islamique.org')
+            ->to('test@test.com')
+            ->subject('Bon de commande du prêt de matériel')
+            ->text('Veuillez trouver ci-joint le bon de commande du prêt de matériel.');
+        $mailer->send($email);
+
+        return $this->redirectToRoute('user_gestion_attribution');
+    }
+
     #[Route('/gestion/attribution/addAttribution', name: 'user_gestion_newItemAttribution')]
     public function addItemAttribution(EntityManagerInterface $em, Request $request) : Response {
         
@@ -112,6 +134,8 @@ class AttributionController extends AbstractController
             $attribution->setUpdatedAt(new \DateTime());
             $attribution->setDateAttribution($data->getDateAttribution());
             $attribution->setDateRestitution($data->getDateRestitution());
+            $attribution->setDescriptionProduct($data->getDescriptionProduct());
+            $attribution->setRemarque($data->getRemarque());
             $attribution->setCollaborateur($data->getCollaborateur());
             $attribution->setProduct($data->getProduct());
             $this->addFlash(
@@ -124,6 +148,7 @@ class AttributionController extends AbstractController
             return $this->redirectToRoute('user_gestion_attribution');
     }
     return $this->render('pages/user/newItem/Attribution.html.twig', [
+        'attributions' => $attribution,
         'form' => $form->createView()]);
     }
 }

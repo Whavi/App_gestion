@@ -101,7 +101,7 @@ class AttributionRepository extends ServiceEntityRepository
    public function findAllOrderedByInnerJoinDateAttributionContent($id): array
    {
         return $this->createQueryBuilder('a')
-        ->select('a.dateAttribution')
+        ->select('a.dateAttribution', 'a.dateRestitution')
         ->where('a.id = :id')
         ->setParameter('id', $id)
         ->getQuery()

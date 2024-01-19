@@ -8,7 +8,6 @@
     }
     caption, td, thead {
         padding: 5px;
-        
     }
 
     td{
@@ -20,7 +19,6 @@
     }
 
     .regle{
-        padding: 10px;
         margin: 20px;
     }
     .regle p{
@@ -79,9 +77,9 @@
             
             {%endfor%}
             <tr>
-                <td class ="vide-tableau1" >Date:</td>
+                <td class ="vide-tableau1" >Date de restitution</td>
                 {% for attribution in attributions %}
-                <td colspan="3" > {{attribution.dateAttribution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}} </td>
+                <td colspan="3" > {{attribution.dateRestitution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}} </td>
             </tr>
             {%endfor%}
         </table>
