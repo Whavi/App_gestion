@@ -109,12 +109,27 @@ class AttributionController extends AbstractController
 
 
     #[Route('/gestion/attribution/send-email/{id}', name: 'user_gestion_send_mail')]
-    public function sendEmail($id, MailerInterface $mailer): Response
+    public function sendEmail($id, AttributionRepository $attributionRepository, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, UserRepository $userRepository, PdfGeneratorController $pdfGenerator, MailerInterface $mailer): Response
     {
+        $attribution = $attributionRepository->find($id);
+
+        $collaborateur = $attribution->getCollaborateur();
+        $collaborateurEmail = $collaborateur ? $collaborateur->getEmail() : 'it@secours-islamique.org';
+
+        $pdfContent = $pdfGenerator->generatePdfContent(
+            $id,
+            $collaborateurRepository,
+            $productRepository,
+            $attributionRepository,
+            $userRepository
+        );
+
         $email = (new Email())
             ->from('it@secours-islamique.org')
-            ->to('test@test.com')
+            ->to($collaborateurEmail)
+            ->priority(Email::PRIORITY_HIGH)
             ->subject('Bon de commande du prêt de matériel')
+            ->attach($pdfContent, 'bon_de_commande.pdf', 'application/pdf')
             ->text('Veuillez trouver ci-joint le bon de commande du prêt de matériel.');
         $mailer->send($email);
 
