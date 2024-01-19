@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends "layouts/connected/baseConnected.html.twig" %}
 {% block title %} Gestion de collaborateur - SIF {% endblock %}
 
@@ -60,3 +61,67 @@
       {{ knp_pagination_render(collaborateurs)}}
     </div>
 {% endblock %}
+=======
+{% extends "layouts/connected/baseConnected.html.twig" %}
+{% block title %} Gestion de collaborateur - SIF {% endblock %}
+
+
+
+{% block body %}
+<h2 class = "text-center mt-4 "> Gestion des collaborateurs </h2>
+
+{% for message in app.flashes('success') %}
+<div id="alert" class="alert alert-success alert-link badge badge-pill badge-success ml-3" >
+  <strong>{{message}}</strong> 
+
+</div>
+{%endfor%} 
+
+  <div class = "text-center">
+    {% include 'layouts/connected/_searchbar.html.twig'with {
+      form:form
+    } %}
+    </div>
+    <div class="d-flex flex-row mx-auto col-9 ">
+      <div class="ml-auto">
+    <a href="{{path ("user_gestion_newItemCollaborateur")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Create new collaborateur</a>
+  </div>
+</div>
+
+ <table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
+    <thead class= "table table-light">
+          <tr>
+            <th class ="w-auto">Nom</th>
+            <th class ="w-auto">Prenom</th>
+            <th class ="w-25">Email</th> 
+            <th class ="w-25">Affectation</th>
+            <th class ="w-auto">Département</th>
+            <th class ="w-auto">Action</th>
+          </tr>
+        </thead>
+    {% for collaborateur in collaborateurs %}
+   
+    <tr class = "text-center">
+        <td>{{collaborateur.nom}}</td>
+        <td>{{collaborateur.prenom}}</td>
+        <td>{{collaborateur.email}}</td>
+        <td>
+        {% for collaborateur in collaborateur.attributions %}
+            {% if collaborateur.id != ""%}
+              {{ collaborateur.id }}
+            {% endif %}
+        {% endfor %}
+        </td>
+
+        <td>{{collaborateur.departement}}</td>
+        <td><a type="submit" href=" {{path('user_gestion_collaborateur_delete', {'id': collaborateur.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
+          <a type="submit"  href=" {{path('user_gestion_collaborateur_edit', {'id': collaborateur.id }) }}"" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a></td> 
+    
+    </tr>
+    {% endfor %}
+    </table>
+    <div class = "mt-4 text-center">
+      {{ knp_pagination_render(collaborateurs)}}
+    </div>
+{% endblock %}
+>>>>>>> 025129645f74134264f2fcb683d956aad06e597c

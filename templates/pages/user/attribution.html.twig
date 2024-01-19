@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends "layouts/connected/baseConnected.html.twig" %}
 {% block title %} Gestion d'attribution - SIF {% endblock %}
 
@@ -58,3 +59,65 @@
 {% endblock %}
 
 
+=======
+{% extends "layouts/connected/baseConnected.html.twig" %}
+{% block title %} Gestion d'attribution - SIF {% endblock %}
+
+
+
+{% block body %}
+
+<h2 class = "text-center mt-3"> Liste d'attribution des produits</h2>
+
+{% for message in app.flashes('success') %}
+<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3" >{{message}}</div>
+{%endfor%} 
+
+  <div class = "text-center">
+    {% include 'layouts/connected/_searchbarAttribution.html.twig'with { form:form } %} 
+    </div>
+
+    <div class="d-flex flex-row mx-auto col-9 ">
+      <div class="ml-auto">
+    <a href="{{path ("user_gestion_newItemAttribution")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Create new attribution</a>
+  </div>
+</div>
+
+    <table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
+        <thead class= "table table-light">
+          <tr>
+            <th class ="w-auto">#</th>
+            <th class ="w-auto">Collaborateur</th>
+            <th class ="w-auto">Nom Pr</th>
+            <th class ="w-auto">Category Pr</th>
+            <th class ="w-auto">Date d'attribution</th>
+            <th class ="w-auto">Date de restitution</th>
+            <th class ="w-25">Action</th>
+          </tr>
+        </thead>
+
+    {% for attribution in attributions %}
+    <tr class = "text-center "> 
+      <td class ="">{{attribution.id}}</td> 
+      <td class ="">{{attribution.collaborateur.nom}} {{attribution.collaborateur.prenom}}</td> 
+      <td class ="">{{attribution.product.nom}}</td> 
+      <td class ="">{{attribution.product.category}}</td> 
+      <td class ="">{{attribution.dateAttribution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}}</td> 
+      <td class ="">{{attribution.dateRestitution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}}</td> 
+      <td>
+        <a type="submit" href="{{path('user_gestion_attribution_delete', {'id': attribution.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
+        <a type="submit" href="{{path('user_gestion_attribution_edit', {'id': attribution.id }) }}" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a>
+        <a target="_blank" type="submit" href="{{path('user_gestion_attribution_pdf', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto "> PDF </a>
+        <a type="submit" href="{{path('user_gestion_send_mail', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto "> ENVOI MAIL </a>
+        </td>
+    </tr>
+
+    {% endfor %}
+    </table>
+    <div class = "mt-4 text-center">
+      {{ knp_pagination_render(attributions)}}
+    </div>
+{% endblock %}
+
+
+>>>>>>> 025129645f74134264f2fcb683d956aad06e597c
