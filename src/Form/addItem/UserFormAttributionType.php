@@ -84,7 +84,8 @@ class UserFormAttributionType extends AbstractType
                     'class' => 'form_label mt-4'
                 ],
                 'label' => 'Description du produit',
-                'required' => false
+                'required' => false,
+                'empty_data' => "",
                 ])
             ->add('remarque', TextType::class, [
                 'attr' => [
@@ -94,7 +95,8 @@ class UserFormAttributionType extends AbstractType
                     'class' => 'form_label mt-4'
                 ],
                 'label' => 'Remarque du produit',
-                'required' => false
+                'required' => false,
+                'empty_data' => "",
                 ])        
 
             ->add('Submit', SubmitType::class,[
