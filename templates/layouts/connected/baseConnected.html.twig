@@ -13,8 +13,16 @@
 
 
         {% block javascripts %}
-        {#{{ encore_entry_script_tags('app') }} #} 
-          
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    setTimeout(function () {
+                        var alert = document.querySelector('.alert-success');
+                        if (alert) {
+                            alert.remove();
+                        }
+                    }, 1000); // Adjust the time (in milliseconds) as needed
+                });
+            </script>
         {% endblock %}
     </head>
 
