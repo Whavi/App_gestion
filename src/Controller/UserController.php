@@ -29,7 +29,7 @@ class UserController extends AbstractController
         $posts = $paginatorInterface->paginate(
             $users,
             $request->query->getInt('page', 1),
-            6
+            12
         );
 
         $searchDataUser = new SearchDataUser();
@@ -42,7 +42,7 @@ class UserController extends AbstractController
                 $posts = $paginatorInterface->paginate(
                     $data,
                     $request->query->getInt('page', 1),
-                    15);
+                    12);
 
 
         return $this->render('pages/user/utilisateur.html.twig', [

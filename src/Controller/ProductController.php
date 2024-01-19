@@ -30,7 +30,7 @@ class ProductController extends AbstractController
        $posts = $paginatorInterface->paginate(
            $data,
            $request->query->getInt('page', 1),
-           6
+           12
        );
 
        $searchDataProduct = new SearchDataProduct();
@@ -43,7 +43,7 @@ class ProductController extends AbstractController
                $posts = $paginatorInterface->paginate(
                    $data,
                    $request->query->getInt('page', 1),
-                   15);
+                   12);
                
                return $this->render('pages/user/home.html.twig', [ 
                    'form' => $form->createView(),

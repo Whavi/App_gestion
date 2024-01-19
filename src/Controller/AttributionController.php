@@ -36,7 +36,7 @@ class AttributionController extends AbstractController
         $posts = $paginatorInterface->paginate(
             $attribution,
             $request->query->getInt('page', 1),
-            6
+            12
         );
 
         $searchDataAttribution = new SearchDataAttribution();
@@ -48,7 +48,7 @@ class AttributionController extends AbstractController
                 $posts = $paginatorInterface->paginate(
                     $data,
                     $request->query->getInt('page', 1),
-                    15);
+                    12);
 
         return $this->render('pages/user/attribution.html.twig', [
             'form' => $form->createView(),
@@ -123,13 +123,13 @@ class AttributionController extends AbstractController
             $attributionRepository,
             $userRepository
         );
-
+        $filename = 'Bon_de_commande_N_' . $id . '.pdf';
         $email = (new Email())
             ->from('it@secours-islamique.org')
             ->to($collaborateurEmail)
             ->priority(Email::PRIORITY_HIGH)
             ->subject('Bon de commande du prêt de matériel')
-            ->attach($pdfContent, 'bon_de_commande.pdf', 'application/pdf')
+            ->attach($pdfContent, $filename, 'application/pdf')
             ->text('Veuillez trouver ci-joint le bon de commande du prêt de matériel.');
         $mailer->send($email);
 

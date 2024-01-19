@@ -27,7 +27,7 @@ class DepartementController extends AbstractController
         $posts = $paginatorInterface->paginate(
             $users,
             $request->query->getInt('page', 1),
-            6
+            12
         );
 
         $searchDataDepartement = new SearchDataDepartement();
@@ -40,7 +40,7 @@ class DepartementController extends AbstractController
                 $posts = $paginatorInterface->paginate(
                     $data,
                     $request->query->getInt('page', 1),
-                    15);
+                    12);
 
 
         return $this->render('pages/user/departement.html.twig', [
