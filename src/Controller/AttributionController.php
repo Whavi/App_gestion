@@ -133,6 +133,11 @@ class AttributionController extends AbstractController
             ->text('Veuillez trouver ci-joint le bon de commande du prêt de matériel.');
         $mailer->send($email);
 
+        $this->addFlash(
+            'success',
+            "L'email a bien été envoyer."
+        );
+
         return $this->redirectToRoute('user_gestion_attribution');
     }
 
