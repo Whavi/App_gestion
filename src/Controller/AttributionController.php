@@ -144,6 +144,8 @@ class AttributionController extends AbstractController
     #[Route('/gestion/attribution/addAttribution', name: 'user_gestion_newItemAttribution')]
     public function addItemAttribution(EntityManagerInterface $em, Request $request) : Response {
         
+        $attribution = null; 
+        
         $form = $this->createForm(UserFormAttributionType::class);
         $form->handleRequest($request);
 
