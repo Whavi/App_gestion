@@ -20,6 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class DepartementController extends AbstractController
 {
     #[Route('/gestion/departement', name: 'user_gestion_departement')]
+    #[IsGranted('ROLE_USER')]
     public function gestionDepartement( DepartementRepository $departementRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
         $users = $departementRepository->findAllOrderedByDepartementRank();
@@ -56,6 +57,7 @@ class DepartementController extends AbstractController
 }
     
     #[Route('/gestion/departement/delete/{id}', name: 'user_gestion_departement_delete', methods: ['GET', 'DELETE'])]
+    #[IsGranted('ROLE_USER')]
     public function gestionDepartementDelete($id, DepartementRepository $departementRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $departement = $departementRepository->find($id);
         if ($departement === null) {
@@ -71,6 +73,7 @@ class DepartementController extends AbstractController
 
 
     #[Route('/gestion/departement/edit/{id}', name: 'user_gestion_departement_edit')]
+    #[IsGranted('ROLE_USER')]
     public function gestionDepartementEdit($id, DepartementRepository $departementRepository, Request $request, EntityManagerInterface $manager) : Response {
        $departement = $departementRepository->find($id);
 
@@ -98,6 +101,7 @@ class DepartementController extends AbstractController
     }
 
     #[Route('/gestion/departement/addDepartement', name: 'user_gestion_newItemDepartement')]
+    #[IsGranted('ROLE_USER')]
     public function addItemDepartement(EntityManagerInterface $em, Request $request) : Response {
         
         $form = $this->createForm(UserFormDepartementType::class);

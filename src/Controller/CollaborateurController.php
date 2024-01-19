@@ -22,6 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CollaborateurController extends AbstractController
 {
     #[Route('/gestion/compte/collaborateur', name: 'user_gestion_collaborateur')]
+    #[IsGranted('ROLE_USER')]
     public function gestion_collaborateur(CollaborateurRepository $CollaborateurRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
         
@@ -60,6 +61,7 @@ class CollaborateurController extends AbstractController
     
     
      #[Route('/gestion/compte/collaborateur/delete/{id}', name: 'user_gestion_collaborateur_delete')]
+     #[IsGranted('ROLE_USER')]
     public function gestionCollaborateurDelete($id, CollaborateurRepository $collaborateurRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $collaborateur = $collaborateurRepository->find($id);
         if ($collaborateur === null) {
@@ -74,6 +76,7 @@ class CollaborateurController extends AbstractController
     }
 
     #[Route('/gestion/compte/collaborateur/edit/{id}', name: 'user_gestion_collaborateur_edit')]
+    #[IsGranted('ROLE_USER')]
     public function gestionCollaborateurEdit($id, CollaborateurRepository $collaborateurRepository, Request $request, EntityManagerInterface $manager) : Response {
        $collaborateur = $collaborateurRepository->find($id);
 
@@ -101,6 +104,7 @@ class CollaborateurController extends AbstractController
     }
 
     #[Route('/gestion/compte/collaborateur/addItem', name: 'user_gestion_newItemCollaborateur')]
+    #[IsGranted('ROLE_USER')]
     public function addItemCollaborateur(EntityManagerInterface $manager, Request $request) : Response {
 
         $form = $this->createForm(UserFormCollaborateurType::class);

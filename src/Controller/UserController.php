@@ -22,6 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class UserController extends AbstractController
 {
     #[Route('/gestion/compte/utilisateur', name: 'user_gestion_utilisateur')]
+    #[IsGranted('ROLE_USER')]
     public function gestion_cpt_utilisateur(UserRepository $UserRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
         $users = $UserRepository->findAllOrderedByRank();
@@ -59,6 +60,7 @@ class UserController extends AbstractController
 }
     
     #[Route('/gestion/compte/utilisateur/delete/{id}', name: 'user_gestion_utilisateur_delete', methods: ['GET', 'DELETE'])]
+    #[IsGranted('ROLE_USER')]
     public function gestionUserDelete($id, UserRepository $userRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $user = $userRepository->find($id);
         if ($user === null) {
@@ -73,6 +75,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/gestion/compte/utilisateur/edit/{id}', name: 'user_gestion_utilisateur_edit')]
+    #[IsGranted('ROLE_USER')]
     public function gestionUserEdit($id, UserRepository $userRepository, Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $userPasswordHasher) : Response {
        $utilisateur = $userRepository->find($id);
 
@@ -106,6 +109,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/gestion/compte/utilisateur/addUser', name: 'user_gestion_newItemUser')]
+    #[IsGranted('ROLE_USER')]
     public function addItemUser(EntityManagerInterface $em, Request $request, UserPasswordHasherInterface $userPasswordHasher) : Response {
         
         $form = $this->createForm(UserFormItemType::class);

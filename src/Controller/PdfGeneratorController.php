@@ -19,6 +19,7 @@ use Dompdf\Options;
 class PdfGeneratorController extends AbstractController
 {
     #[Route('/pdf/{id<\d+>}', name: 'user_gestion_attribution_pdf')]
+    #[IsGranted('ROLE_USER')]
     public function index(
         $id,
         CollaborateurRepository $collaborateurRepository,

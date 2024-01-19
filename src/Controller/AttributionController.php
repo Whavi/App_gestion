@@ -29,6 +29,7 @@ use App\Controller\PdfGeneratorController;
 class AttributionController extends AbstractController
 {
     #[Route('/gestion/attribution', name: 'user_gestion_attribution')]
+    #[IsGranted('ROLE_USER')]
     public function gestionAttribution( AttributionRepository $attributionRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
         $attribution = $attributionRepository->findAllOrderedByAttributionId();
@@ -64,6 +65,7 @@ class AttributionController extends AbstractController
     
 
     #[Route('/gestion/attribution/delete/{id}', name: 'user_gestion_attribution_delete', methods: ['GET', 'DELETE'])]
+    #[IsGranted('ROLE_USER')]
     public function gestionAttributionDelete($id, AttributionRepository $attributionRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $attribution = $attributionRepository->find($id);
         if ($attribution === null) {
@@ -79,6 +81,7 @@ class AttributionController extends AbstractController
 
 
     #[Route('/gestion/attribution/edit/{id}', name: 'user_gestion_attribution_edit')]
+    #[IsGranted('ROLE_USER')]
     public function gestionAttributionEdit($id,AttributionRepository $attributionRepository, Request $request, EntityManagerInterface $manager) : Response {
         $attribution = $attributionRepository->find($id);
 
@@ -109,6 +112,7 @@ class AttributionController extends AbstractController
 
 
     #[Route('/gestion/attribution/send-email/{id}', name: 'user_gestion_send_mail')]
+    #[IsGranted('ROLE_USER')]
     public function sendEmail($id, AttributionRepository $attributionRepository, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, UserRepository $userRepository, PdfGeneratorController $pdfGenerator, MailerInterface $mailer): Response
     {
         $attribution = $attributionRepository->find($id);
@@ -142,10 +146,11 @@ class AttributionController extends AbstractController
     }
 
     #[Route('/gestion/attribution/addAttribution', name: 'user_gestion_newItemAttribution')]
+    #[IsGranted('ROLE_USER')]
     public function addItemAttribution(EntityManagerInterface $em, Request $request) : Response {
         
         $attribution = null; 
-        
+
         $form = $this->createForm(UserFormAttributionType::class);
         $form->handleRequest($request);
 
