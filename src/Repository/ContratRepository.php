@@ -21,6 +21,17 @@ class ContratRepository extends ServiceEntityRepository
         parent::__construct($registry, Contrat::class);
     }
 
+    public function save(Contrat $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+
+
 //    /**
 //     * @return Contrat[] Returns an array of Contrat objects
 //     */

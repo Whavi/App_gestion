@@ -13,6 +13,7 @@ use App\Model\SearchDataAttribution;
 use App\Repository\AttributionRepository;
 use App\Repository\CollaborateurRepository;
 use App\Repository\ProductRepository;
+use App\Repository\ContratRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
@@ -189,12 +190,17 @@ class AttributionController extends AbstractController
         ProductRepository $productRepository,
         AttributionRepository $attributionRepository,
         UserRepository $userRepository,
+        ContratRepository $ContratRepository,
+        Contrat $contrat,
+        Collaborateur $collaborateur,
+        YousignService $yousignService,
     ): Response {
         $collaborateur = $collaborateurRepository->find($id);
         $product = $productRepository->find($id);
         $attribution = $attributionRepository->find($id);
         $user = $userRepository->find($id);
-
+        $contrat = $contratRepository->find($id);
+        
         $pdfContent = $pdfGeneratorController->generatePdfContent(
             $id,
             $collaborateurRepository,
@@ -204,18 +210,33 @@ class AttributionController extends AbstractController
         );
         // Enregistrez le contenu du PDF dans un fichier local
         $filename = 'bon_de_commande_N' . $id . '.pdf';
-        $pdfFilePath = $this->getParameter('kernel.project_dir') . '/public/pdf/' . $filename;
-            
+        $pdfFilePath = $this->getParameter('kernel.project_dir') . '/public/' . $filename;
+
         // Utilisez file_put_contents pour écrire le contenu dans le fichier
         file_put_contents($pdfFilePath, $pdfContent);
-            
-        // Vous pouvez également mettre à jour votre entité Contrat ici si nécessaire
-        // ...
-            
-        return $this->render('pages/user/signature/sign.html.twig', [
-            'pdfContent' => $pdfContent,
-            'pdfFilePath' => $pdfFilePath, // Optionnel : vous pouvez passer le chemin du fichier à votre vue
-        ]);
+
+        $yousignSignatureRequest = $yousignService->signatureRequest();
+        $contrat->setSignatureID($yousignSignatureRequest['id']);
+        $contrat->save($contrat, true);
+
+
+        $uploadDocument = yousignService->uploadDocument($contrat->getSignatureId(), $contrat->getPdfNotSigned());
+        $contrat->setDocumentID($uploadDocument['id']);
+        $contrat->save($contrat, true);
+
+        $signerId = $yousignService->addSigner(
+            $contrat->getSignatureID(),
+            $contrat->getDocumentID(),
+            $collaborateur->getEmail(), 
+            $collaborateur->getPrenom(),
+            $collaborateur->getNom(),
+        );
+        $contrat->setSignerID($signerId['id']);
+        $contrat->save($contrat, true);
+
+        $yousignService->activateSignatureRequest($contrat->getSignatureID());
+
+        return $this->redirectToRoute('user_gestion_attribution');
 
     }
 }
