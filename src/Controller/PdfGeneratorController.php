@@ -2,10 +2,6 @@
  
 namespace App\Controller;
  
-use App\Entity\Attribution;
-use App\Entity\Collaborateur;
-use App\Entity\Product;
-use App\Entity\Contrat;
 use App\Repository\AttributionRepository;
 use App\Repository\CollaborateurRepository;
 use App\Repository\ProductRepository;
@@ -20,10 +16,6 @@ use Dompdf\Options;
  
 class PdfGeneratorController extends AbstractController
 {
-    private function savePdf($output, $filename)
-    {
-        $pdfFilePath = $this->getParameter('kernel.project_dir') . '../public/' . $filename;
-    }
 
     private function imageToBase64($path)
     {
@@ -104,7 +96,7 @@ class PdfGeneratorController extends AbstractController
             'users' => $user,
             'remarques' => $remarque,
         ];
-        
+
 
         $html = $this->renderView('pages/user/pdf_generator/pdf.html.twig', $data);
 

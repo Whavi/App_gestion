@@ -84,7 +84,7 @@ class YousignService{
         }
 
     public function activateSignatureRequest(String $signatureRequestId): array {
-        $response->yousignClient->request(
+        $response = $this->yousignClient->request(
             'POST',
             sprintf('signature_requests/%s/activate', $signatureRequestId)
         );

@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Attribution;
 use App\Entity\Collaborateur;
-use App\Entity\Product;
 use App\Entity\Contrat;
+use App\Service\YousignService;
 use App\Form\EditFormAttributionType;
 use App\Form\SearchTypeAttributionType;
 use App\Form\UserFormAttributionType;
@@ -199,8 +199,8 @@ class AttributionController extends AbstractController
         $product = $productRepository->find($id);
         $attribution = $attributionRepository->find($id);
         $user = $userRepository->find($id);
-        $contrat = $contratRepository->find($id);
-        
+        $contrat = $ContratRepository->find($id);
+
         $pdfContent = $pdfGeneratorController->generatePdfContent(
             $id,
             $collaborateurRepository,
@@ -217,12 +217,12 @@ class AttributionController extends AbstractController
 
         $yousignSignatureRequest = $yousignService->signatureRequest();
         $contrat->setSignatureID($yousignSignatureRequest['id']);
-        $contrat->save($contrat, true);
+        $ContratRepository->save($contrat, true);
 
 
-        $uploadDocument = yousignService->uploadDocument($contrat->getSignatureId(), $contrat->getPdfNotSigned());
+        $uploadDocument = $yousignService->uploadDocument($contrat->getSignatureId(), $contrat->getPdfNotSigned());
         $contrat->setDocumentID($uploadDocument['id']);
-        $contrat->save($contrat, true);
+        $ContratRepository->save($contrat, true);
 
         $signerId = $yousignService->addSigner(
             $contrat->getSignatureID(),
@@ -232,7 +232,7 @@ class AttributionController extends AbstractController
             $collaborateur->getNom(),
         );
         $contrat->setSignerID($signerId['id']);
-        $contrat->save($contrat, true);
+        $ContratRepository->save($contrat, true);
 
         $yousignService->activateSignatureRequest($contrat->getSignatureID());
 
