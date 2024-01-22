@@ -196,7 +196,7 @@ class AttributionController extends AbstractController
         YousignService $yousignService,
     ): Response {
         $collaborateur = $collaborateurRepository->find($id);
-        $contrat = $ContratRepository->find($id);
+        
 
         $pdfContent = $pdfGeneratorController->generatePdfContent(
             $id,
@@ -214,24 +214,24 @@ class AttributionController extends AbstractController
 
         $yousignSignatureRequest = $yousignService->signatureRequest();
         $contrat->setSignatureID($yousignSignatureRequest['id']);
-        $ContratRepository->save($contrat, true);
+        // $ContratRepository->save($contrat, true);
 
 
-        $uploadDocument = $yousignService->uploadDocument($contrat->getSignatureId(), $contrat->getPdfNotSigned());
-        $contrat->setDocumentID($uploadDocument['id']);
-        $ContratRepository->save($contrat, true);
+        // $uploadDocument = $yousignService->uploadDocument($contrat->getSignatureId(), $contrat->getPdfNotSigned());
+        // $contrat->setDocumentID($uploadDocument['id']);
+        // $ContratRepository->save($contrat, true);
 
-        $signerId = $yousignService->addSigner(
-            $contrat->getSignatureID(),
-            $contrat->getDocumentID(),
-            $collaborateur->getEmail(), 
-            $collaborateur->getPrenom(),
-            $collaborateur->getNom(),
-        );
-        $contrat->setSignerID($signerId['id']);
-        $ContratRepository->save($contrat, true);
+        // $signerId = $yousignService->addSigner(
+        //     $contrat->getSignatureID(),
+        //     $contrat->getDocumentID(),
+        //     $collaborateur->getEmail(), 
+        //     $collaborateur->getPrenom(),
+        //     $collaborateur->getNom(),
+        // );
+        // $contrat->setSignerID($signerId['id']);
+        // $ContratRepository->save($contrat, true);
 
-        $yousignService->activateSignatureRequest($contrat->getSignatureID());
+        // $yousignService->activateSignatureRequest($contrat->getSignatureID());
 
         return $this->redirectToRoute('user_gestion_attribution');
 
