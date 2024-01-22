@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\Part\Multipart\FormDataPart;
 
 class YousignService{
@@ -10,7 +11,7 @@ class YousignService{
     private const PATHFILE = __DIR__ . '/../../public';
     public function __construct(private HttpClientInterface $yousignClient){}
 
-    public function signatureRequest() : array {
+    public function signatureRequest() : string {
         $response = $this->yousignClient->request(
             'POST',
             'signature_requests',
@@ -27,10 +28,10 @@ class YousignService{
                 ],
             ]
             );
-        return $response->toArray();
+        return $response->getContent();
     }
 
-    public function uploadDocument(String $signatureRequestId, String $filename): array {
+    public function uploadDocument(String $signatureRequestId, String $filename): string {
         $formFields = [
             'nature' => 'signable_document',
             'file' => DataPart::fromPath(self::PATHFILE.$filename, $filename, 'application/pdf')
@@ -39,17 +40,17 @@ class YousignService{
         $headers = $formData->getPreparedHeaders()->toArray();
 
         $response = $this->yousignClient->request(
-            'POST',
-            sprintf('signature_resquests/%s/documents', $signatureRequestId),
-            [
-                'headers' => $headers,
-                'body' => $formData->bodyToIretable(),
-            ]
+            'POST', 
+             sprintf('signature_requests/%s/documents', $signatureRequestId), 
+             [
+               'headers' => $headers,
+               'body' => $formData->bodyToIterable(),
+             ]
         );
-        return $response->toArray();
+        return $response->getContent();
     }
 
-    public function addSigner(string $signatureRequestId, string $documentId, string $email, string $prenom, string $nom): array
+    public function addSigner(string $signatureRequestId, string $documentId, string $email, string $prenom, string $nom): string
         {
             $response = $this->yousignClient->request(
                 'POST',
@@ -80,15 +81,15 @@ class YousignService{
                         'Content-Type' => 'application/json',
                     ],
                 ]);
-                    return $response->toArray();
+                    return $response->getContent();
         }
 
-    public function activateSignatureRequest(String $signatureRequestId): array {
+    public function activateSignatureRequest(String $signatureRequestId): string {
         $response = $this->yousignClient->request(
             'POST',
             sprintf('signature_requests/%s/activate', $signatureRequestId)
         );
 
-        return $response->toArray();
+        return $response->getContent();
     }
 }

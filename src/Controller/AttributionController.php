@@ -196,9 +196,6 @@ class AttributionController extends AbstractController
         YousignService $yousignService,
     ): Response {
         $collaborateur = $collaborateurRepository->find($id);
-        $product = $productRepository->find($id);
-        $attribution = $attributionRepository->find($id);
-        $user = $userRepository->find($id);
         $contrat = $ContratRepository->find($id);
 
         $pdfContent = $pdfGeneratorController->generatePdfContent(
