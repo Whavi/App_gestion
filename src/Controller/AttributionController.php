@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Attribution;
 use App\Entity\Collaborateur;
 use App\Entity\Product;
+use App\Entity\Contrat;
 use App\Form\EditFormAttributionType;
 use App\Form\SearchTypeAttributionType;
 use App\Form\UserFormAttributionType;
@@ -113,7 +114,7 @@ class AttributionController extends AbstractController
 
     #[Route('/gestion/attribution/send-email/{id}', name: 'user_gestion_send_mail')]
     #[IsGranted('ROLE_USER')]
-    public function sendEmail($id, AttributionRepository $attributionRepository, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, UserRepository $userRepository, PdfGeneratorController $pdfGenerator, MailerInterface $mailer): Response
+    public function sendEmail($id,AttributionRepository $attributionRepository, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, UserRepository $userRepository, PdfGeneratorController $pdfGenerator, MailerInterface $mailer): Response
     {
         $attribution = $attributionRepository->find($id);
 
@@ -177,5 +178,44 @@ class AttributionController extends AbstractController
     return $this->render('pages/user/newItem/Attribution.html.twig', [
         'attributions' => $attribution,
         'form' => $form->createView()]);
+    }
+
+    #[Route('/gestion/attribution/signature/{id}', name: 'user_gestion_sign')]
+    #[IsGranted('ROLE_USER')]
+    public function signature(
+        $id,
+        PdfGeneratorController $pdfGeneratorController,
+        CollaborateurRepository $collaborateurRepository,
+        ProductRepository $productRepository,
+        AttributionRepository $attributionRepository,
+        UserRepository $userRepository,
+    ): Response {
+        $collaborateur = $collaborateurRepository->find($id);
+        $product = $productRepository->find($id);
+        $attribution = $attributionRepository->find($id);
+        $user = $userRepository->find($id);
+
+        $pdfContent = $pdfGeneratorController->generatePdfContent(
+            $id,
+            $collaborateurRepository,
+            $productRepository,
+            $attributionRepository,
+            $userRepository,
+        );
+        // Enregistrez le contenu du PDF dans un fichier local
+        $filename = 'bon_de_commande_N' . $id . '.pdf';
+        $pdfFilePath = $this->getParameter('kernel.project_dir') . '/public/pdf/' . $filename;
+            
+        // Utilisez file_put_contents pour écrire le contenu dans le fichier
+        file_put_contents($pdfFilePath, $pdfContent);
+            
+        // Vous pouvez également mettre à jour votre entité Contrat ici si nécessaire
+        // ...
+            
+        return $this->render('pages/user/signature/sign.html.twig', [
+            'pdfContent' => $pdfContent,
+            'pdfFilePath' => $pdfFilePath, // Optionnel : vous pouvez passer le chemin du fichier à votre vue
+        ]);
+
     }
 }

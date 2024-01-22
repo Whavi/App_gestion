@@ -34,10 +34,14 @@ class Product
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Attribution::class, orphanRemoval: true)]
     private Collection $attributions;
 
+    #[ORM\OneToMany(mappedBy: 'fk_id_product', targetEntity: Contrat::class)]
+    private Collection $contrats;
+
     public function __construct()
     {
         $this->attributions = new ArrayCollection();
         $this->createdAt = new \DateTime();
+        $this->contrats = new ArrayCollection();
 
     }
     public function __toString() {
@@ -134,6 +138,36 @@ class Product
             // set the owning side to null (unless already changed)
             if ($attribution->getProduct() === $this) {
                 $attribution->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Contrat>
+     */
+    public function getContrats(): Collection
+    {
+        return $this->contrats;
+    }
+
+    public function addContrat(Contrat $contrat): static
+    {
+        if (!$this->contrats->contains($contrat)) {
+            $this->contrats->add($contrat);
+            $contrat->setFkIdProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContrat(Contrat $contrat): static
+    {
+        if ($this->contrats->removeElement($contrat)) {
+            // set the owning side to null (unless already changed)
+            if ($contrat->getFkIdProduct() === $this) {
+                $contrat->setFkIdProduct(null);
             }
         }
 

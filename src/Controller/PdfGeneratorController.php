@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\Attribution;
 use App\Entity\Collaborateur;
 use App\Entity\Product;
+use App\Entity\Contrat;
 use App\Repository\AttributionRepository;
 use App\Repository\CollaborateurRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,6 +20,22 @@ use Dompdf\Options;
  
 class PdfGeneratorController extends AbstractController
 {
+    private function savePdf($output, $filename)
+    {
+        $pdfFilePath = $this->getParameter('kernel.project_dir') . '../public/' . $filename;
+    }
+
+    private function imageToBase64($path)
+    {
+        $img = $path;
+        $type = pathinfo($img, PATHINFO_EXTENSION);
+        $data = file_get_contents($img);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        return $base64;
+    }
+
+
+
     #[Route('/pdf/{id<\d+>}', name: 'user_gestion_attribution_pdf')]
     #[IsGranted('ROLE_USER')]
     public function index(
@@ -54,20 +72,13 @@ class PdfGeneratorController extends AbstractController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
+        $filename = 'Bon_de_commande_N_' . $id . '.pdf';
+
         return new Response(
-            $dompdf->stream('Bon_de_commande.pdf', ['Attachment' => false]),
+            $dompdf->stream($filename, ['Attachment' => false]),
             Response::HTTP_OK,
             ['Content-Type' => 'application/pdf']
         );
-    }
-
-    private function imageToBase64($path)
-    {
-        $img = $path;
-        $type = pathinfo($img, PATHINFO_EXTENSION);
-        $data = file_get_contents($img);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        return $base64;
     }
 
     public function generatePdfContent(
@@ -107,4 +118,3 @@ class PdfGeneratorController extends AbstractController
         return $dompdf->output();
     }
 }
-

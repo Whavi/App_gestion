@@ -31,9 +31,13 @@ class Collaborateur
     #[ORM\OneToMany(mappedBy: 'collaborateur', targetEntity: Attribution::class, orphanRemoval: true)]
     private Collection $attributions;
 
+    #[ORM\OneToMany(mappedBy: 'fk_id_collaborateur', targetEntity: Contrat::class)]
+    private Collection $contrats;
+
     public function __construct()
     {
         $this->attributions = new ArrayCollection();
+        $this->contrats = new ArrayCollection();
     }
 
     public function __toString() {
@@ -119,6 +123,36 @@ class Collaborateur
             // set the owning side to null (unless already changed)
             if ($attribution->getCollaborateur() === $this) {
                 $attribution->setCollaborateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Contrat>
+     */
+    public function getContrats(): Collection
+    {
+        return $this->contrats;
+    }
+
+    public function addContrat(Contrat $contrat): static
+    {
+        if (!$this->contrats->contains($contrat)) {
+            $this->contrats->add($contrat);
+            $contrat->setFkIdCollaborateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContrat(Contrat $contrat): static
+    {
+        if ($this->contrats->removeElement($contrat)) {
+            // set the owning side to null (unless already changed)
+            if ($contrat->getFkIdCollaborateur() === $this) {
+                $contrat->setFkIdCollaborateur(null);
             }
         }
 
