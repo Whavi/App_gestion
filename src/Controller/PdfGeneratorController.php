@@ -104,6 +104,7 @@ class PdfGeneratorController extends AbstractController
             'users' => $user,
             'remarques' => $remarque,
         ];
+        
 
         $html = $this->renderView('pages/user/pdf_generator/pdf.html.twig', $data);
 
