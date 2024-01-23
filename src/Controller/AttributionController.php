@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Attribution;
-use App\Entity\Collaborateur;
-use App\Entity\Contrat;
 use App\Service\YousignService;
 use App\Form\EditFormAttributionType;
 use App\Form\SearchTypeAttributionType;
@@ -13,7 +11,6 @@ use App\Model\SearchDataAttribution;
 use App\Repository\AttributionRepository;
 use App\Repository\CollaborateurRepository;
 use App\Repository\ProductRepository;
-use App\Repository\ContratRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;

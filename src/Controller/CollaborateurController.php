@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Attribution;
 use App\Entity\Collaborateur;
 use App\Entity\Departement;
 use App\Form\EditFormCollaborateurType;
