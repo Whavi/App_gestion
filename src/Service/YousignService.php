@@ -8,7 +8,7 @@ use Symfony\Component\Mime\Part\Multipart\FormDataPart;
 
 class YousignService{
 
-    private const PATHFILE = __DIR__ . '/../../public';
+    private const PATHFILE = __DIR__ . '/../../public/';
     public function __construct(private HttpClientInterface $yousignClient){}
 
     public function signatureRequest() : string {

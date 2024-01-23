@@ -166,7 +166,7 @@ class AttributionController extends AbstractController
             $attribution->setDescriptionProduct($data->getDescriptionProduct());
             $attribution->setRemarque($data->getRemarque());
             $attribution->setCollaborateur($data->getCollaborateur());
-            $attribution->setProduct($data->getProduct());
+            $attribution->setProduct($data->getProduct());            
             $this->addFlash(
                 'success',
                 'Votre attribution a bien été crée.'
@@ -174,6 +174,12 @@ class AttributionController extends AbstractController
 
             $em->persist($attribution);
             $em->flush();
+
+            // Set the pdf_name based on the id and update the entity
+            $attribution->setPdfName("bon_de_commande_N" . $attribution->getId() . ".pdf");
+            $em->persist($attribution);
+            $em->flush();
+
             return $this->redirectToRoute('user_gestion_attribution');
     }
     return $this->render('pages/user/newItem/Attribution.html.twig', [
@@ -190,13 +196,11 @@ class AttributionController extends AbstractController
         ProductRepository $productRepository,
         AttributionRepository $attributionRepository,
         UserRepository $userRepository,
-        ContratRepository $ContratRepository,
-        Contrat $contrat,
-        Collaborateur $collaborateur,
         YousignService $yousignService,
     ): Response {
         $collaborateur = $collaborateurRepository->find($id);
-        
+
+        $attribut = $attributionRepository->find($id);
 
         $pdfContent = $pdfGeneratorController->generatePdfContent(
             $id,
@@ -213,25 +217,28 @@ class AttributionController extends AbstractController
         file_put_contents($pdfFilePath, $pdfContent);
 
         $yousignSignatureRequest = $yousignService->signatureRequest();
-        $contrat->setSignatureID($yousignSignatureRequest['id']);
-        // $ContratRepository->save($contrat, true);
+        $SignatureIdRequest = json_decode($yousignSignatureRequest);
+        $attribut->setSignatureId($SignatureIdRequest->id);
+        $attributionRepository->save($attribut, true);
+    
+        $uploadDocument = $yousignService->uploadDocument($attribut->getSignatureId(), $attribut->getPdfName());
+        $documentIdRequest = json_decode($uploadDocument);
+        $attribut->setDocumentId($documentIdRequest->id);
+        $attributionRepository->save($attribut, true);
 
 
-        // $uploadDocument = $yousignService->uploadDocument($contrat->getSignatureId(), $contrat->getPdfNotSigned());
-        // $contrat->setDocumentID($uploadDocument['id']);
-        // $ContratRepository->save($contrat, true);
+        $signerId = $yousignService->addSigner(
+            $attribut->getSignatureId(),
+            $attribut->getDocumentId(),
+            $collaborateur->getEmail(), 
+            $collaborateur->getPrenom(),
+            $collaborateur->getNom(),
+        );
+        $signerIdRequest = json_decode($signerId);
+        $attribut->setSignerId($signerIdRequest->id);
+        $attributionRepository->save($attribut, true);
 
-        // $signerId = $yousignService->addSigner(
-        //     $contrat->getSignatureID(),
-        //     $contrat->getDocumentID(),
-        //     $collaborateur->getEmail(), 
-        //     $collaborateur->getPrenom(),
-        //     $collaborateur->getNom(),
-        // );
-        // $contrat->setSignerID($signerId['id']);
-        // $ContratRepository->save($contrat, true);
-
-        // $yousignService->activateSignatureRequest($contrat->getSignatureID());
+        $yousignService->activateSignatureRequest($attribut->getSignatureId());
 
         return $this->redirectToRoute('user_gestion_attribution');
 

@@ -107,7 +107,6 @@ class PdfGeneratorController extends AbstractController
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-
         return $dompdf->output();
     }
 }

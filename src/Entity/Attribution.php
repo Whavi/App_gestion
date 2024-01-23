@@ -46,6 +46,18 @@ class Attribution
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $remarque = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $signatureId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $document_Id = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $signer_Id = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $PdfName = null;
+
     
     public function __construct()
     {
@@ -167,6 +179,54 @@ class Attribution
     public function setRemarque(?string $remarque): self
     {
         $this->remarque = $remarque;
+
+        return $this;
+    }
+
+    public function getSignatureId(): ?string
+    {
+        return $this->signatureId;
+    }
+
+    public function setSignatureId(?string $signatureId): static
+    {
+        $this->signatureId = $signatureId;
+
+        return $this;
+    }
+
+    public function getDocumentId(): ?string
+    {
+        return $this->document_Id;
+    }
+
+    public function setDocumentId(?string $document_Id): static
+    {
+        $this->document_Id = $document_Id;
+
+        return $this;
+    }
+
+    public function getSignerId(): ?string
+    {
+        return $this->signer_Id;
+    }
+
+    public function setSignerId(?string $signer_Id): static
+    {
+        $this->signer_Id = $signer_Id;
+
+        return $this;
+    }
+
+    public function getPdfName(): ?string
+    {
+        return $this->PdfName;
+    }
+
+    public function setPdfName(string $PdfName): static
+    {
+        $this->PdfName = $PdfName;
 
         return $this;
     }
