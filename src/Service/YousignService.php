@@ -69,8 +69,8 @@ class YousignService{
                                     "type":"signature",
                                     "document_id":"$documentId",
                                     "page":1,
-                                    "x":77,
-                                    "y":581
+                                    "x":500,
+                                    "y":800
                                 }
                             ],
                             "signature_level":"electronic_signature",

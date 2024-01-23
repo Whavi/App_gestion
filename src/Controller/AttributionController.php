@@ -198,7 +198,13 @@ class AttributionController extends AbstractController
         UserRepository $userRepository,
         YousignService $yousignService,
     ): Response {
-        $collaborateur = $collaborateurRepository->find($id);
+        
+        $collaborateurs = $collaborateurRepository->findAllOrderedByInnerJoin_Name_Mail_ContentContrat($id);
+        foreach ($collaborateurs as $collaborateur) {
+            $email = $collaborateur->getEmail();
+            $prenom = $collaborateur->getPrenom();
+            $nom = $collaborateur->getNom();
+        }
 
         $attribut = $attributionRepository->find($id);
 
@@ -209,6 +215,7 @@ class AttributionController extends AbstractController
             $attributionRepository,
             $userRepository,
         );
+        
         // Enregistrez le contenu du PDF dans un fichier local
         $filename = 'bon_de_commande_N' . $id . '.pdf';
         $pdfFilePath = $this->getParameter('kernel.project_dir') . '/public/' . $filename;
@@ -226,14 +233,16 @@ class AttributionController extends AbstractController
         $attribut->setDocumentId($documentIdRequest->id);
         $attributionRepository->save($attribut, true);
 
+        foreach ($collaborateurs as $collaborateur) {
+            $signerId = $yousignService->addSigner(
+                $attribut->getSignatureId(),
+                $attribut->getDocumentId(),
+                $email,
+                $prenom,
+                $nom
+            );
+        }
 
-        $signerId = $yousignService->addSigner(
-            $attribut->getSignatureId(),
-            $attribut->getDocumentId(),
-            $collaborateur->getEmail(), 
-            $collaborateur->getPrenom(),
-            $collaborateur->getNom(),
-        );
         $signerIdRequest = json_decode($signerId);
         $attribut->setSignerId($signerIdRequest->id);
         $attributionRepository->save($attribut, true);
