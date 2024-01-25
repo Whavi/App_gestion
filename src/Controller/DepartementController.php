@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Departement;
-use App\Form\EditFormDepartementType;
-use App\Form\SearchTypeDepartement;
-use App\Form\UserFormDepartementType;
+use App\Form\edit\EditFormDepartementType;
+use App\Form\search\SearchTypeDepartement;
+use App\Form\addItem\UserFormDepartementType;
 use App\Model\SearchDataDepartement;
 use App\Repository\DepartementRepository;
 use Doctrine\ORM\EntityManagerInterface;

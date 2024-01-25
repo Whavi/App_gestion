@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\addItem;
 
 use App\Entity\User;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;

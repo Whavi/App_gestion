@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\search;
 
 use App\Model\SearchDataProduct;
 use Symfony\Component\Form\AbstractType;

@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\EditFormUserType;
-use App\Form\SearchTypeUser;
-use App\Form\UserFormItemType;
+use App\Form\edit\EditFormUserType;
+use App\Form\search\SearchTypeUser;
+use App\Form\addItem\UserFormItemType;
 use App\Model\SearchDataUser;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;

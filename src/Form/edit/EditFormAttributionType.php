@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\edit;
 
 use App\Entity\Attribution;
 use App\Entity\Collaborateur;

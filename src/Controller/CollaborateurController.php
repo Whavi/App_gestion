@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Collaborateur;
 use App\Entity\Departement;
-use App\Form\EditFormCollaborateurType;
-use App\Form\SearchTypeCollaborateur;
-use App\Form\UserFormCollaborateurType;
+use App\Form\edit\EditFormCollaborateurType;
+use App\Form\search\SearchTypeCollaborateur;
+use App\Form\addItem\UserFormCollaborateurType;
 use App\Model\SearchDataCollaborateur;
 use App\Repository\CollaborateurRepository;
 use Doctrine\ORM\EntityManagerInterface;

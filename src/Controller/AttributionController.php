@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Attribution;
 use App\Service\YousignService;
-use App\Form\EditFormAttributionType;
-use App\Form\SearchTypeAttributionType;
-use App\Form\UserFormAttributionType;
+use App\Form\edit\EditFormAttributionType;
+use App\Form\search\SearchTypeAttributionType;
+use App\Form\addItem\UserFormAttributionType;
 use App\Model\SearchDataAttribution;
 use App\Repository\AttributionRepository;
 use App\Repository\CollaborateurRepository;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\addItem;
 
 use App\Entity\Collaborateur;
 use App\Entity\Departement;

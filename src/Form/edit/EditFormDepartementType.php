@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\edit;
 
 use App\Entity\Departement;
 use Symfony\Component\Form\AbstractType;

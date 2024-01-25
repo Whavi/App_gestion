@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\other;
 
 
 use App\Entity\User;
