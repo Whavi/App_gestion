@@ -19,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -134,7 +135,11 @@ class AttributionController extends AbstractController
             ->subject('Bon de commande du prêt de matériel')
             ->attach($pdfContent, $filename, 'application/pdf')
             ->text('Veuillez trouver ci-joint le bon de commande du prêt de matériel.');
-        $mailer->send($email);
+
+            try{ $mailer->send($email);
+            } catch(TransportExceptionInterface $error){
+            echo $error;
+            } 
 
         $this->addFlash(
             'success',
