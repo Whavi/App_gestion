@@ -136,10 +136,7 @@ class AttributionController extends AbstractController
             ->attach($pdfContent, $filename, 'application/pdf')
             ->text('Veuillez trouver ci-joint le bon de commande du prêt de matériel.');
 
-            try{ $mailer->send($email);
-            } catch(TransportExceptionInterface $error){
-            echo $error;
-            } 
+            $mailer->send($email);
 
         $this->addFlash(
             'success',
