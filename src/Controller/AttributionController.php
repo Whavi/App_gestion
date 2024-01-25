@@ -135,8 +135,12 @@ class AttributionController extends AbstractController
             ->subject('Bon de commande du prêt de matériel')
             ->attach($pdfContent, $filename, 'application/pdf')
             ->text('Veuillez trouver ci-joint le bon de commande du prêt de matériel.');
-
-            $mailer->send($email);
+           
+            try {
+                $mailer->send($email);
+            } catch (\Exception $e) {
+                dump($e->getMessage()); // Log or print the exception message
+            }
 
         $this->addFlash(
             'success',
