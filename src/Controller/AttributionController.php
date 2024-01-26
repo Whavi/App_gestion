@@ -135,7 +135,7 @@ class AttributionController extends AbstractController
             ->subject('Bon de commande du prêt de matériel')
             ->attach($pdfContent, $filename, 'application/pdf')
             ->text('Veuillez trouver ci-joint le bon de commande du prêt de matériel.
-            Qui doit être signer et envoyer soit par mail au mail suivant : it@secours-islamique.org ou imprimer et donner au service informatique');
+            Qui doit être signer et envoyer soit par mail : it@secours-islamique.org ou imprimer et donner au service informatique');
            
             try {
                 $mailer->send($email);
