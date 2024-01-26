@@ -73,10 +73,10 @@ class ProductRepository extends ServiceEntityRepository
    {
     $productRepository = $this->createQueryBuilder('p');
 
-    if(!empty(($searchDataProduct->nom or $searchDataProduct->identifiant))){
+    if(!empty(($searchDataProduct->ref or $searchDataProduct->identifiant))){
         $productRepository = $productRepository
-        ->andWhere('p.nom LIKE :nom OR p.identifiant LIKE :identifiant' )
-        ->setParameter('nom', "%$searchDataProduct->nom%")
+        ->andWhere('p.ref LIKE :ref OR p.identifiant LIKE :identifiant' )
+        ->setParameter('ref', "%$searchDataProduct->ref%")
         ->setParameter('identifiant', "%($searchDataProduct->identifiant)%")
 
         ->orderBy('p.identifiant', 'ASC');

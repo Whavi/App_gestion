@@ -25,6 +25,9 @@ class Product
     #[ORM\Column(length: 45)]
     private ?string $category = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $ref = null;
+
     #[ORM\Column]
     private ?\DateTime $createdAt = null;
 
@@ -82,6 +85,18 @@ class Product
     public function setCategory(string $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getRef(): ?string
+    {
+        return $this->ref;
+    }
+
+    public function setRef(string $ref): static
+    {
+        $this->ref = $ref;
 
         return $this;
     }

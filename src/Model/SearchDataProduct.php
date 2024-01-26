@@ -12,4 +12,5 @@ class SearchDataProduct
 
     public string $identifiant = '';
 
+    public string $ref = '';
 }

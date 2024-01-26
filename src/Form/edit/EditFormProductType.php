@@ -51,6 +51,23 @@ class EditFormProductType extends AbstractType
             ]
         ])
 
+        ->add('ref', TextType::class, [
+            'attr' => [
+                'class' => 'form-control',
+                'minLength' => '2',
+                'maxLength' => '50'
+            ],
+            'label' => 'Ref. log',
+            'label_attr' => [
+                'class' => 'form_label mt-4'
+            ],
+            'required' => true,
+            'constraints' => [
+                new Assert\NotBlank(),
+                new Assert\Length(['min' => 2, 'max' => '50']),
+            ]
+        ])
+
         ->add('category', ChoiceType::class, [
             'attr' => [
                 'class' => 'form-control',
@@ -58,7 +75,8 @@ class EditFormProductType extends AbstractType
                 'maxLength' => '50'
             ],
             'choices' =>[
-                'Ordinateur' => 'Ordinateur',
+                'Ordinateur Fixe' => 'Ordinateur Fixe',
+                'Ordinateur Potable' => 'Ordinateur Potable',
                 'Souris' => 'Souris',
                 'Clavier' => 'Clavier',
                 'Imprimante' => 'Imprimante',

@@ -114,12 +114,12 @@ class ProductController extends AbstractController
        $form->handleRequest($request);
        if ($form->isSubmitted() && $form->isValid()) {
            $data = $form->getData();
-           
            $product = new Product();
            $product->setIdentifiant($data->getIdentifiant());
            $product->setNom($data->getNom());
            $product->setCategory($data->getCategory());
            $product->setUpdatedAt($data->getCreatedAt());
+           $product->setRef($data->getRef());
 
 
            $this->addFlash(

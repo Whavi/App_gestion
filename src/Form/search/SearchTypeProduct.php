@@ -13,9 +13,9 @@ class SearchTypeProduct extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', TextType::class, [
+            ->add('ref', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Recherche par nom ...',
+                    'placeholder' => 'Recherche par ref ...',
                 ],
                 'empty_data' => '',
                 'required' => false

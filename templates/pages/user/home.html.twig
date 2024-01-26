@@ -12,7 +12,7 @@
 {%endfor%} 
 
   <div class = "text-center">
-    {% include 'layouts/connected/_searchbar.html.twig'with {
+    {% include 'layouts/connected/_searchbarProduct.html.twig'with {
       form:form
     } %}
     </div>
@@ -28,8 +28,9 @@
     <table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
         <thead class= "table table-light">
           <tr>
-            <th class ="w-auto">Identifiant</th>
-            <th class ="w-auto">Nom</th>
+            <th class ="w-auto">Numéro de Série</th>
+            <th class ="w-auto">Ref. log</th>
+            <th class ="w-auto">Modèle</th>
             <th class ="w-auto">Catégorie</th>
             <th class ="w-auto">Action</th>
           </tr>
@@ -37,6 +38,7 @@
     {% for liste in listes %}
     <tr class = "text-center"> 
       <td>{{liste.identifiant}}</td> 
+      <td>{{liste.ref}}</td> 
       <td>{{liste.nom}}</td> 
       <td>{{liste.category}}</td> 
       <td>
