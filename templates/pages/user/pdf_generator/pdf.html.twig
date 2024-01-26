@@ -63,11 +63,13 @@
 {% block body %}
     <div  class="tableau-1">
         <table >
+        {% for product in products %}
             <tr >
                 <td valign="top" class="vide-tableau3"> <img src="{{imageSrc}}" height="136" width="312"/></td>
                 <td align="left" colspan="1"><strong> Delivery Note (Bon de commande)</strong></td>
-                <td align="left" valign = "top" >Réf.D'origine: </td>
+                <td align="left" valign = "top" >Identifiant produit: {{product.identifiant}}</td>
             </tr>    
+            {%endfor%}
             {% for collaborateur in collaborateurs %}
             <tr>
                 <td class ="vide-tableau1">Affecté à </td>
@@ -101,7 +103,7 @@
                 <td valign = "top">{{product.category}}</td>
                 <td valign = "top" >
                     <p>{{product.nom}}</p>
-                    <p>REF Log : {{product.identifiant}}</p>
+                    <p>REF Log : {{product.ref}}</p>
             {%endfor%}
             {% for description in descriptions %}
                 {% if description.descriptionProduct != ""%}

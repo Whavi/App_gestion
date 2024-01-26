@@ -59,7 +59,7 @@ class ProductRepository extends ServiceEntityRepository
    public function findAllOrderedByInnerJoinProductContent($id): array
    {
         return $this->createQueryBuilder('p')
-        ->select('p.nom, p.category, p.identifiant')
+        ->select('p.nom, p.category, p.identifiant, p.ref')
         ->innerJoin(Attribution::class, 'a', 'WITH', 'p.id = a.product')
         ->where('a.id = :id')
         ->setParameter('id', $id)
