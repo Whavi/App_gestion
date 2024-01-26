@@ -63,12 +63,15 @@ class UserFormAttributionType extends AbstractType
                 ],
                 'label_attr' => [
                     'class' => 'form_label mt-4'
-                ],
+                ], 
+                'data' => new \DateTime(), // Définit la date par défaut sur aujourd'hui
                 ])
 
             ->add('dateRestitution', DateType::class, [
                 'widget' => 'single_text',
-                'constraints' => new NotBlank(['message' => 'Please enter datetime.']),
+                'constraints' => [
+                    new NotBlank(['message' => 'Please enter datetime.']),
+                ],
                 'attr' => [
                     'class' => 'form-control',
                 ],
