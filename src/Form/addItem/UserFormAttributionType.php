@@ -94,7 +94,7 @@ class UserFormAttributionType extends AbstractType
                 'label_attr' => [
                     'class' => 'form_label mt-4'
                 ],
-                'label' => 'Remarque du produit',
+                'label' => 'État du matériel',
                 'required' => false,
                 'empty_data' => "",
                 ])        

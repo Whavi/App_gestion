@@ -134,7 +134,8 @@ class AttributionController extends AbstractController
             ->priority(Email::PRIORITY_HIGH)
             ->subject('Bon de commande du prêt de matériel')
             ->attach($pdfContent, $filename, 'application/pdf')
-            ->text('Veuillez trouver ci-joint le bon de commande du prêt de matériel.');
+            ->text('Veuillez trouver ci-joint le bon de commande du prêt de matériel.
+            Qui doit être signer et envoyer soit par mail au mail suivant : it@secours-islamique.org ou imprimer et donner au service informatique');
            
             try {
                 $mailer->send($email);
@@ -226,7 +227,7 @@ class AttributionController extends AbstractController
         // Utilisez file_put_contents pour écrire le contenu dans le fichier
         file_put_contents($pdfFilePath, $pdfContent);
 
-        $yousignSignatureRequest = $yousignService->signatureRequest();
+        $yousignSignatureRequest = $yousignService->signatureRequest($id);
         $SignatureIdRequest = json_decode($yousignSignatureRequest);
         $attribut->setSignatureId($SignatureIdRequest->id);
         $attributionRepository->save($attribut, true);

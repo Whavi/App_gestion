@@ -11,14 +11,16 @@ class YousignService{
     private const PATHFILE = __DIR__ . '/../../public/';
     public function __construct(private HttpClientInterface $yousignClient){}
 
-    public function signatureRequest() : string {
+    public function signatureRequest(string $id) : string {
+        $name = "Bon de commande N°{$id}";
+        
         $response = $this->yousignClient->request(
             'POST',
             'signature_requests',
             [
                 'body' =>  <<<JSON
                 {
-                  "name": "Bon de commande",
+                  "name": "{$name}",
                   "delivery_mode": "email",
                   "timezone": "Europe/Paris"
                 }

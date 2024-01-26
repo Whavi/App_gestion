@@ -22,7 +22,7 @@ class UserFormProductType extends AbstractType
                     'minLength' => '2',
                     'maxLength' => '50'
                 ],
-                'label' => 'identifiant',
+                'label' => 'Numéro de série',
                 'label_attr' => [
                     'class' => 'form_label mt-4'
                 ],
@@ -39,7 +39,7 @@ class UserFormProductType extends AbstractType
                     'minLength' => '2',
                     'maxLength' => '50'
                 ],
-                'label' => 'Nom',
+                'label' => 'Modèle',
                 'label_attr' => [
                     'class' => 'form_label mt-4'
                 ],
@@ -49,6 +49,23 @@ class UserFormProductType extends AbstractType
                     new Assert\Length(['min' => 2, 'max' => '50']),
                 ]
             ])
+            // ->add('ref', TextType::class, [
+            //     'attr' => [
+            //         'class' => 'form-control',
+            //         'minLength' => '2',
+            //         'maxLength' => '50'
+            //     ],
+            //     'label' => 'Ref. log',
+            //     'label_attr' => [
+            //         'class' => 'form_label mt-4'
+            //     ],
+            //     'required' => true,
+            //     'constraints' => [
+            //         new Assert\NotBlank(),
+            //         new Assert\Length(['min' => 2, 'max' => '50']),
+            //     ]
+            // ])
+
             ->add('category', ChoiceType::class, [
                 'attr' => [
                     'class' => 'form-control',
@@ -56,7 +73,8 @@ class UserFormProductType extends AbstractType
                     'maxLength' => '50'
                 ],
                 'choices' =>[
-                    'Ordinateur' => 'Ordinateur',
+                    'Ordinateur Fixe' => 'Ordinateur Fixe',
+                    'Ordinateur Portable' => 'Ordinateur Portable',
                     'Souris' => 'Souris',
                     'Clavier' => 'Clavier',
                     'Imprimante' => 'Imprimante',
