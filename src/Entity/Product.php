@@ -25,7 +25,7 @@ class Product
     #[ORM\Column(length: 45)]
     private ?string $category = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $ref = null;
 
     #[ORM\Column]
