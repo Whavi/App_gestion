@@ -25,9 +25,6 @@ class Product
     #[ORM\Column(length: 45)]
     private ?string $category = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $ref = null;
-
     #[ORM\Column]
     private ?\DateTime $createdAt = null;
 
@@ -37,6 +34,8 @@ class Product
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Attribution::class, orphanRemoval: true)]
     private Collection $attributions;
 
+    #[ORM\Column(length: 255)]
+    private ?string $ref = null;
 
     public function __construct()
     {
