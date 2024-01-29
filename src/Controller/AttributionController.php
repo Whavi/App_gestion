@@ -91,6 +91,7 @@ class AttributionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
             $attribution->setUpdatedAt(new \DateTime());
+            $attribution->setByUser($this->getUser()); 
 
             $this->addFlash(
                 'success',
@@ -153,7 +154,7 @@ class AttributionController extends AbstractController
 
     #[Route('/gestion/attribution/addAttribution', name: 'user_gestion_newItemAttribution')]
     #[IsGranted('ROLE_USER')]
-    public function addItemAttribution(EntityManagerInterface $em, Request $request) : Response {
+    public function addItemAttribution(EntityManagerInterface $em, Request $request, AttributionRepository $attributionRepository) : Response {
         
         $attribution = null; 
 
@@ -170,6 +171,7 @@ class AttributionController extends AbstractController
             $attribution->setDescriptionProduct($data->getDescriptionProduct());
             $attribution->setRemarque($data->getRemarque());
             $attribution->setCollaborateur($data->getCollaborateur());
+            $attribution->setByUser($this->getUser()); 
             $attribution->setProduct($data->getProduct());            
             $this->addFlash(
                 'success',
