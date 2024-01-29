@@ -136,30 +136,32 @@
             </thead>
                 <tr>
                     <td class = "vide-tableau3">Approuvé par</td>
-                    <td>Samir DERRAHI</td>
+                    <td>DERRAHI Samir </td>
                     <td></td>
                     {% for attribution in attributions %}
                     <td> {{attribution.dateAttribution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}} </td>
-                    {%endfor%}
+                    {% endfor %}
                 </tr>
     
                 <tr>
                     <td class = "vide-tableau3" >Donnée par</td>
-                    <td>Fayaz Bavasahib ABDOULVAHIDE</td>
+                    {% for user in users %}
+                    <td>{{user.nom|upper}} {{user.prenom}}</td>
+                    {% endfor %}
                     <td></td>
                     {% for attribution in attributions %}
                     <td> {{attribution.dateAttribution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}} </td>
-                    {%endfor%}
+                    {% endfor %}
                 </tr>
                 {% for collaborateur in collaborateurs %}
                 <tr>
                     <td class = "vide-tableau3" >Receveur</td>
                     <td>{{collaborateur.nom | upper}} {{collaborateur.prenom}}</td>
-                {%endfor%}
+                {% endfor %}
                     <td></td>
                 {% for attribution in attributions %}
                     <td> {{attribution.dateAttribution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}} </td>
-                {%endfor%}
+                {% endfor %}
             </tr>
 
 
