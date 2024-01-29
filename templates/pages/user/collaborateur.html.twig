@@ -43,8 +43,9 @@
         <td>{{collaborateur.email}}</td>
         <td>
         {% for collaborateur in collaborateur.attributions %}
-            {% if collaborateur.id != ""%}
-              {{ collaborateur.id }}
+            {% if collaborateur.id is not empty %}
+              {{ collaborateur.id}}
+                {% if not loop.last %}-{% endif %}
             {% endif %}
         {% endfor %}
         </td>
