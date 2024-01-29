@@ -223,7 +223,7 @@ class AttributionController extends AbstractController
         );
         
         // Enregistrez le contenu du PDF dans un fichier local
-        $filename = 'bon_de_commande_N' . $id . '.pdf';
+        $filename = 'Bon de commande N°' . $id . '.pdf';
         $pdfFilePath = $this->getParameter('kernel.project_dir') . '/public/' . $filename;
 
         // Utilisez file_put_contents pour écrire le contenu dans le fichier

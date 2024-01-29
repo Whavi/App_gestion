@@ -39,6 +39,7 @@ class PdfGeneratorController extends AbstractController
         $collaborateur = $collaborateurRepository->findAllOrderedByInnerJoinNameContent($id);
         $product = $productRepository->findAllOrderedByInnerJoinProductContent($id);
         $attribution = $attributionRepository->findAllOrderedByInnerJoinDateAttributionContent($id);
+        $name = $attributionRepository->findAllOrderedByInnerJoinNamePdfContent($id);
         $descriptionAttribution = $attributionRepository->findAllOrderedByDescriptionAttribution($id);
         $user = $userRepository->findAllOrderedByInnerJoinNameContent($id);
         $remarque = $attributionRepository->findAllOrderedByInnerJoinRemarqueContent($id);
@@ -49,6 +50,7 @@ class PdfGeneratorController extends AbstractController
             'attributions' => $attribution,
             'descriptions' => $descriptionAttribution,
             'products' => $product,
+            'names' => $name,
             'users' => $user,
             'remarques' => $remarque,
         ];
@@ -63,7 +65,7 @@ class PdfGeneratorController extends AbstractController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        $filename = 'Bon_de_commande_N_' . $id . '.pdf';
+        $filename = 'Bon de commande N°' . $id . '.pdf';
 
         return new Response(
             $dompdf->stream($filename, ['Attachment' => false]),
@@ -84,6 +86,7 @@ class PdfGeneratorController extends AbstractController
         $attribution = $attributionRepository->findAllOrderedByInnerJoinDateAttributionContent($id);
         $descriptionAttribution = $attributionRepository->findAllOrderedByDescriptionAttribution($id);
         $user = $userRepository->findAllOrderedByInnerJoinNameContent($id);
+        $name = $attributionRepository->findAllOrderedByInnerJoinNamePdfContent($id);
         $remarque = $attributionRepository->findAllOrderedByInnerJoinRemarqueContent($id);
 
         $data = [
@@ -93,6 +96,7 @@ class PdfGeneratorController extends AbstractController
             'descriptions' => $descriptionAttribution,
             'products' => $product,
             'users' => $user,
+            'names' => $name,
             'remarques' => $remarque,
         ];
 

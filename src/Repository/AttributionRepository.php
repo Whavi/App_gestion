@@ -97,7 +97,7 @@ class AttributionRepository extends ServiceEntityRepository
     }
 
 
-   // SELECT a.date_attribution FROM attribution AS a WHERE a.id = $id
+   // SELECT a.date_attribution, a.date_restitution FROM attribution AS a WHERE a.id = $id
    public function findAllOrderedByInnerJoinDateAttributionContent($id): array
    {
         return $this->createQueryBuilder('a')
@@ -109,7 +109,7 @@ class AttributionRepository extends ServiceEntityRepository
    ;
    }
 
-   // SELECT a.date_attribution FROM attribution AS a WHERE a.id = $id
+   // SELECT a.descrpition_product FROM attribution AS a WHERE a.id = $id
    public function findAllOrderedByDescriptionAttribution($id): array
    {
         return $this->createQueryBuilder('a')
@@ -120,6 +120,19 @@ class AttributionRepository extends ServiceEntityRepository
         ->getResult()
    ;
    }
+
+      // SELECT a.descrpition_product FROM attribution AS a WHERE a.id = $id
+      public function findAllOrderedByInnerJoinNamePdfContent($id): array
+      {
+           return $this->createQueryBuilder('a')
+           ->select('a.PdfName')
+           ->where('a.id = :id')
+           ->setParameter('id', $id)
+           ->getQuery()
+           ->getResult()
+      ;
+      }
+
    public function findAllOrderedByInnerJoinRemarqueContent($id): array
    {
         return $this->createQueryBuilder('a')
