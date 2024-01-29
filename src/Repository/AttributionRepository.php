@@ -125,7 +125,7 @@ class AttributionRepository extends ServiceEntityRepository
       public function findAllOrderedByInnerJoinNamePdfContent($id): array
       {
            return $this->createQueryBuilder('a')
-           ->select('a.PdfName')
+           ->select('a.id')
            ->where('a.id = :id')
            ->setParameter('id', $id)
            ->getQuery()

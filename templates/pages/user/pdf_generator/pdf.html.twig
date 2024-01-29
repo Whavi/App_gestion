@@ -67,7 +67,7 @@
             <tr >
                 <td valign="top" class="vide-tableau3"> <img src="{{imageSrc}}" height="136" width="312"/></td>
             {% for name in names %}
-                <td align="left" colspan="1"><strong> Delivery Note ({{name.PdfName}})</strong></td>
+                <td align="left" colspan="1"><strong> Delivery Note (Bon de commande N°{{name.id}})</strong></td>
             {%endfor%}
             {% for product in products %}
                 <td align="left" valign = "top" >Identifiant produit: {{product.identifiant}}</td>
