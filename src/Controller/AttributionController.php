@@ -128,7 +128,7 @@ class AttributionController extends AbstractController
             $attributionRepository,
             $userRepository
         );
-        $filename = 'Bon_de_commande_N_' . $id . '.pdf';
+        $filename = 'Bon de commande N°' . $id . '.pdf';
         $email = (new TemplatedEmail())
             ->from('it@secours-islamique.org')
             ->to($collaborateurEmail)
@@ -181,7 +181,7 @@ class AttributionController extends AbstractController
             $em->flush();
 
             // Set the pdf_name based on the id and update the entity
-            $attribution->setPdfName("bon_de_commande_N" . $attribution->getId() . ".pdf");
+            $attribution->setPdfName("Bon de commande N°" . $attribution->getId() . ".pdf");
             $em->persist($attribution);
             $em->flush();
 
