@@ -22,7 +22,7 @@ class EditFormProductType extends AbstractType
                 'minLength' => '2',
                 'maxLength' => '50'
             ],
-            'label' => 'Nom',
+            'label' => 'Modèle',
             'label_attr' => [
                 'class' => 'form_label mt-4'
             ],
