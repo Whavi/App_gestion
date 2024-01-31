@@ -19,7 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -129,14 +129,13 @@ class AttributionController extends AbstractController
             $userRepository
         );
         $filename = 'Bon_de_commande_N_' . $id . '.pdf';
-        $email = (new Email())
+        $email = (new TemplatedEmail())
             ->from('it@secours-islamique.org')
             ->to($collaborateurEmail)
             ->priority(Email::PRIORITY_HIGH)
             ->subject('Bon de commande du prêt de matériel')
             ->attach($pdfContent, $filename, 'application/pdf')
-            ->text('Veuillez trouver ci-joint le bon de commande du prêt de matériel.
-            Qui doit être signer et envoyer soit par mail : it@secours-islamique.org ou imprimer et donner au service informatique');
+            ->htmlTemplate('pages/user/mail/mailpdf.html.twig');
            
             try {
                 $mailer->send($email);
