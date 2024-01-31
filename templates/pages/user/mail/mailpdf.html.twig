@@ -1,47 +1,65 @@
-
 {% block stylesheet%} 
 <style type="text/css">
     * {
-        font-family: Verdana, Arial, sans-serif;
+        font-family: 'Verdana', 'Arial', sans-serif;
         padding: 0;
-        margin:0;
+        margin: 0;
     }
+
     body {
-            background-color: #f4f4f4;
-            text-align: center;
-        }
+        background-color: #f4f4f4;
+        text-align: center;
+    }
 
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
+    .container {
+        width: 80%;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        h1, h2 {
-            color: #333;
-        }
+    h1, h2 {
+        color: #333;
+    }
 
-        p {
-            color: #555;
-            margin: 10px 0;
-        }
+    p {
+        color: #555;
+        margin: 10px 0;
+    }
+
+    .contact-info {
+        font-size: 14px;
+        margin-top: 20px;
+    }
+
+    .contact-info a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .signature {
+        margin-top: 30px;
+        font-style: italic;
+        color: #888;
+    }
 </style> 
-{%endblock%}
-
-{% block body %}
-  <div class="container">
-        <h1>Confirmation de Prêt de Matériel Informatique</h1>
-        <p>Merci d'avoir choisi notre service de prêt de matériel informatique.</p>
-        <p>Assurez-vous de respecter les dates de retour prévues. En cas de problème, n'hésitez pas à nous contacter : it@secours-islamique.org.</p>
-        <br>
-        <br>
-        <p>Merci pour votre confiance. Nous espérons que le matériel vous sera utile!</p>
-        <br>
-        <p>L'équipe IT du service informatique</p>
-    </div>
 {% endblock %}
 
+{% block body %}
+    <div class="container">
+        <h1>Confirmation de Prêt de Matériel Informatique</h1>
+        <p>Assurez-vous de respecter les dates de retour prévues. En cas de problème, n'hésitez pas à nous contacter :</p>
+        
+        <div class="contact-info">
+            <p>Email : <a href="mailto:it@secours-islamique.org">it@secours-islamique.org</a></p>
+        </div>
+
+        <p>Merci pour votre confiance. Nous espérons que le matériel vous sera utile!</p>
+        
+        <div class="signature">
+            <p>L'équipe IT du service informatique</p>
+        </div>
+    </div>
+{% endblock %}
