@@ -53,6 +53,7 @@ final class ProductFactory extends ModelFactory
             'identifiant' => self::faker()->randomNumber(8),
             'nom' => self::faker()->text(10),
             'updatedAt' => self::faker()->dateTime(),
+            'ref' => self::faker()->randomNumber(8),
         ];
     }
 

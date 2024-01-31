@@ -1,22 +1,23 @@
 version: '3'
 
 services:
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database:
     image: 'mariadb:latest'
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: app_gestion
     ports:
-
-      # To allow the host machine to access the ports below, modify the lines below.
-      # For example, to allow the host to connect to port 3306 on the container, you would change
-      # "3306" to "3306:3306". Where the first port is exposed to the host and the second is the container port.
-      # See https://docs.docker.com/compose/compose-file/compose-file-v3/#ports for more information.
       - '3306:3306'
-###< doctrine/doctrine-bundle ###
+  ###< doctrine/doctrine-bundle ###
+
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+      - '8025:8025'  # Web UI port
+      - '1025:1025'  # SMTP port
 
 volumes:
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database_data:
-###< doctrine/doctrine-bundle ###
+  ###< doctrine/doctrine-bundle ###
