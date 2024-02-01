@@ -51,7 +51,7 @@ final class CollaborateurFactory extends ModelFactory
             'departement' => DepartementFactory::new(),
             'nom' => self::faker()->lastName(),
             'prenom' => self::faker()->firstName(),
-            'email' => self::faker()->email(),
+            'email' => "stage.it@secours-islamique.org",
         ];
     }
 
