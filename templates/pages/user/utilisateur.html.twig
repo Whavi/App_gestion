@@ -22,7 +22,7 @@
 {% if is_granted('ROLE_ADMIN') %}
     <div class="d-flex flex-row mx-auto col-9 ">
       <div class="ml-auto">
-    <a href="{{path ("user_gestion_newItemUser")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Create new account</a>
+    <a href="{{path ("user_gestion_newItemUser")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New Account</a>
     
   </div>
 </div>
@@ -32,8 +32,7 @@
     <thead class= "table table-light">
           <tr>
             <th class ="w-10">#</th>
-            <th class ="w-25">Nom</th>
-            <th class ="w-25">Prénom</th>
+            <th class ="w-25">Nom | Prénom</th>
             <th class ="w-auto">Email</th>
           </tr>
         </thead>
@@ -45,9 +44,8 @@
       {%else%}
       {{user.id}}
       {%endif%} 
-      </td>
-      <td>{{user.nom |upper}}</td> 
-      <td>{{user.prenom}}</td> 
+     </td>
+     <td>{{user.nom |upper}} {{user.prenom}}</td> 
       <td>{{user.email}}</td> 
     </tr>
     {% endfor %}
@@ -58,7 +56,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Détails des utilisateurs</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Détails de l'utilisateur</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
