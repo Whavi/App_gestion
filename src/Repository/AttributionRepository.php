@@ -46,11 +46,28 @@ class AttributionRepository extends ServiceEntityRepository
 
     public function findAllOrderedByAttributionId(): array
     {
+        $now = new \DateTime();
+        $now->modify('-1 day');
+
         return $this->createQueryBuilder('a')
-            ->orderBy('a.id', 'DESC')
-            ->getQuery()
-            ->getResult()
-        ;
+        ->andWhere('a.dateRestitution >= :now')
+        ->setParameter('now', $now)
+        ->orderBy('a.id', 'DESC')
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function findOldAttributions(): array
+    {
+        $now = new \DateTime();
+        $now->modify('-1 day');
+
+        return $this->createQueryBuilder('a')
+        ->andWhere('a.dateRestitution <= :now')
+        ->setParameter('now', $now)
+        ->orderBy('a.id', 'DESC')
+        ->getQuery()
+        ->getResult();
     }
 
     public function findAllOrderedByInnerJoinProduit(): array

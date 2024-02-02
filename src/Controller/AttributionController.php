@@ -28,11 +28,15 @@ use App\Controller\PdfGeneratorController;
 
 class AttributionController extends AbstractController
 {
-    #[Route('/gestion/attribution', name: 'user_gestion_attribution')]
-    #[IsGranted('ROLE_USER')]
-    public function gestionAttribution( AttributionRepository $attributionRepository, Request $request, PaginatorInterface $paginatorInterface) {
+    #[Route('/gestion/attribution/{currentFunction}', name: 'user_gestion_attribution', defaults: ['currentFunction' => 'anciennesAttributions'])]    #[IsGranted('ROLE_USER')]
+    public function gestionAttribution( AttributionRepository $attributionRepository, Request $request, PaginatorInterface $paginatorInterface, $currentFunction) {
 
-        $attribution = $attributionRepository->findAllOrderedByAttributionId();
+        if ($currentFunction === 'anciennesAttributions') {
+            $attribution = $attributionRepository->findAllOrderedByAttributionId();
+        } else {
+            $attribution = $attributionRepository->findOldAttributions();
+        }
+    
 
         $posts = $paginatorInterface->paginate(
             $attribution,
@@ -54,12 +58,14 @@ class AttributionController extends AbstractController
         return $this->render('pages/user/attribution.html.twig', [
             'form' => $form->createView(),
             'attributions' => $posts,
+            'currentFunction' => $currentFunction,
         ],
         );
     }
     return $this->render('pages/user/attribution.html.twig', [
         'form' => $form->createView(),
         'attributions' => $posts,
+        'currentFunction' => $currentFunction,
     ]);
 }
     
