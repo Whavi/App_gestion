@@ -28,10 +28,11 @@ use App\Controller\PdfGeneratorController;
 
 class AttributionController extends AbstractController
 {
-    #[Route('/gestion/attribution/{currentFunction}', name: 'user_gestion_attribution', defaults: ['currentFunction' => 'anciennesAttributions'])]    #[IsGranted('ROLE_USER')]
+    #[Route('/gestion/attribution/{currentFunction}', name: 'user_gestion_attribution', defaults: ['currentFunction' => 'nouvellesAttributions'])]    
+    #[IsGranted('ROLE_USER')]
     public function gestionAttribution( AttributionRepository $attributionRepository, Request $request, PaginatorInterface $paginatorInterface, $currentFunction) {
 
-        if ($currentFunction === 'anciennesAttributions') {
+        if ($currentFunction === 'nouvellesAttributions') {
             $attribution = $attributionRepository->findAllOrderedByAttributionId();
         } else {
             $attribution = $attributionRepository->findOldAttributions();
