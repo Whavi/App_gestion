@@ -30,11 +30,9 @@
             <th class ="w-auto">Nom</th>
             <th class ="w-auto">Prenom</th>
             <th class ="w-25">Email</th> 
-            <th class ="w-25">Affectation</th>
+            <th class ="w-auto">Affectation</th>
             <th class ="w-auto">Département</th>
-            {% if is_granted('ROLE_ADMIN') %}
-            <th class ="w-25">Action</th>
-            {%endif%}
+            <th class ="w-auto">Action</th>
           </tr>
         </thead>
     {% for collaborateur in collaborateurs %}
@@ -53,12 +51,12 @@
         </td>
 
         <td>{{collaborateur.departement}}</td>
-        {% if is_granted('ROLE_ADMIN') %}
         <td>
+          {% if is_granted('ROLE_ADMIN') %}  
           <a type="submit" href=" {{path('user_gestion_collaborateur_delete', {'id': collaborateur.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
+          {%endif%} 
           <a type="submit"  href=" {{path('user_gestion_collaborateur_edit', {'id': collaborateur.id }) }}" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a>
         </td>
-        {%endif%} 
     </tr>
     {% endfor %}
     </table>
