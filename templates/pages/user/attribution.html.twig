@@ -16,7 +16,7 @@
     <div class="d-flex flex-row mx-auto col-9 ">
       <div class="ml-auto">
 <button id="toggleAttributions" class="btn btn-info" onclick="window.location.href='{{ path('user_gestion_attribution', {'currentFunction': (currentFunction == 'nouvellesAttributions') ? 'anciennesAttributions' : 'nouvellesAttributions'}) }}'">
-    Basculer entre les attributions
+    {{ (currentFunction == 'anciennesAttributions') ? 'Attribut récent' : 'Ancienne Attribut' }}
 </button>
     <a href="{{path ("user_gestion_newItemAttribution")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New Attribution</a>
   </div>
