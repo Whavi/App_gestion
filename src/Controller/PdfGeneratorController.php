@@ -21,10 +21,14 @@ class PdfGeneratorController extends AbstractController
         $img = $path;
         $type = pathinfo($img, PATHINFO_EXTENSION);
         $data = file_get_contents($img);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        return $base64;
+        if ($data !== false) {
+            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            return $base64;
+        } else {
+            // Gérer le cas où la lecture du fichier échoue
+            return null;
+        }
     }
-
 
 
     #[Route('/pdf/{id<\d+>}', name: 'user_gestion_attribution_pdf')]
