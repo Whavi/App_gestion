@@ -31,10 +31,10 @@
   <table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
     <thead class= "table table-light">
           <tr>
-            <th>#</th>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Email</th>
+            <th class ="w-10">#</th>
+            <th class ="w-25">Nom</th>
+            <th class ="w-25">Prénom</th>
+            <th class ="w-auto">Email</th>
           {% if is_granted('ROLE_ADMIN') %}
             <th>Action</th>
           {%endif%}
