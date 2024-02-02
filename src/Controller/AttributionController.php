@@ -28,7 +28,7 @@ use App\Controller\PdfGeneratorController;
 
 class AttributionController extends AbstractController
 {
-    #[Route('/gestion/attribution/{currentFunction}', name: 'user_gestion_attribution', defaults: ['currentFunction' => 'nouvellesAttributions'])]    
+    #[Route('/gestion/{currentFunction}/attribution/', name: 'user_gestion_attribution', defaults: ['currentFunction' => 'nouvellesAttributions'])]    
     #[IsGranted('ROLE_USER')]
     public function gestionAttribution( AttributionRepository $attributionRepository, Request $request, PaginatorInterface $paginatorInterface, $currentFunction) {
 

@@ -15,10 +15,10 @@
 
 <div class="d-flex flex-row mx-auto col-9 ">
     <div class="ml-auto">
-        <button id="toggleAttributions" class="btn btn-info" onclick="window.location.href='{{ path('user_gestion_attribution', {'currentFunction': (currentFunction == 'nouvellesAttributions') ? 'anciennesAttributions' : 'nouvellesAttributions'}) }}'">
+        <a id="toggleAttributions" class="btn btn-info" onclick="window.location.href='{{ path('user_gestion_attribution', {'currentFunction': (currentFunction == 'nouvellesAttributions') ? 'anciennesAttributions' : 'nouvellesAttributions'}) }}'">
             {{ (currentFunction == 'anciennesAttributions') ? 'Attribut récent' : 'Attribut ancien' }}
-        </button>
-        <a href="{{ path("user_gestion_newItemAttribution") }}" class="btn btn-primary border-width-2 d-none d-lg-inline-block">New Attribution</a>
+        </a>
+        <a href="{{ path("user_gestion_newItemAttribution") }}" onclick="event.preventDefault(); window.location.href = this.href;" class="btn btn-primary border-width-2 d-none d-lg-inline-block">New Attribution</a>
     </div>
 </div>
 
