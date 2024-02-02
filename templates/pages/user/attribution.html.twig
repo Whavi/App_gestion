@@ -3,60 +3,74 @@
 
 {% block body %}
 
-<h2 class = "text-center mt-3"> Liste d'attribution des produits</h2>
+<h2 class="text-center mt-3"> Liste d'attribution des produits</h2>
 
 {% for message in app.flashes('success') %}
-<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3" >{{message}}</div>
-{%endfor%} 
+    <div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3">{{ message }}</div>
+{% endfor %} 
 
-  <div class = "text-center">
-    {% include 'layouts/connected/_searchbarAttribution.html.twig'with { form:form } %} 
-    </div>
-
-    <div class="d-flex flex-row mx-auto col-9 ">
-      <div class="ml-auto">
-<button id="toggleAttributions" class="btn btn-info" onclick="window.location.href='{{ path('user_gestion_attribution', {'currentFunction': (currentFunction == 'nouvellesAttributions') ? 'anciennesAttributions' : 'nouvellesAttributions'}) }}'">
-    {{ (currentFunction == 'anciennesAttributions') ? 'Attribut récent' : 'Attribut ancien' }}
-</button>
-    <a href="{{path ("user_gestion_newItemAttribution")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New Attribution</a>
-  </div>
+<div class="text-center">
+    {% include 'layouts/connected/_searchbarAttribution.html.twig' with { form: form } %}
 </div>
 
-    <table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
-        <thead class= "table table-light">
-          <tr>
-            <th class ="w-auto">#</th>
-            <th class ="w-auto">Collaborateur</th>
-            <th class ="w-auto">Nom</th>
-            <th class ="w-auto">Category</th>
-            <th class ="w-auto">Date d'attribution</th>
-            <th class ="w-auto">Date de restitution</th>
-            <th class ="w-25">Action</th>
-          </tr>
-        </thead>
+<div class="d-flex flex-row mx-auto col-9 ">
+    <div class="ml-auto">
+        <button id="toggleAttributions" class="btn btn-info" onclick="window.location.href='{{ path('user_gestion_attribution', {'currentFunction': (currentFunction == 'nouvellesAttributions') ? 'anciennesAttributions' : 'nouvellesAttributions'}) }}'">
+            {{ (currentFunction == 'anciennesAttributions') ? 'Attribut récent' : 'Attribut ancien' }}
+        </button>
+        <a href="{{ path("user_gestion_newItemAttribution") }}" class="btn btn-primary border-width-2 d-none d-lg-inline-block">New Attribution</a>
+    </div>
+</div>
+
+<table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
+    <thead class="table table-light">
+        <tr>
+            <th class="w-auto">#</th>
+            <th class="w-auto">Collaborateur</th>
+            <th class="w-auto">Nom</th>
+            <th class="w-auto">Category</th>
+            <th class="w-auto">Date d'attribution</th>
+            <th class="w-auto">Date de restitution</th>
+        </tr>
+    </thead>
 
     {% for attribution in attributions %}
-    <tr class = "text-center "> 
-      <td class ="">{{attribution.id}}</td> 
-      <td class ="">{{attribution.collaborateur.nom}} {{attribution.collaborateur.prenom}}</td> 
-      <td class ="">{{attribution.product.nom}}</td> 
-      <td class ="">{{attribution.product.category}}</td> 
-      <td class ="">{{attribution.dateAttribution | format_datetime(locale='fr',pattern="dd/MM/yyyy")}}</td> 
-      <td class ="">{{attribution.dateRestitution | format_datetime(locale='fr',pattern="dd/MM/yyyy")}}</td> {#pattern="EEEE dd MMMM YYYY = Lundi 15 Janvier 2023#}
-      <td>
-        {% if is_granted('ROLE_ADMIN') %}
-        <a type="submit" href="{{path('user_gestion_attribution_delete', {'id': attribution.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
-        {%endif%}
-        <a type="submit" href="{{path('user_gestion_attribution_edit', {'id': attribution.id }) }}" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a>
-        <a target="_blank" type="submit" href="{{path('user_gestion_attribution_pdf', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto "> PDF </a>
-        <a type="submit" href="{{path('user_gestion_sign', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto "> SIGNER </a>
-        <a type="submit" href="{{path('user_gestion_send_mail', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto "> ENVOI MAIL </a>
-        </td>
-    </tr>
+    <tr class="text-center "> 
+        <td class=""><a href="" data-toggle="modal" data-target="#attributionModal{{ attribution.id }}">{{ attribution.id }}</a></td> 
+        <td class="">{{ attribution.collaborateur.nom }} {{ attribution.collaborateur.prenom }}</td> 
+        <td class="">{{ attribution.product.nom }}</td> 
+        <td class="">{{ attribution.product.category }}</td> 
+        <td class="">{{ attribution.dateAttribution | format_datetime(locale='fr', pattern="dd/MM/yyyy") }}</td> 
+        <td class="">{{ attribution.dateRestitution | format_datetime(locale='fr', pattern="dd/MM/yyyy") }}</td> {#pattern="EEEE dd MMMM YYYY = Lundi 15 Janvier 2023#}
 
     {% endfor %}
-    </table>
-    <div class = "mt-4 text-center">
-      {{ knp_pagination_render(attributions)}}
+</table>
+
+{% for attribution in attributions %}
+    <div class="modal fade" id="attributionModal{{ attribution.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Détails de l'attribution</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a type="submit" href="{{ path('user_gestion_attribution_delete', {'id': attribution.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
+                    {% endif %}
+                    <a type="submit" href="{{ path('user_gestion_attribution_edit', {'id': attribution.id }) }}" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a>
+                    <a target="_blank" type="submit" href="{{ path('user_gestion_attribution_pdf', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto "> PDF </a>
+                    <a type="submit" href="{{ path('user_gestion_sign', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto "> SIGNER </a>
+                    <a type="submit" href="{{ path('user_gestion_send_mail', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto "> ENVOI MAIL </a>
+                </div>
+            </div>
+        </div>
     </div>
+{% endfor %}
+
+
+<div class="mt-4 text-center">
+    {{ knp_pagination_render(attributions) }}
+</div>
+
 {% endblock %}
