@@ -35,26 +35,41 @@
             <th class ="w-25">Nom</th>
             <th class ="w-25">Prénom</th>
             <th class ="w-auto">Email</th>
-          {% if is_granted('ROLE_ADMIN') %}
-            <th>Action</th>
-          {%endif%}
           </tr>
         </thead>
     {% for user in users %}
     <tr class = "text-center"> 
-      <td>{{user.id}}</td>
-      <td>{{user.nom}}</td> 
+      <td>
+      {% if is_granted('ROLE_ADMIN') %}
+      <a href="" data-toggle="modal" data-target="#attributionModal{{user.id}}">{{user.id}}</a>
+      {%else%}
+      {{user.id}}
+      {%endif%} 
+      </td>
+      <td>{{user.nom |upper}}</td> 
       <td>{{user.prenom}}</td> 
       <td>{{user.email}}</td> 
-    {% if is_granted('ROLE_ADMIN') %}
-      <td>
-        <a type="submit" href="{{path('user_gestion_utilisateur_delete', {'id': user.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
-        <a type="submit" href="{{path('user_gestion_utilisateur_edit', {'id': user.id }) }}" class="btn btn-outline-primary btn-sm w-auto "> EDIT </a>
-      </td>
-      {%endif%} 
     </tr>
     {% endfor %}
     </table>
+
+    {% for user in users %}
+    <div class="modal fade" id="attributionModal{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Détails des utilisateurs</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <a type="submit" href="{{path('user_gestion_utilisateur_delete', {'id': user.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
+                    <a type="submit" href="{{path('user_gestion_utilisateur_edit', {'id': user.id }) }}" class="btn btn-outline-primary btn-sm w-auto "> EDIT </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
     <div class = "mt-4 text-center">
       {{ knp_pagination_render(users)}}
     </div>
