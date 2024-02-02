@@ -32,26 +32,40 @@
             <th class ="w-auto">Ref. log</th>
             <th class ="w-auto">Modèle</th>
             <th class ="w-auto">Catégorie</th>
-            {% if is_granted('ROLE_ADMIN') %}
-            <th class ="w-auto">Action</th>
-            {%endif%}
           </tr>
         </thead>
     {% for liste in listes %}
     <tr class = "text-center"> 
-      <td>{{liste.identifiant}}</td> 
+      <td> {% if is_granted('ROLE_ADMIN') %}
+            <a href="" data-toggle="modal" data-target="#attributionModal{{ liste.identifiant }}">{{ liste.identifiant }}</a
+            {% else %}
+              {{liste.identifiant}}
+            {% endif %}
+            </td> 
       <td>{{liste.ref}}</td> 
       <td>{{liste.nom}}</td> 
       <td>{{liste.category}}</td> 
-      {% if is_granted('ROLE_ADMIN') %}
-      <td>
-        <a type="submit" href="{{path('user_gestion_delete', {'id': liste.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
-        <a type="submit" href="{{path('user_gestion_edit', {'id': liste.id }) }}" class="btn btn-outline-primary btn-sm w-auto  "> EDIT </a>
-      </td> 
-      {%endif%}
     </tr>
     {% endfor %}
     </table>
+
+  {% for liste in listes %}
+    <div class="modal fade" id="attributionModal{{ liste.identifiant }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Détails du produit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <a type="submit" href="{{path('user_gestion_delete', {'id': liste.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
+                    <a type="submit" href="{{path('user_gestion_edit', {'id': liste.id }) }}" class="btn btn-outline-primary btn-sm w-auto  "> EDIT </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
     <div class = "mt-4 text-center">
       {{ knp_pagination_render(listes)}}
     </div>
