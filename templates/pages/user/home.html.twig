@@ -32,7 +32,9 @@
             <th class ="w-auto">Ref. log</th>
             <th class ="w-auto">Modèle</th>
             <th class ="w-auto">Catégorie</th>
+            {% if is_granted('ROLE_ADMIN') %}
             <th class ="w-auto">Action</th>
+            {%endif%}
           </tr>
         </thead>
     {% for liste in listes %}
@@ -41,10 +43,12 @@
       <td>{{liste.ref}}</td> 
       <td>{{liste.nom}}</td> 
       <td>{{liste.category}}</td> 
+      {% if is_granted('ROLE_ADMIN') %}
       <td>
         <a type="submit" href="{{path('user_gestion_delete', {'id': liste.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
         <a type="submit" href="{{path('user_gestion_edit', {'id': liste.id }) }}" class="btn btn-outline-primary btn-sm w-auto  "> EDIT </a>
       </td> 
+      {%endif%}
     </tr>
     {% endfor %}
     </table>

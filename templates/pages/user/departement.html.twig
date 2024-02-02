@@ -8,39 +8,42 @@
 
 
 {% for message in app.flashes('success') %}
-<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3" >{{message}}</div>
+  <div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3" >{{message}}</div>
 {%endfor%} 
 
 
   <div class ="text-center">
-    {% include 'layouts/connected/_searchbar.html.twig'with {
-      form:form
-    } %}
-    </div>
-
-
-    <div class="d-flex flex-row mx-auto col-9 ">
-      <div class="ml-auto">
-    <a href="{{path ("user_gestion_newItemDepartement")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Create new departement</a>
-    
+    {% include 'layouts/connected/_searchbar.html.twig'with { form:form } %}
   </div>
-</div>
 
+{% if is_granted('ROLE_ADMIN') %}
+  <div class="d-flex flex-row mx-auto col-9 ">
+    <div class="ml-auto">
+      <a href="{{path ("user_gestion_newItemDepartement")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New departement</a>
+    </div>
+  </div>
+{%endif%}
 
   <table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-50 mx-auto h5 text-center">
     <thead class= "table table-light">
           <tr>
             <th class ="w-auto" >#</th>
             <th class ="w-auto">Nom</th>
-            <th class ="w-25" >Action</th>
+            {% if is_granted('ROLE_ADMIN') %}
+            <th class ="w-25">Action</th>
+            {%endif%}
           </tr>
         </thead>
     {% for departement in departements %}
     <tr class = "text-center"> 
       <td>{{departement.id}}</td>
-      <td>{{departement.nom}}</td> 
-      <td><a type="submit" href="{{path('user_gestion_departement_delete', {'id': departement.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
-        <a type="submit" href="{{path('user_gestion_departement_edit', {'id': departement.id }) }}" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a></td> 
+      <td>{{departement.nom}}</td>
+      {% if is_granted('ROLE_ADMIN') %} 
+      <td>
+        <a type="submit" href="{{path('user_gestion_departement_delete', {'id': departement.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
+        <a type="submit" href="{{path('user_gestion_departement_edit', {'id': departement.id }) }}" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a>
+      </td>
+      {%endif%} 
     </tr>
     {% endfor %}
     </table>

@@ -8,7 +8,8 @@
 
 
 {% for message in app.flashes('success') %}
-<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3"" >{{message}}</div>
+<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3">{{message}}
+</div>
 {%endfor%} 
 
 
@@ -18,14 +19,14 @@
     } %}
     </div>
 
-
+{% if is_granted('ROLE_ADMIN') %}
     <div class="d-flex flex-row mx-auto col-9 ">
       <div class="ml-auto">
     <a href="{{path ("user_gestion_newItemUser")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Create new account</a>
     
   </div>
 </div>
-
+{%endif%}
 
   <table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
     <thead class= "table table-light">
@@ -34,7 +35,9 @@
             <th>Nom</th>
             <th>Prénom</th>
             <th>Email</th>
+          {% if is_granted('ROLE_ADMIN') %}
             <th>Action</th>
+          {%endif%}
           </tr>
         </thead>
     {% for user in users %}
@@ -43,8 +46,12 @@
       <td>{{user.nom}}</td> 
       <td>{{user.prenom}}</td> 
       <td>{{user.email}}</td> 
-      <td><a type="submit" href="{{path('user_gestion_utilisateur_delete', {'id': user.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
-        <a type="submit" href="{{path('user_gestion_utilisateur_edit', {'id': user.id }) }}" class="btn btn-outline-primary btn-sm w-auto "> EDIT </a></td> 
+    {% if is_granted('ROLE_ADMIN') %}
+      <td>
+        <a type="submit" href="{{path('user_gestion_utilisateur_delete', {'id': user.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
+        <a type="submit" href="{{path('user_gestion_utilisateur_edit', {'id': user.id }) }}" class="btn btn-outline-primary btn-sm w-auto "> EDIT </a>
+      </td>
+      {%endif%} 
     </tr>
     {% endfor %}
     </table>
