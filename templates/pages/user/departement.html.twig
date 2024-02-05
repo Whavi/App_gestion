@@ -23,20 +23,12 @@
 		<table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-50 mx-auto h5 text-center">
 			<thead class="table table-light">
 				<tr>
-					<th class="w-auto">#</th>
-					<th class="w-auto">Nom</th>
+					<th class="w-auto">Nom de département</th>
 				</tr>
 			</thead>
 			{% for departement in departements %}
 				<tr class="text-center">
-					<td>
-						{% if is_granted('ROLE_ADMIN') %}
-							<a href="" data-toggle="modal" data-target="#attributionModal{{departement.id}}">{{departement.id}}</a>
-							{%else%}
-							{{departement.id}}
-							{%endif%}
-          </td>
-					<td>{{departement.nom}}</td>
+					<td><a href="" data-toggle="modal" data-target="#attributionModal{{departement.id}}">{{departement.nom}}</a></td>
 				</tr>
 			{% endfor %}
 		</table>
@@ -53,10 +45,12 @@
 						</div>
 						<div class="modal-body">
 							<p>Département : {{departement.nom}}</p>
+            	{% if is_granted('ROLE_ADMIN') %}
 							<div style="background-color: gray;"><hr></div>
 							<a type="submit" href="{{path('user_gestion_departement_delete', {'id': departement.id }) }}" class="btn btn-danger btn-sm w-auto">DELETE</a>
 							<a type="submit" href="{{path('user_gestion_departement_edit', {'id': departement.id }) }}" class="btn btn-outline-primary btn-sm w-auto">EDIT</a>
-						</div>
+							{%endif%}						
+            </div>
 					</div>
 				</div>
 			</div>

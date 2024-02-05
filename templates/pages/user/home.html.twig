@@ -30,15 +30,12 @@
 		</thead>
 		{% for liste in listes %}
 			<tr class="text-center">
-				<td>
-					{% if is_granted('ROLE_ADMIN') %}
-						<a href="" data-toggle="modal" data-target="#attributionModal{{ liste.identifiant }}">{{ liste.identifiant }}</a{{liste.identifiant}}</td> {% else %} {% endif %}
-						<td>{{liste.ref}}</td>
-						<td>{{liste.nom}}</td>
-						<td>{{liste.category}}</td>
-					</tr>
-				{% endfor %}
+				<td><a href="" data-toggle="modal" data-target="#attributionModal{{ liste.identifiant }}">{{ liste.identifiant }}</a></td>
+				<td>{{liste.ref}}</td>
+				<td>{{liste.nom}}</td>
+				<td>{{liste.category}}</td>
 			</tr>
+				{% endfor %}
 		</table>
 
 		{% for liste in listes %}
@@ -52,14 +49,17 @@
 							</button>
 						</div>
 						<div class="modal-body">
-							<p>Numéro de série :{{ liste.identifiant }}</p>
-							<p>Ref. Log :{{liste.ref}}</p>
-							<p>Modèle :{{liste.nom}}</p>
-							<p>Catégory :{{liste.category}}</p>
+							<p>Numéro de série : {{ liste.identifiant }}</p>
+							<p>Ref. Log : {{liste.ref}}</p>
+							<p>Modèle : {{liste.nom}}</p>
+							<p>Catégory : {{liste.category}}</p>
+              {% if is_granted('ROLE_ADMIN') %}
 							<div style="background-color: gray;"><hr></div>
 							<a type="submit" href="{{path('user_gestion_delete', {'id': liste.id }) }}" class="btn btn-danger btn-sm w-auto ">DELETE</a>
 							<a type="submit" href="{{path('user_gestion_edit', {'id': liste.id }) }}" class="btn btn-outline-primary btn-sm w-auto  ">EDIT</a>
-						</div>
+	            {% endif %}
+
+            </div>
 					</div>
 				</div>
 			</div>

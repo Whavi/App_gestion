@@ -31,7 +31,7 @@
 		{% for collaborateur in collaborateurs %}
 
 			<tr class="text-center">
-				<td><a href="" data-toggle="modal" data-target="#attributionModal{{ collaborateur.nom }}">{{ collaborateur.nom |upper }}{{collaborateur.prenom}}</a></td>
+				<td><a href="" data-toggle="modal" data-target="#attributionModal{{ collaborateur.nom }}">{{ collaborateur.nom |upper }} {{collaborateur.prenom}}</a></td>
 				<td>{{collaborateur.email}}</td>
 				<td>
 					{% for collaborateur in collaborateur.attributions %}
@@ -57,8 +57,8 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<p>Collaborateur :{{collaborateur.nom|upper}} {{collaborateur.prenom}}</p>
-						<p>Email :{{collaborateur.email}}</p>
+						<p>Collaborateur : {{collaborateur.nom|upper}} {{collaborateur.prenom}}</p>
+						<p>Email : {{collaborateur.email}}</p>
 						<p>Affectation :
 							{% for collaborateur in collaborateur.attributions %}
 								{% if collaborateur.id is not empty %}

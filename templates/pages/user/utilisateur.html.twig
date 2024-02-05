@@ -24,27 +24,20 @@
 		<table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
 			<thead class="table table-light">
 				<tr>
-					<th class="w-10">#</th>
-					<th class="w-25">Nom | Prénom</th>
+					<th class="w-auto">Nom | Prénom</th>
 					<th class="w-auto">Email</th>
 				</tr>
 			</thead>
 			{% for user in users %}
 				<tr class="text-center">
-					<td>
-						{% if is_granted('ROLE_ADMIN') %}
-							<a href="" data-toggle="modal" data-target="#attributionModal{{user.id}}">{{user.id}}</a>
-							{%else%}
-							{{user.id}}
-							{%endif%}</td>
-					<td>{{user.nom |upper}} {{user.prenom}}</td>
+					<td><a href="" data-toggle="modal" data-target="#attributionModal{{user.nom}}">{{user.nom |upper}} {{user.prenom}}</a></td>	
 					<td>{{user.email}}</td>
 				</tr>
 			{% endfor %}
 		</table>
 
 		{% for user in users %}
-			<div class="modal fade" id="attributionModal{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal fade" id="attributionModal{{user.nom}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content bg-dark">
 						<div class="modal-header">
@@ -54,10 +47,12 @@
 						<div class="modal-body">
 							<p>Utilisateur : {{user.nom |upper}} {{user.prenom}}</p>
 							<p>Email : {{user.email}}</p>
+            	{% if is_granted('ROLE_ADMIN') %}
 							<div style="background-color: gray;"><hr></div>
 							<a type="submit" href="{{path('user_gestion_utilisateur_delete', {'id': user.id }) }}" class="btn btn-danger btn-sm w-auto">DELETE</a>
 							<a type="submit" href="{{path('user_gestion_utilisateur_edit', {'id': user.id }) }}" class="btn btn-outline-primary btn-sm w-auto ">EDIT</a>
-						</div>
+					  	{%endif%}
+            </div>
 					</div>
 				</div>
 			</div>
