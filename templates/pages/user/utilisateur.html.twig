@@ -60,6 +60,9 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
+                    <p>Utilisateur : {{user.nom |upper}} {{user.prenom}}</p> 
+                    <p>Email : {{user.email}}</p> 
+                    <div style="background-color: gray;"><hr></div>
                     <a type="submit" href="{{path('user_gestion_utilisateur_delete', {'id': user.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
                     <a type="submit" href="{{path('user_gestion_utilisateur_edit', {'id': user.id }) }}" class="btn btn-outline-primary btn-sm w-auto "> EDIT </a>
                 </div>

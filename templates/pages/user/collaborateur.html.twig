@@ -61,6 +61,18 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
+                  <p>Collaborateur : {{collaborateur.nom|upper}} {{collaborateur.prenom}} </p>
+                  <p>Email : {{collaborateur.email}}</p>
+                  <p>Affectation :  
+                  {% for collaborateur in collaborateur.attributions %}
+                    {% if collaborateur.id is not empty %}
+                      {{ collaborateur.id}}
+                    {% if not loop.last %}-{% endif %}
+                    {% endif %}
+                  {% endfor %}
+                  </p>
+                  <p>Département : {{collaborateur.departement}}</p>
+                  <div style="background-color: gray;"><hr></div>
                    {% if is_granted('ROLE_ADMIN') %}  
                   <a type="submit" href=" {{path('user_gestion_collaborateur_delete', {'id': collaborateur.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
                   {%endif%} 
