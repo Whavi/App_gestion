@@ -1,89 +1,85 @@
 {% extends "layouts/connected/baseConnected.html.twig" %}
-{% block title %} Gestion de collaborateur - SIF {% endblock %}
-
-
+{% block title %}Gestion de collaborateur - SIF{% endblock %}
 
 {% block body %}
-<h2 class = "text-center mt-4 "> Gestion des collaborateurs </h2>
+	<h2 class="text-center mt-4 ">Gestion des collaborateurs</h2>
 
-{% for message in app.flashes('success') %}
-<div id="alert" class="alert alert-success alert-link badge badge-pill badge-success ml-3" >
-  <strong>{{message}}</strong> 
+	{% for message in app.flashes('success') %}
+		<div id="alert" class="alert alert-success alert-link badge badge-pill badge-success ml-3">
+			<strong>{{message}}</strong>
+		</div>
+		{%endfor%}
 
-</div>
-{%endfor%} 
+		<div class="text-center">
+			{% include 'layouts/connected/_searchbar.html.twig'with {form:form} %}
+		</div>
+		<div class="d-flex flex-row mx-auto col-9 ">
+			<div class="ml-auto">
+				<a href="{{path ("user_gestion_newItemCollaborateur")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New Collaborateur</a>
+		</div>
+	</div>
 
-  <div class = "text-center">
-    {% include 'layouts/connected/_searchbar.html.twig'with {
-      form:form
-    } %}
-    </div>
-    <div class="d-flex flex-row mx-auto col-9 ">
-      <div class="ml-auto">
-    <a href="{{path ("user_gestion_newItemCollaborateur")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New Collaborateur</a>
-  </div>
-</div>
+	<table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
+		<thead class="table table-light">
+			<tr>
+				<th class="w-auto">Nom | Prénom</th>
+				<th class="w-25">Email</th>
+				<th class="w-auto">Affectation</th>
+				<th class="w-auto">Département</th>
+			</tr>
+		</thead>
+		{% for collaborateur in collaborateurs %}
 
- <table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
-    <thead class= "table table-light">
-          <tr>
-            <th class ="w-auto">Nom | Prénom</th>
-            <th class ="w-25">Email</th> 
-            <th class ="w-auto">Affectation</th>
-            <th class ="w-auto">Département</th>
-          </tr>
-        </thead>
-    {% for collaborateur in collaborateurs %}
-   
-    <tr class = "text-center">
-        <td><a href="" data-toggle="modal" data-target="#attributionModal{{ collaborateur.nom }}">{{ collaborateur.nom |upper }} {{collaborateur.prenom}}</a></td>
-        <td>{{collaborateur.email}}</td>
-        <td>
-        {% for collaborateur in collaborateur.attributions %}
-            {% if collaborateur.id is not empty %}
-              {{ collaborateur.id}}
-                {% if not loop.last %}-{% endif %}
-            {% endif %}
-        {% endfor %}
-        </td>
+			<tr class="text-center">
+				<td><a href="" data-toggle="modal" data-target="#attributionModal{{ collaborateur.nom }}">{{ collaborateur.nom |upper }}{{collaborateur.prenom}}</a></td>
+				<td>{{collaborateur.email}}</td>
+				<td>
+					{% for collaborateur in collaborateur.attributions %}
+						{% if collaborateur.id is not empty %}
+							{{ collaborateur.id}}
+							{% if not loop.last %} - {% endif %}
+						{% endif %}
+					{% endfor %}
+				</td>
+				<td>{{collaborateur.departement}}</td>
+			</tr>
+		{% endfor %}
+	</table>
+	{% for collaborateur in collaborateurs %}
 
-        <td>{{collaborateur.departement}}</td>
-    </tr>
-    {% endfor %}
-    </table>
-    {% for collaborateur in collaborateurs %}
+		<div class="modal fade" id="attributionModal{{ collaborateur.nom }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content bg-dark">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Détails du collaborateur</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>Collaborateur :{{collaborateur.nom|upper}} {{collaborateur.prenom}}</p>
+						<p>Email :{{collaborateur.email}}</p>
+						<p>Affectation :
+							{% for collaborateur in collaborateur.attributions %}
+								{% if collaborateur.id is not empty %}
+									{{ collaborateur.id}}
+									{% if not loop.last %} - {% endif %}
+								{% endif %}
+							{% endfor %}
+						</p>
+						<p>Département : {{collaborateur.departement}}</p>
+						<div style="background-color: gray;"><hr></div>
+						{% if is_granted('ROLE_ADMIN') %}
+							<a type="submit" href=" {{path('user_gestion_collaborateur_delete', {'id': collaborateur.id }) }}" class="btn btn-danger btn-sm w-auto ">DELETE</a>
+							{%endif%}
+							<a type="submit" href=" {{path('user_gestion_collaborateur_edit', {'id': collaborateur.id }) }}" class="btn btn-outline-primary btn-sm w-auto">EDIT</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
 
-      <div class="modal fade" id="attributionModal{{ collaborateur.nom }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Détails du collaborateur</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                  <p>Collaborateur : {{collaborateur.nom|upper}} {{collaborateur.prenom}} </p>
-                  <p>Email : {{collaborateur.email}}</p>
-                  <p>Affectation :  
-                  {% for collaborateur in collaborateur.attributions %}
-                    {% if collaborateur.id is not empty %}
-                      {{ collaborateur.id}}
-                    {% if not loop.last %}-{% endif %}
-                    {% endif %}
-                  {% endfor %}
-                  </p>
-                  <p>Département : {{collaborateur.departement}}</p>
-                  <div style="background-color: gray;"><hr></div>
-                   {% if is_granted('ROLE_ADMIN') %}  
-                  <a type="submit" href=" {{path('user_gestion_collaborateur_delete', {'id': collaborateur.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
-                  {%endif%} 
-                  <a type="submit"  href=" {{path('user_gestion_collaborateur_edit', {'id': collaborateur.id }) }}" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-
-    <div class = "mt-4 text-center">
-      {{ knp_pagination_render(collaborateurs)}}
-    </div>
-{% endblock %}
+		<div class="mt-4 text-center">
+			{{ knp_pagination_render(collaborateurs)}}
+		</div>
+	{% endblock %}

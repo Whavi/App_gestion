@@ -1,77 +1,69 @@
 {% extends "layouts/connected/baseConnected.html.twig" %}
 {% block title %} Gestion de fourniture - SIF {% endblock %}
 
+{% block body %} <h2 class="text-center mt-4">Gestion des comptes Utilisateurs</h2>
 
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3">{{message}}
+		</div>
+		{%endfor%}
 
-{% block body %}
-<h2 class = "text-center mt-4"> Gestion des comptes Utilisateurs </h2>
+		<div class="text-center">
+			{% include 'layouts/connected/_searchbar.html.twig'with { form:form } %}
+		</div>
 
+		{% if is_granted('ROLE_ADMIN') %}
+			<div class="d-flex flex-row mx-auto col-9 ">
+				<div class="ml-auto">
+					<a href="{{path ("user_gestion_newItemUser")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New Account</a>
 
-{% for message in app.flashes('success') %}
-<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3">{{message}}
-</div>
-{%endfor%} 
+			</div>
+		</div>
+		{%endif%}
 
+		<table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
+			<thead class="table table-light">
+				<tr>
+					<th class="w-10">#</th>
+					<th class="w-25">Nom | Prénom</th>
+					<th class="w-auto">Email</th>
+				</tr>
+			</thead>
+			{% for user in users %}
+				<tr class="text-center">
+					<td>
+						{% if is_granted('ROLE_ADMIN') %}
+							<a href="" data-toggle="modal" data-target="#attributionModal{{user.id}}">{{user.id}}</a>
+							{%else%}
+							{{user.id}}
+							{%endif%}</td>
+					<td>{{user.nom |upper}} {{user.prenom}}</td>
+					<td>{{user.email}}</td>
+				</tr>
+			{% endfor %}
+		</table>
 
-  <div class ="text-center">
-    {% include 'layouts/connected/_searchbar.html.twig'with {
-      form:form
-    } %}
-    </div>
+		{% for user in users %}
+			<div class="modal fade" id="attributionModal{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content bg-dark">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Détails de l'utilisateur</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<p>Utilisateur : {{user.nom |upper}} {{user.prenom}}</p>
+							<p>Email : {{user.email}}</p>
+							<div style="background-color: gray;"><hr></div>
+							<a type="submit" href="{{path('user_gestion_utilisateur_delete', {'id': user.id }) }}" class="btn btn-danger btn-sm w-auto">DELETE</a>
+							<a type="submit" href="{{path('user_gestion_utilisateur_edit', {'id': user.id }) }}" class="btn btn-outline-primary btn-sm w-auto ">EDIT</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
 
-{% if is_granted('ROLE_ADMIN') %}
-    <div class="d-flex flex-row mx-auto col-9 ">
-      <div class="ml-auto">
-    <a href="{{path ("user_gestion_newItemUser")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New Account</a>
-    
-  </div>
-</div>
-{%endif%}
-
-  <table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
-    <thead class= "table table-light">
-          <tr>
-            <th class ="w-10">#</th>
-            <th class ="w-25">Nom | Prénom</th>
-            <th class ="w-auto">Email</th>
-          </tr>
-        </thead>
-    {% for user in users %}
-    <tr class = "text-center"> 
-      <td>
-      {% if is_granted('ROLE_ADMIN') %}
-      <a href="" data-toggle="modal" data-target="#attributionModal{{user.id}}">{{user.id}}</a>
-      {%else%}
-      {{user.id}}
-      {%endif%} 
-     </td>
-     <td>{{user.nom |upper}} {{user.prenom}}</td> 
-      <td>{{user.email}}</td> 
-    </tr>
-    {% endfor %}
-    </table>
-
-    {% for user in users %}
-    <div class="modal fade" id="attributionModal{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Détails de l'utilisateur</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                    <p>Utilisateur : {{user.nom |upper}} {{user.prenom}}</p> 
-                    <p>Email : {{user.email}}</p> 
-                    <div style="background-color: gray;"><hr></div>
-                    <a type="submit" href="{{path('user_gestion_utilisateur_delete', {'id': user.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
-                    <a type="submit" href="{{path('user_gestion_utilisateur_edit', {'id': user.id }) }}" class="btn btn-outline-primary btn-sm w-auto "> EDIT </a>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endfor %}
-
-    <div class = "mt-4 text-center">
-      {{ knp_pagination_render(users)}}
-    </div>
-{% endblock %}
+		<div class="mt-4 text-center">
+			{{ knp_pagination_render(users)}}
+		</div>
+	{% endblock %}

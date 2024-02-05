@@ -1,79 +1,71 @@
 {% extends "layouts/connected/baseConnected.html.twig" %}
-{% block title %} Gestion de fourniture - SIF {% endblock %}
-
+{% block title %}Gestion de fourniture - SIF{% endblock %}
 
 
 {% block body %}
+	<h2 class="text-center mt-3">Liste de fourniture dans la base de donnée</h2>
 
-<h2 class = "text-center mt-3"> Liste de fourniture dans la base de donnée </h2>
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3">{{message}}</div>
+		{%endfor%}
 
-{% for message in app.flashes('success') %}
-<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3" >{{message}}</div>
-{%endfor%} 
+		<div class="text-center">
+			{% include 'layouts/connected/_searchbarProduct.html.twig'with {form:form} %}
+		</div>
 
-  <div class = "text-center">
-    {% include 'layouts/connected/_searchbarProduct.html.twig'with {
-      form:form
-    } %}
-    </div>
+		<div class="d-flex flex-row mx-auto col-9 ">
+			<div class="ml-auto">
+				<a href="{{path ("user_gestion_newItemProduct")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New Product</a>
+		</div>
+	</div>
 
-    <div class="d-flex flex-row mx-auto col-9 ">
-      <div class="ml-auto">
-       
-    <a href="{{path ("user_gestion_newItemProduct")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New Product</a>
-     
-  </div>
-</div>
+	<table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
+		<thead class="table table-light">
+			<tr>
+				<th class="w-auto">Numéro de Série</th>
+				<th class="w-auto">Ref. log</th>
+				<th class="w-auto">Modèle</th>
+				<th class="w-auto">Catégorie</th>
+			</tr>
+		</thead>
+		{% for liste in listes %}
+			<tr class="text-center">
+				<td>
+					{% if is_granted('ROLE_ADMIN') %}
+						<a href="" data-toggle="modal" data-target="#attributionModal{{ liste.identifiant }}">{{ liste.identifiant }}</a{{liste.identifiant}}</td> {% else %} {% endif %}
+						<td>{{liste.ref}}</td>
+						<td>{{liste.nom}}</td>
+						<td>{{liste.category}}</td>
+					</tr>
+				{% endfor %}
+			</tr>
+		</table>
 
-    <table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-75 mx-auto h5 text-center">
-        <thead class= "table table-light">
-          <tr>
-            <th class ="w-auto">Numéro de Série</th>
-            <th class ="w-auto">Ref. log</th>
-            <th class ="w-auto">Modèle</th>
-            <th class ="w-auto">Catégorie</th>
-          </tr>
-        </thead>
-    {% for liste in listes %}
-    <tr class = "text-center"> 
-      <td> {% if is_granted('ROLE_ADMIN') %}
-            <a href="" data-toggle="modal" data-target="#attributionModal{{ liste.identifiant }}">{{ liste.identifiant }}</a
-            {% else %}
-              {{liste.identifiant}}
-            {% endif %}
-            </td> 
-      <td>{{liste.ref}}</td> 
-      <td>{{liste.nom}}</td> 
-      <td>{{liste.category}}</td> 
-    </tr>
-    {% endfor %}
-    </table>
+		{% for liste in listes %}
+			<div class="modal fade" id="attributionModal{{ liste.identifiant }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content bg-dark">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Détails du produit</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p>Numéro de série :{{ liste.identifiant }}</p>
+							<p>Ref. Log :{{liste.ref}}</p>
+							<p>Modèle :{{liste.nom}}</p>
+							<p>Catégory :{{liste.category}}</p>
+							<div style="background-color: gray;"><hr></div>
+							<a type="submit" href="{{path('user_gestion_delete', {'id': liste.id }) }}" class="btn btn-danger btn-sm w-auto ">DELETE</a>
+							<a type="submit" href="{{path('user_gestion_edit', {'id': liste.id }) }}" class="btn btn-outline-primary btn-sm w-auto  ">EDIT</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
 
-  {% for liste in listes %}
-    <div class="modal fade" id="attributionModal{{ liste.identifiant }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Détails du produit</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                    <p> Numéro de série : {{ liste.identifiant }}</p> 
-                    <p>Ref. Log : {{liste.ref}}</p> 
-                    <p>Modèle : {{liste.nom}}</p> 
-                    <p>Catégory : {{liste.category}}</p> 
-                    <div style="background-color: gray;"><hr></div>
-                    <a type="submit" href="{{path('user_gestion_delete', {'id': liste.id }) }}" class="btn btn-danger btn-sm w-auto "> DELETE </a>
-                    <a type="submit" href="{{path('user_gestion_edit', {'id': liste.id }) }}" class="btn btn-outline-primary btn-sm w-auto  "> EDIT </a>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endfor %}
-
-    <div class = "mt-4 text-center">
-      {{ knp_pagination_render(listes)}}
-    </div>
-{% endblock %}
-
-
+		<div class="mt-4 text-center">
+			{{ knp_pagination_render(listes)}}
+		</div>
+	{% endblock %}

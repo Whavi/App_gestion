@@ -1,70 +1,68 @@
 {% extends "layouts/connected/baseConnected.html.twig" %}
-{% block title %} Gestion de fourniture - SIF {% endblock %}
-
-
+{% block title %}Gestion de fourniture - SIF{% endblock %}
 
 {% block body %}
-<h2 class = "text-center mt-4"> Gestion des départements </h2>
+	<h2 class="text-center mt-4">Gestion des départements</h2>
 
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3">{{message}}</div>
+		{%endfor%}
 
-{% for message in app.flashes('success') %}
-  <div class="alert alert-success alert-link badge badge-pill badge-success sticky-lg-top ml-3" >{{message}}</div>
-{%endfor%} 
+		<div class="text-center">
+			{% include 'layouts/connected/_searchbar.html.twig'with { form:form } %}
+		</div>
 
+		{% if is_granted('ROLE_ADMIN') %}
+			<div class="d-flex flex-row mx-auto col-9 ">
+				<div class="ml-auto">
+					<a href="{{path ("user_gestion_newItemDepartement")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New Departement</a>
+			</div>
+		</div>
+		{%endif%}
 
-  <div class ="text-center">
-    {% include 'layouts/connected/_searchbar.html.twig'with { form:form } %}
-  </div>
+		<table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-50 mx-auto h5 text-center">
+			<thead class="table table-light">
+				<tr>
+					<th class="w-auto">#</th>
+					<th class="w-auto">Nom</th>
+				</tr>
+			</thead>
+			{% for departement in departements %}
+				<tr class="text-center">
+					<td>
+						{% if is_granted('ROLE_ADMIN') %}
+							<a href="" data-toggle="modal" data-target="#attributionModal{{departement.id}}">{{departement.id}}</a>
+							{%else%}
+							{{departement.id}}
+							{%endif%}
+          </td>
+					<td>{{departement.nom}}</td>
+				</tr>
+			{% endfor %}
+		</table>
 
-{% if is_granted('ROLE_ADMIN') %}
-  <div class="d-flex flex-row mx-auto col-9 ">
-    <div class="ml-auto">
-      <a href="{{path ("user_gestion_newItemDepartement")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>New Departement</a>
-    </div>
-  </div>
-{%endif%}
+		{% for departement in departements %}
+			<div class="modal fade" id="attributionModal{{departement.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content bg-dark">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Détails du département</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p>Département : {{departement.nom}}</p>
+							<div style="background-color: gray;"><hr></div>
+							<a type="submit" href="{{path('user_gestion_departement_delete', {'id': departement.id }) }}" class="btn btn-danger btn-sm w-auto">DELETE</a>
+							<a type="submit" href="{{path('user_gestion_departement_edit', {'id': departement.id }) }}" class="btn btn-outline-primary btn-sm w-auto">EDIT</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
 
-  <table class="table table-sm table-dark table-responsive-md table-bordered table-hover mt-4 w-50 mx-auto h5 text-center">
-    <thead class= "table table-light">
-          <tr>
-            <th class ="w-auto" >#</th>
-            <th class ="w-auto">Nom</th>
-          </tr>
-        </thead>
-    {% for departement in departements %}
-    <tr class = "text-center"> 
-      <td>
-      {% if is_granted('ROLE_ADMIN') %}
-      <a href="" data-toggle="modal" data-target="#attributionModal{{departement.id}}">{{departement.id}}</a>
-      {%else%}
-      {{departement.id}}
-      {%endif%} 
-      </td>
-      <td>{{departement.nom}}</td>
-    </tr>
-    {% endfor %}
-    </table>
-
-    {% for departement in departements %}
-    <div class="modal fade" id="attributionModal{{departement.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Détails du département</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                    <p>Département : {{departement.nom}}</p>
-                    <div style="background-color: gray;"><hr></div>
-                    <a type="submit" href="{{path('user_gestion_departement_delete', {'id': departement.id }) }}" class="btn btn-danger btn-sm w-auto"> DELETE </a>
-                    <a type="submit" href="{{path('user_gestion_departement_edit', {'id': departement.id }) }}" class="btn btn-outline-primary btn-sm w-auto"> EDIT </a>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endfor %}
-
-    <div class = "mt-4 text-center ">
-      {{ knp_pagination_render(departements)}}
-    </div>
-{% endblock %}
+		<div class="mt-4 text-center ">
+			{{ knp_pagination_render(departements)}}
+		</div>
+	{% endblock %}
