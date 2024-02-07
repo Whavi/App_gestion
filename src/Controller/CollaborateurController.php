@@ -60,7 +60,7 @@ class CollaborateurController extends AbstractController
     
     
      #[Route('/gestion/compte/collaborateur/delete/{id}', name: 'user_gestion_collaborateur_delete')]
-     #[IsGranted('ROLE_USER')]
+     #[IsGranted('ROLE_ADMIN')]
     public function gestionCollaborateurDelete($id, CollaborateurRepository $collaborateurRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $collaborateur = $collaborateurRepository->find($id);
         if ($collaborateur === null) {

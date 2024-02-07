@@ -57,7 +57,7 @@ class DepartementController extends AbstractController
 }
     
     #[Route('/gestion/departement/delete/{id}', name: 'user_gestion_departement_delete', methods: ['GET', 'DELETE'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_ADMIN')]
     public function gestionDepartementDelete($id, DepartementRepository $departementRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $departement = $departementRepository->find($id);
         if ($departement === null) {
@@ -73,7 +73,7 @@ class DepartementController extends AbstractController
 
 
     #[Route('/gestion/departement/edit/{id}', name: 'user_gestion_departement_edit')]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_ADMIN')]
     public function gestionDepartementEdit($id, DepartementRepository $departementRepository, Request $request, EntityManagerInterface $manager) : Response {
        $departement = $departementRepository->find($id);
 
@@ -101,7 +101,7 @@ class DepartementController extends AbstractController
     }
 
     #[Route('/gestion/departement/addDepartement', name: 'user_gestion_newItemDepartement')]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_ADMIN')]
     public function addItemDepartement(EntityManagerInterface $em, Request $request) : Response {
         
         $form = $this->createForm(UserFormDepartementType::class);

@@ -72,7 +72,7 @@ class AttributionController extends AbstractController
     
 
     #[Route('/gestion/attribution/delete/{id}', name: 'user_gestion_attribution_delete', methods: ['GET', 'DELETE'])]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_ADMIN')]
     public function gestionAttributionDelete($id, AttributionRepository $attributionRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $attribution = $attributionRepository->find($id);
         if ($attribution === null) {

@@ -58,7 +58,7 @@ class ProductController extends AbstractController
        }
    
    #[Route('/gestion/delete/{id}', name: 'user_gestion_delete')]
-   #[IsGranted('ROLE_USER')]
+   #[IsGranted('ROLE_ADMIN')]
 //    #[IsGranted('ROLE_ADMIN')]
    public function gestionProductDelete($id, ProductRepository $productRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
        $product = $productRepository->find($id);
