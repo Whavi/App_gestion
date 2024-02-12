@@ -14,7 +14,9 @@
 
 	<div class="d-flex flex-row mx-auto col-9 ">
 		<div class="ml-auto">
-			<a href="{{ path("user_gestion_attribution_excel") }}" class="btn btn-primary border-width-2 d-none d-lg-inline-block">Exporter Excel</a>
+			<a href="{{ path('user_gestion_attribution_excel', {'currentFunction': (currentFunction == 'nouvellesAttributions') ? 'nouvellesAttributions' : 'anciennesAttributions'}) }}" class="btn btn-primary border-width-2 d-none d-lg-inline-block">
+    		Exporter Excel {{ (currentFunction == 'nouvellesAttributions') ? '(Nouvelles Attributions)' : '(Anciennes Attributions)' }}
+			</a>
 			<a id="toggleAttributions" class="btn btn-info" onclick="window.location.href='{{ path('user_gestion_attribution', {'currentFunction': (currentFunction == 'nouvellesAttributions') ? 'anciennesAttributions' : 'nouvellesAttributions'}) }}'">
 				{{ (currentFunction == 'anciennesAttributions') ? 'Attribut récent' : 'Attribut ancien' }}
 			</a>
