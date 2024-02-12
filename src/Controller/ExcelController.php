@@ -81,7 +81,14 @@ class ExcelController extends AbstractController
 
             // Appliquer un style aux cellules de données
             $dataStyle = [
-                'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+                'borders' => [
+                    'allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN], // Trait moins épais uniquement sur les côtés horizontaux
+                    'vertical' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM], // Trait plus épais uniquement sur les côtés verticaux
+                ],
+                'alignment' => [
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                ],
             ];
             $sheet->getStyle('A' . $row . ':L' . $row)->applyFromArray($dataStyle);
 
