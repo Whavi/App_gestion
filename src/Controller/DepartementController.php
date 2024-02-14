@@ -24,8 +24,14 @@ class DepartementController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function gestionDepartement(LoggerInterface $logger, DepartementRepository $departementRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
+        $currentDateTime = new \DateTime();
         $users = $departementRepository->findAllOrderedByDepartementRank();
-
+        
+        $logger->info("{user} est rentré dans la page d'accueil du département | heure => {date}", 
+        [
+        'user'=>$this->getUser(),
+        'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+    ]);
         $posts = $paginatorInterface->paginate(
             $users,
             $request->query->getInt('page', 1),
@@ -44,6 +50,13 @@ class DepartementController extends AbstractController
                     $request->query->getInt('page', 1),
                     12);
 
+                $logger->info("{user} fait une recherche dans la page département | recherche => {rech} | heure => {date}", 
+                [
+                'user'=>$this->getUser(),
+                'rech'=>$searchDataDepartement->getRecherche(),
+                'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+                ]);
+
 
         return $this->render('pages/user/departement.html.twig', [
             'form' => $form->createView(),
@@ -61,6 +74,7 @@ class DepartementController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function gestionDepartementDelete($id,LoggerInterface $logger,  DepartementRepository $departementRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $departement = $departementRepository->find($id);
+        $currentDateTime = new \DateTime();
         if ($departement === null) {
             return $this->redirectToRoute('user_gestion_departement');
             }
@@ -68,6 +82,12 @@ class DepartementController extends AbstractController
         $manager = $doctrine->getManager();
         $manager->remove($departement);
         $manager->flush();
+        $logger->info("{user} a supprimer le département {dep} | heure de suppréssion => {date}", 
+        ['id'=> $id,
+        'user'=>$this->getUser(),
+        'dep'=>$departement->getNom(),
+        'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+    ]);
     
         return $this->redirectToRoute('user_gestion_departement');
     }
@@ -77,6 +97,13 @@ class DepartementController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function gestionDepartementEdit($id,LoggerInterface $logger,  DepartementRepository $departementRepository, Request $request, EntityManagerInterface $manager) : Response {
        $departement = $departementRepository->find($id);
+       $currentDateTime = new \DateTime();
+       $logger->info("{user} est rentré dans la page d'édition du département {dep} | heure => {date}", 
+       [
+       'user'=>$this->getUser(),
+       'dep'=>$departement->getNom(),
+       'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+   ]);
 
         $form = $this->createForm(EditFormDepartementType::class, $departement);
         $form->handleRequest($request);
@@ -91,6 +118,14 @@ class DepartementController extends AbstractController
 
             $manager->persist($data);
             $manager->flush();
+
+            $logger->info("{user} à modifier le département => {dep} | heure de changement : {date}", 
+                [
+                'user'=>$this->getUser(),
+                'dep'=>$departement->getNom(),
+                'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+            ]);
+
             return $this->redirectToRoute('user_gestion_departement');
 
 
@@ -105,6 +140,14 @@ class DepartementController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function addItemDepartement(LoggerInterface $logger, EntityManagerInterface $em, Request $request) : Response {
         
+        $currentDateTime = new \DateTime();
+
+        $logger->info("{user} est rentré dans la page d'ajout de département | heure => {date}", 
+        [
+        'user'=>$this->getUser(),
+        'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+    ]);
+
         $form = $this->createForm(UserFormDepartementType::class);
         $form->handleRequest($request);
 
@@ -122,6 +165,14 @@ class DepartementController extends AbstractController
 
             $em->persist($departement);
             $em->flush();
+
+            $logger->info("{user} a crée un département => {dep} | heure de création : {date}", 
+            [
+            'user'=>$this->getUser(),
+            'dep'=> $departement->getNom(),
+            'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+        ]);
+
             return $this->redirectToRoute('user_gestion_departement');
     }
     return $this->render('pages/user/newItem/Departement.html.twig', [

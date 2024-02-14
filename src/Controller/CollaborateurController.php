@@ -151,7 +151,7 @@ class CollaborateurController extends AbstractController
         $form = $this->createForm(UserFormCollaborateurType::class);
         $form->handleRequest($request);
 
-        $logger->info("{user} est rentré dans la page d'édition du Collaborateur {col} | heure => {date}", 
+        $logger->info("{user} est rentré dans la page d'ajout de Collaborateur | heure => {date}", 
         [
         'user'=>$this->getUser(),
         'date'=>$currentDateTime->format('d/m/Y H:i:s'),
