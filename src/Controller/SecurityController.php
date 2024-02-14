@@ -12,6 +12,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 
 class SecurityController extends AbstractController
@@ -42,6 +44,7 @@ class SecurityController extends AbstractController
 
 
     #[Route('/inscription', 'security.registration', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function registration(Request $request,UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $manager): Response
     {
         $user = new User();
