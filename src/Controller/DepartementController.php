@@ -119,14 +119,14 @@ public function addItemDepartement(LoggerInterface $logger, EntityManagerInterfa
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
-private function processDepartementAccueil($request, $logger, ){   
+private function processDepartementAccueil($request, $logger ){   
     $page = $request->query->getInt('page', 1);
     $logger->info("{user} est rentré dans la page $page d'accueil du département | heure => {date}", [
         'user' => $this->getUser(),
         'date' => (new \DateTime())->format('d/m/Y H:i:s'),
     ]);
 }   
-private function processDepartementRecherche( $searchDataDepartement, $logger,){
+private function processDepartementRecherche( $searchDataDepartement, $logger){
     $logger->info("{user} fait une recherche dans la page département | recherche => {rech} | heure => {date}", [
         'user' => $this->getUser(),
         'rech' => $searchDataDepartement->getRecherche(),
