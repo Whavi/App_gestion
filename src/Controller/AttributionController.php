@@ -71,7 +71,7 @@ public function gestionAttribution( AttributionRepository $attributionRepository
 public function gestionAttributionDelete($id, LoggerInterface $logger,  AttributionRepository $attributionRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
     $attribution = $attributionRepository->find($id);
     if ($attribution === null) { return $this->redirectToRoute('user_gestion_attribution'); }
-    $this->processAttributionDelete($attribution, $manager, $id, $logger);
+    $this->processAttributionDelete($attribution, $manager, $id, $doctrine, $logger);
     return $this->redirectToRoute('user_gestion_attribution');
 }
 
@@ -198,8 +198,9 @@ private function processAttributionRecherche($searchDataAttribution, $logger){
     ]);
 }
 
-private function processAttributionDelete($attribution, $manager, $id, $logger){
+private function processAttributionDelete($attribution, $manager, $id, $doctrine, $logger){
     $this->addFlash('success',"Le département a été supprimer");
+    $manager = $doctrine->getManager();
     $manager->remove($attribution);
     $manager->flush();
     $logger->info("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | date d'attribution => {att} | date de restitution => {res} | heure de suppréssion => {date}", 

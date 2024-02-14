@@ -13,4 +13,10 @@ class SearchDataProduct
     public string $identifiant = '';
 
     public string $ref = '';
+
+    public function getRecherche()
+    {
+        return $this->ref;
+    }
+
 }

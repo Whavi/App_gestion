@@ -29,11 +29,7 @@ class CollaborateurController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function gestion_collaborateur(LoggerInterface $logger, CollaborateurRepository $CollaborateurRepository, Request $request, PaginatorInterface $paginatorInterface) {
         $data = $CollaborateurRepository->findAllOrderedByCollaborateurNumber();
-        $posts = $paginatorInterface->paginate(
-            $data,
-            $request->query->getInt('page', 1),
-            12
-        );
+        $posts = $paginatorInterface->paginate($data, $request->query->getInt('page', 1), 12);
 
         $searchDataCollaborateur = new SearchDataCollaborateur();
         $form = $this->createForm(SearchTypeCollaborateur::class, $searchDataCollaborateur);
@@ -65,7 +61,7 @@ class CollaborateurController extends AbstractController
     public function gestionCollaborateurDelete($id, LoggerInterface $logger, CollaborateurRepository $collaborateurRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $collaborateur = $collaborateurRepository->find($id);
         if ($collaborateur === null) {return $this->redirectToRoute('user_gestion_collaborateur');}
-        $this->processCollaborateurtDelete($collaborateur,$id, $manager, $logger); //LOG
+        $this->processCollaborateurtDelete($collaborateur, $id, $manager, $doctrine, $logger); //LOG
         return $this->redirectToRoute('user_gestion_collaborateur');
     }
 
@@ -138,14 +134,14 @@ class CollaborateurController extends AbstractController
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
-private function processCollaborateurAccueil(LoggerInterface $logger, Request $request){   
+private function processCollaborateurAccueil($logger, $request){   
     $page = $request->query->getInt('page', 1);
     $logger->info("{user} est rentré dans la page $page d'accueil Collaborateur | heure => {date}", [
         'user' => $this->getUser(),
         'date' => (new \DateTime())->format('d/m/Y H:i:s'),
     ]);
 }
-private function processCollaborateurRecherche(LoggerInterface $logger, searchDataCollaborateur $searchDataCollaborateur){
+private function processCollaborateurRecherche($logger, $searchDataCollaborateur){
     $logger->info("{user} fait une recherche dans la page Collaborateur | recherche => {rech} | heure => {date}", [
         'user' => $this->getUser(),
         'rech' => $searchDataCollaborateur->getRecherche(),
@@ -153,10 +149,11 @@ private function processCollaborateurRecherche(LoggerInterface $logger, searchDa
     ]);
 }
 
-private function processCollaborateurtDelete($collaborateur,$id, $manager, $logger)
+private function processCollaborateurtDelete($collaborateur, $id, $manager, $doctrine, $logger)
 {
     
     $this->addFlash('success','Le collaborateur a été supprimer');
+    $manager = $doctrine->getManager();
     $manager->remove($collaborateur);
     $manager->flush();
 

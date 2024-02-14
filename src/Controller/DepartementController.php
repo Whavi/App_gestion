@@ -66,7 +66,7 @@ class DepartementController extends AbstractController
     public function gestionDepartementDelete($id,LoggerInterface $logger,  DepartementRepository $departementRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $departement = $departementRepository->find($id);
         if ($departement === null) { return $this->redirectToRoute('user_gestion_departement');}
-        $this->processDepartementDelete($departement, $manager, $logger); //LOG
+        $this->processDepartementDelete($departement, $manager,$doctrine, $logger); //LOG
         return $this->redirectToRoute('user_gestion_departement');
     }
 
@@ -130,73 +130,68 @@ class DepartementController extends AbstractController
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
-    private function processDepartementAccueil($request, $logger, ){   
-        $page = $request->query->getInt('page', 1);
-        $logger->info("{user} est rentré dans la page $page d'accueil du département | heure => {date}", [
-            'user' => $this->getUser(),
-            'date' => (new \DateTime())->format('d/m/Y H:i:s'),
-        ]);
+private function processDepartementAccueil($request, $logger, ){   
+    $page = $request->query->getInt('page', 1);
+    $logger->info("{user} est rentré dans la page $page d'accueil du département | heure => {date}", [
+        'user' => $this->getUser(),
+        'date' => (new \DateTime())->format('d/m/Y H:i:s'),
+    ]);
+}   
+private function processDepartementRecherche( $searchDataDepartement, $logger,){
+    $logger->info("{user} fait une recherche dans la page département | recherche => {rech} | heure => {date}", [
+        'user' => $this->getUser(),
+        'rech' => $searchDataDepartement->getRecherche(),
+        'date' => (new \DateTime())->format('d/m/Y H:i:s'),
+    ]);
+}
+private function processDepartementDelete($departement, $manager, $doctrine, $logger){
+    $this->addFlash('success', "Le département a été supprimé");
+    $manager = $doctrine->getManager();
+    $manager->remove($departement);
+    $manager->flush();
+
+    $logger->info("{user} a supprimé le département {dep} | heure de suppression => {date}", [
+        'id' => $departement->getId(),
+        'user' => $this->getUser(),
+        'dep' => $departement->getNom(),
+        'date' => (new \DateTime())->format('d/m/Y H:i:s'),
+    ]);
 }
 
-    private function processDepartementRecherche( $searchDataDepartement, $logger,){
-        $logger->info("{user} fait une recherche dans la page département | recherche => {rech} | heure => {date}", [
-            'user' => $this->getUser(),
-            'rech' => $searchDataDepartement->getRecherche(),
-            'date' => (new \DateTime())->format('d/m/Y H:i:s'),
-        ]);
+private function processDepartementEdit($departement, $data, $manager, $logger){
+    $this->addFlash('success', 'Votre département a bien été modifié.');
+    $manager->persist($data);
+    $manager->flush();
+
+    $logger->info("{user} a modifié le département => {dep} | heure de changement : {date}", [
+        'user' => $this->getUser(),
+        'dep' => $departement->getNom(),
+        'date' => (new \DateTime())->format('d/m/Y H:i:s'),
+    ]);
 }
-    private function processDepartementDelete($departement, $manager, $logger){
-        $this->addFlash('success', "Le département a été supprimé");
-        $manager->remove($departement);
-        $manager->flush();
-    
-        $logger->info("{user} a supprimé le département {dep} | heure de suppression => {date}", [
-            'id' => $departement->getId(),
-            'user' => $this->getUser(),
-            'dep' => $departement->getNom(),
-            'date' => (new \DateTime())->format('d/m/Y H:i:s'),
-        ]);
-    }
-    
-    private function processDepartementEdit($departement, $data, $manager, $logger){
-        $this->addFlash('success', 'Votre département a bien été modifié.');
-        $manager->persist($data);
-        $manager->flush();
-    
-        $logger->info("{user} a modifié le département => {dep} | heure de changement : {date}", [
-            'user' => $this->getUser(),
-            'dep' => $departement->getNom(),
-            'date' => (new \DateTime())->format('d/m/Y H:i:s'),
-        ]);
-    }
-
-    private function processDepartementCreation($data, $manager, $logger)
-    {
-        $departement = new Departement();
-        $departement->setNom($data->getNom());
-        $departement->setCreateAt(new \DateTime());
-        $departement->setUpdateAt(new \DateTime());
-
-        $this->addFlash(
-            'success',
-            'Votre département a bien été créé.'
-        );
-
-        $manager->persist($departement);
-        $manager->flush();
-
-        $logger->info("{user} a créé un département => {dep} | heure de création : {date}", [
-            'user' => $this->getUser(),
-            'dep' => $departement->getNom(),
-            'date' => (new \DateTime())->format('d/m/Y H:i:s'),
-        ]);
-    }
-
-    Private function processDeparementCreationEntry($logger){
-        $logger->info("{user} est rentré dans la page d'ajout de département | heure => {date}", [
-            'user' => $this->getUser(),
-            'date' => (new \DateTime())->format('d/m/Y H:i:s'),
-        ]);
-    }
+private function processDepartementCreation($data, $manager, $logger)
+{
+    $departement = new Departement();
+    $departement->setNom($data->getNom());
+    $departement->setCreateAt(new \DateTime());
+    $departement->setUpdateAt(new \DateTime());
+    $this->addFlash(
+        'success',
+        'Votre département a bien été créé.'
+    );
+    $manager->persist($departement);
+    $manager->flush();
+    $logger->info("{user} a créé un département => {dep} | heure de création : {date}", [
+        'user' => $this->getUser(),
+        'dep' => $departement->getNom(),
+        'date' => (new \DateTime())->format('d/m/Y H:i:s'),
+    ]);
+}
+Private function processDeparementCreationEntry($logger){
+    $logger->info("{user} est rentré dans la page d'ajout de département | heure => {date}", [
+        'user' => $this->getUser(),
+        'date' => (new \DateTime())->format('d/m/Y H:i:s'),
+    ]);
+}
 
 }
