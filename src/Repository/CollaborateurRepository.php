@@ -53,7 +53,7 @@ class CollaborateurRepository extends ServiceEntityRepository
     public function findAllOrderedByCollaborateurNumber(): array
    {
        return $this->createQueryBuilder('c')
-           ->orderBy('c.id', 'ASC')
+           ->orderBy('c.id', 'DESC')
            ->getQuery()
            ->getResult()
        ;

@@ -28,7 +28,7 @@ class DepartementController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function gestionDepartement(LoggerInterface $logger, DepartementRepository $departementRepository, Request $request, PaginatorInterface $paginatorInterface) {
         $users = $departementRepository->findAllOrderedByDepartementRank();
-        $this->processDepartementAccueil($logger, $request);
+        $this->processDepartementAccueil($logger, $request); //LOG
         $posts = $paginatorInterface->paginate(
             $users,
             $request->query->getInt('page', 1),
@@ -45,7 +45,7 @@ class DepartementController extends AbstractController
                     $data,
                     $request->query->getInt('page', 1),
                     12);
-                $this->processDepartementRecherche($logger, $searchDataDepartement);
+                $this->processDepartementRecherche($logger, $searchDataDepartement); //LOG
 
         return $this->render('pages/user/departement.html.twig', [
             'form' => $form->createView(),
@@ -66,7 +66,7 @@ class DepartementController extends AbstractController
     public function gestionDepartementDelete($id,LoggerInterface $logger,  DepartementRepository $departementRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $departement = $departementRepository->find($id);
         if ($departement === null) { return $this->redirectToRoute('user_gestion_departement');}
-        $this->processDepartementDelete($departement, $manager, $logger);
+        $this->processDepartementDelete($departement, $manager, $logger); //LOG
         return $this->redirectToRoute('user_gestion_departement');
     }
 
@@ -83,16 +83,10 @@ class DepartementController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            $data = $form->getData();
-            $this->processDepartementEdit($departement, $data, $manager, $logger);
+            $data = $form->getData(); 
+            $this->processDepartementEdit($departement, $data, $manager, $logger); //LOG
             return $this->redirectToRoute('user_gestion_departement');
         }
-
-        $logger->info("{user} est rentré dans la page d'édition du département {dep} | heure => {date}", 
-        [   'user'=>$this->getUser(),
-            'dep'=>$departement->getNom(),
-            'date'=>(new \DateTime())->format('d/m/Y H:i:s'),
-        ]);
 
        return $this->render('pages/user/edit/editUser.html.twig', [
             'departement' => $departement,
@@ -111,15 +105,10 @@ class DepartementController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->processDepartementCreation($form->getData(), $manager, $logger);
+            $this->processDepartementCreation($form->getData(), $manager, $logger); //LOG
             return $this->redirectToRoute('user_gestion_departement');
         }
-
-        $logger->info("{user} est rentré dans la page d'ajout de département | heure => {date}", [
-            'user' => $this->getUser(),
-            'date' => (new \DateTime())->format('d/m/Y H:i:s'),
-        ]);
-
+        $this->processDeparementCreationEntry($logger); //LOG
         return $this->render('pages/user/newItem/Departement.html.twig', [
             'form' => $form->createView()
         ]);
@@ -127,30 +116,38 @@ class DepartementController extends AbstractController
 
 
 
+
+
+
+
+
+
+
+
+
+
+    
 ############################################################################################################################
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
-    private function processDepartementAccueil(LoggerInterface $logger, Request $request)
-{   $page = $request->query->getInt('page', 1);
-    $logger->info("{user} est rentré dans la page $page d'accueil du département | heure => {date}", [
-        'user' => $this->getUser(),
-        'date' => (new \DateTime())->format('d/m/Y H:i:s'),
-    ]);
+    private function processDepartementAccueil(LoggerInterface $logger, Request $request){   
+        $page = $request->query->getInt('page', 1);
+        $logger->info("{user} est rentré dans la page $page d'accueil du département | heure => {date}", [
+            'user' => $this->getUser(),
+            'date' => (new \DateTime())->format('d/m/Y H:i:s'),
+        ]);
 }
 
-    private function processDepartementRecherche(LoggerInterface $logger, SearchDataDepartement $searchDataDepartement)
-{
-    $logger->info("{user} fait une recherche dans la page département | recherche => {rech} | heure => {date}", [
-        'user' => $this->getUser(),
-        'rech' => $searchDataDepartement->getRecherche(),
-        'date' => (new \DateTime())->format('d/m/Y H:i:s'),
-    ]);
+    private function processDepartementRecherche(LoggerInterface $logger, SearchDataDepartement $searchDataDepartement){
+        $logger->info("{user} fait une recherche dans la page département | recherche => {rech} | heure => {date}", [
+            'user' => $this->getUser(),
+            'rech' => $searchDataDepartement->getRecherche(),
+            'date' => (new \DateTime())->format('d/m/Y H:i:s'),
+        ]);
 }
-    private function processDepartementDelete($departement, $manager, $logger)
-    {
+    private function processDepartementDelete($departement, $manager, $logger){
         $this->addFlash('success', "Le département a été supprimé");
-    
         $manager->remove($departement);
         $manager->flush();
     
@@ -162,10 +159,8 @@ class DepartementController extends AbstractController
         ]);
     }
     
-    private function processDepartementEdit($departement, $data, $manager, $logger)
-    {
+    private function processDepartementEdit($departement, $data, $manager, $logger){
         $this->addFlash('success', 'Votre département a bien été modifié.');
-    
         $manager->persist($data);
         $manager->flush();
     
@@ -194,6 +189,13 @@ class DepartementController extends AbstractController
         $logger->info("{user} a créé un département => {dep} | heure de création : {date}", [
             'user' => $this->getUser(),
             'dep' => $departement->getNom(),
+            'date' => (new \DateTime())->format('d/m/Y H:i:s'),
+        ]);
+    }
+
+    Private function processDeparementCreationEntry($logger){
+        $logger->info("{user} est rentré dans la page d'ajout de département | heure => {date}", [
+            'user' => $this->getUser(),
             'date' => (new \DateTime())->format('d/m/Y H:i:s'),
         ]);
     }
