@@ -35,32 +35,31 @@ class AttributionController extends AbstractController
 #[Route('/gestion/{currentFunction}/attribution/', name: 'user_gestion_attribution', defaults: ['currentFunction' => 'nouvellesAttributions'])]    
 #[IsGranted('ROLE_USER')]
 public function gestionAttribution( AttributionRepository $attributionRepository, Request $request, PaginatorInterface $paginatorInterface, LoggerInterface $logger ,$currentFunction) {
-        if ($currentFunction === 'nouvellesAttributions') { $attribution = $attributionRepository->findAllOrderedByAttributionId();
-        } else { $attribution = $attributionRepository->findOldAttributions(); }
-    
-        $posts = $paginatorInterface->paginate($attribution, $request->query->getInt('page', 1), 12);
-        $searchDataAttribution = new SearchDataAttribution();
-        $form = $this->createForm(SearchTypeAttributionType::class, $searchDataAttribution);
-        $form->handleRequest($request);
-    
-        if($form->isSubmitted() && $form->isValid()){
-            $data = $attributionRepository->findAllOrderedByNameAttribution($searchDataAttribution);
-            $posts = $paginatorInterface->paginate($data, $request->query->getInt('page', 1), 12);
-            $this->processAttributionRecherche($searchDataAttribution, $logger);
-            return $this->render('pages/user/attribution.html.twig', [
-                'form' => $form->createView(),
-                'attributions' => $posts,
-                'currentFunction' => $currentFunction,
-                ],
-            );
-        }
+    if ($currentFunction === 'nouvellesAttributions') { $attribution = $attributionRepository->findAllOrderedByAttributionId();
+    } else { $attribution = $attributionRepository->findOldAttributions(); }
 
-        $this->processAttributionAccueilEntry($currentFunction, $logger);
+    $posts = $paginatorInterface->paginate($attribution, $request->query->getInt('page', 1), 12);
+    $searchDataAttribution = new SearchDataAttribution();
+    $form = $this->createForm(SearchTypeAttributionType::class, $searchDataAttribution);
+    $form->handleRequest($request);
+
+    if($form->isSubmitted() && $form->isValid()){
+        $data = $attributionRepository->findAllOrderedByNameAttribution($searchDataAttribution);
+        $posts = $paginatorInterface->paginate($data, $request->query->getInt('page', 1), 12);
+        $this->processAttributionRecherche($searchDataAttribution, $logger);
         return $this->render('pages/user/attribution.html.twig', [
             'form' => $form->createView(),
             'attributions' => $posts,
             'currentFunction' => $currentFunction,
-        ]);
+            ],
+        );
+    }
+    $this->processAttributionAccueilEntry($currentFunction, $logger);
+    return $this->render('pages/user/attribution.html.twig', [
+        'form' => $form->createView(),
+        'attributions' => $posts,
+        'currentFunction' => $currentFunction,
+    ]);
 }
 
 ############################################################################################################################
@@ -84,17 +83,15 @@ public function gestionAttributionEdit($id, LoggerInterface $logger, Attribution
     $attribution = $attributionRepository->find($id);
     $form = $this->createForm(EditFormAttributionType::class, $attribution);
     $form->handleRequest($request);
-
     if ($form->isSubmitted() && $form->isValid()){
         $this->processAttributionEdit($attribution, $form->getData(), $manager, $id, $logger);
         return $this->redirectToRoute('user_gestion_attribution');
     }
-
     $this->processAttributionEditEntry($attribution, $id, $logger);
     return $this->render('pages/user/edit/editAttribution.html.twig', [
         'attributions' => $attribution,
         'form' => $form->createView()
-      ]);
+    ]);
 }
 
 
@@ -166,22 +163,12 @@ public function signature( $id,LoggerInterface $logger, PdfGeneratorController $
 
 
 
-
-
-
-
-
-
-
-
-
 ############################################################################################################################
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
 private function processAttributionAccueilEntry($currentFunction, $logger){
-        $logger->info("{user} est rentré dans la page d'accueil {cfunc} | heure => {date}", 
-        [
+    $logger->info("{user} est rentré dans la page d'accueil {cfunc} | heure => {date}", [
         'user'=>$this->getUser(),
         'cfunc'=>$currentFunction, 
         'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
@@ -190,8 +177,7 @@ private function processAttributionAccueilEntry($currentFunction, $logger){
 
 
 private function processAttributionRecherche($searchDataAttribution, $logger){
-    $logger->info("{user} fait une recherche dans la page Attribution | recherche => {rech} | heure => {date}", 
-        [
+    $logger->info("{user} fait une recherche dans la page Attribution | recherche => {rech} | heure => {date}", [
         'user'=>$this->getUser(),
         'rech'=>$searchDataAttribution->getId(),
         'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
@@ -203,8 +189,8 @@ private function processAttributionDelete($attribution, $manager, $id, $doctrine
     $manager = $doctrine->getManager();
     $manager->remove($attribution);
     $manager->flush();
-    $logger->info("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | date d'attribution => {att} | date de restitution => {res} | heure de suppréssion => {date}", 
-    ['id'=> $id,
+    $logger->info("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | date d'attribution => {att} | date de restitution => {res} | heure de suppréssion => {date}", [
+    'id'=> $id,
     'user'=>$this->getUser(),
     'collab'=>$attribution->getCollaborateur(),
     'mod'=>$attribution->getProduct()->getNom(),
@@ -212,20 +198,7 @@ private function processAttributionDelete($attribution, $manager, $id, $doctrine
     'att'=>$attribution->getDateAttribution()->format('d/m/Y H:i:s'),
     'res'=>$attribution->getDateRestitution()->format('d/m/Y H:i:s'), 
     'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
-]);
-}
-
-private function processAttributionEditEntry($attribution, $id, $logger){
-    $logger->info("{user} est rentré dans la page d'édition de l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure : {date}", 
-    ['id'=> $id,
-    'user'=>$this->getUser(),
-    'collab'=>$attribution->getCollaborateur(),
-    'mod'=>$attribution->getProduct()->getNom(),
-    'cat'=>$attribution->getProduct()->getCategory(),
-    'des'=>$attribution->getDescriptionProduct(),
-    'rem'=>$attribution->getRemarque(),
-    'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
-]);
+    ]);
 }
 
 private function processAttributionEdit($attribution, $data, $manager,$id, $logger){
@@ -239,8 +212,8 @@ private function processAttributionEdit($attribution, $data, $manager,$id, $logg
 
     $manager->persist($data);
     $manager->flush();
-    $logger->info("{user} à modifier l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure de changement : {date}", 
-        ['id'=> $id,
+    $logger->info("{user} à modifier l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure de changement : {date}", [
+        'id'=> $id,
         'user'=>$this->getUser(),
         'collab'=>$attribution->getCollaborateur(),
         'mod'=>$attribution->getProduct()->getNom(),
@@ -259,15 +232,15 @@ private function processAttributionSenMail($attribution, $id, $logger){
         "L'email a bien été envoyer."
     );
     
-    $logger->info("{user} a envoyer un email à l'id : {id} | Collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | heure d'envoi du mail : {date}", 
-    ['id'=> $id,
+    $logger->info("{user} a envoyer un email à l'id : {id} | Collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | heure d'envoi du mail : {date}", [
+    'id'=> $id,
     'user'=>$this->getUser(),
     'collab'=>$attribution->getCollaborateur(),
     'mail'=>$attribution->getCollaborateur()->getEmail(),
     'cat'=>$attribution->getPdfName(),
     'dep'=>$attribution->getCollaborateur()->getDepartement(),
     'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
-]);
+    ]);
 }
 
 
@@ -300,15 +273,6 @@ private function processAttributionCreation($attribution, $data, $manager, $logg
         'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
     ]);
 }
-
-private function processAttributionCreationEntry($logger){
-    $logger->info("{user} est rentré dans la page d'ajout d'Attribution | heure : {date}", [
-        'user'=>$this->getUser(),
-        'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
-     ]);
-
-}
-
 
 private function procressAttributionSiganture($attribut,$collaborateurs, $email, $prenom, $nom, $attributionRepository, $collaborateurRepository, $pdfGeneratorController, $userRepository, $productRepository, $yousignService, $logger){
     $pdfContent = $pdfGeneratorController->generatePdfContent($attribut->getId(), $collaborateurRepository, $productRepository, $attributionRepository, $userRepository);
@@ -355,8 +319,27 @@ private function procressAttributionSiganture($attribut,$collaborateurs, $email,
         'sID' => $attribut->getSignerId(),
         'date' => (new \DateTime)->format('d/m/Y H:i:s'),
     ]);
+}
 
+private function processAttributionCreationEntry($logger){
+    $logger->info("{user} est rentré dans la page d'ajout d'Attribution | heure : {date}", [
+        'user'=>$this->getUser(),
+        'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
+     ]);
 
+}
+
+private function processAttributionEditEntry($attribution, $id, $logger){
+    $logger->info("{user} est rentré dans la page d'édition de l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure : {date}", [
+    'id'=> $id,
+    'user'=>$this->getUser(),
+    'collab'=>$attribution->getCollaborateur(),
+    'mod'=>$attribution->getProduct()->getNom(),
+    'cat'=>$attribution->getProduct()->getCategory(),
+    'des'=>$attribution->getDescriptionProduct(),
+    'rem'=>$attribution->getRemarque(),
+    'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
+    ]);
 }
 
 }

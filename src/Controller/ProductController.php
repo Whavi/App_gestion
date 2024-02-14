@@ -42,14 +42,16 @@ public function gestion(LoggerInterface $logger, ProductRepository $productRepos
            return $this->render('pages/user/home.html.twig', [ 
                'form' => $form->createView(),
                'role' => new User(),
-               'listes' => $posts,]);
-           }
+               'listes' => $posts,]
+            );
+        }
     $this->processProduitAccueil($logger, $request); //LOG
     return $this->render('pages/user/home.html.twig', [ 
         'form' => $form->createView(),
         'role' => new User(),
-        'listes' => $posts,]);
-    }
+        'listes' => $posts,
+    ]);
+}
 
 
 ############################################################################################################################
@@ -57,10 +59,10 @@ public function gestion(LoggerInterface $logger, ProductRepository $productRepos
 ############################################################################################################################
 #[Route('/gestion/delete/{id}', name: 'user_gestion_delete')]
 #[IsGranted('ROLE_ADMIN')]
-public function gestionProductDelete($id,LoggerInterface $logger, ProductRepository $productRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
+public function gestionProductDelete($id, LoggerInterface $logger, ProductRepository $productRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
     $product = $productRepository->find($id);
     if ($product === null) {return $this->redirectToRoute('user_gestion');}
-    $this->processProduitDelete($product, $id, $manager, $doctrine, $logger);
+    $this->processProduitDelete($product, $manager, $doctrine, $logger);
     return $this->redirectToRoute('user_gestion');
 }
 
@@ -70,24 +72,19 @@ public function gestionProductDelete($id,LoggerInterface $logger, ProductReposit
 #[Route('/gestion/edit/{id}', name: 'user_gestion_edit')]
 #[IsGranted('ROLE_USER')]
 public function gestionProductEdit($id,LoggerInterface $logger, ProductRepository $productRepository, Request $request, EntityManagerInterface $manager) : Response {
-   $product = $productRepository->find($id);
+    $product = $productRepository->find($id);
     $form = $this->createForm(EditFormProductType::class, $product);
     $form->handleRequest($request);
     if ($form->isSubmitted() && $form->isValid()){
-        $productdata = $form->getData();
-        $productdata->setUpdatedAt(new \DateTime());
-        $this->addFlash(
-            'success',
-            'Votre produit a bien été modifier.'
-        );
-        $manager->persist($productdata);
-        $manager->flush();
+        $this->processProduitEdit($product,$form->getData(), $manager, $logger);
+       
         return $this->redirectToRoute('user_gestion');
     }
-   return $this->render('pages/user/edit/editProduct.html.twig', [
+    $this->processProduitEntry($logger);
+    return $this->render('pages/user/edit/editProduct.html.twig', [
         'utilisateur' => $product,
         'form' => $form->createView()
-          ]);
+    ]);
 }
 
 
@@ -96,29 +93,30 @@ public function gestionProductEdit($id,LoggerInterface $logger, ProductRepositor
 ############################################################################################################################
 #[Route('/gestion/addItem', name: 'user_gestion_newItemProduct')]
 #[IsGranted('ROLE_USER')]
-public function add_item(LoggerInterface $logger, EntityManagerInterface $em, Request $request) : Response {
+public function add_item(LoggerInterface $logger, EntityManagerInterface $manager, Request $request) : Response {
     $form = $this->createForm(UserFormProductType::class);
     $form->handleRequest($request);
     if ($form->isSubmitted() && $form->isValid()) {
-        $data = $form->getData();
-        $product = new Product();
-        $product->setIdentifiant($data->getIdentifiant());
-        $product->setNom($data->getNom());
-        $product->setCategory($data->getCategory());
-        $product->setUpdatedAt($data->getCreatedAt());
-        $product->setRef($data->getRef());
-        $this->addFlash(
-         'success',
-         'Votre produit a bien été crée.'
-     );
-        $em->persist($product);
-        $em->flush();
+        $this->processProduitCreation( $form->getData(),$manager,$logger);
         return $this->redirectToRoute('user_gestion');
     }
-        return $this->render('pages/user/newItem/Product.html.twig', [
-            'form' => $form->createView()
-        ]);
+    $this->processProduitCreationEntry($logger);
+    return $this->render('pages/user/newItem/Product.html.twig', [
+        'form' => $form->createView()
+    ]);
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 ############################################################################################################################
 ######################################################   FONCTION PRIVÉE   #################################################
@@ -141,21 +139,79 @@ private function processProductRecherche($logger,$searchDataProduct){
     ]);
 }
 
-public function processProduitDelete($product, $id, $manager, $doctrine, $logger){
+public function processProduitDelete($product, $manager, $doctrine, $logger){
     $this->addFlash('success','Le produit a été supprimer');
     $manager = $doctrine->getManager();
     $manager->remove($product);
     $manager->flush();
 
-    $logger->info("{user} a supprimer le produit suivant : Numéro de série {NumSeri} | Réf.Log => {ref} | Modèle => {mod} | catégorie => {cat} | heure de suppréssion => {date}", 
-    ['id'=> $id,
+    $logger->info("{user} a supprimer le produit suivant : Numéro de série {NumSeri} | Réf.Log => {ref} | Modèle => {mod} | catégorie => {cat} | heure de suppréssion => {date}", [
     'user'=>$this->getUser(),
-    'collab'=>$product->getIdentifiant(),
+    'NumSeri'=>$product->getIdentifiant(),
+    'ref'=>$product->getRef(),
     'mod'=>$product->getNom(),
     'cat'=>$product->getCategory(),
     'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
-]);
+    ]);
 }
 
 
+private function processProduitEdit($product, $data, $manager, $logger){
+    $data->setUpdatedAt(new \DateTime());
+    $this->addFlash(
+        'success',
+        'Votre produit a bien été modifier.'
+    );
+    $manager->persist($data);
+    $manager->flush();
+
+    $logger->info("{user} a modifié le produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat}| heure de changement : {date}", [
+        'user'=>$this->getUser(),
+        'NumSerie'=>$product->getIdentifiant(),
+        'ref'=>$product->getRef(),
+        'mod'=>$product->getNom(),
+        'cat'=>$product->getCategory(),
+        'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
+    ]);
+}
+
+private function processProduitCreation($data, $manager, $logger)
+{
+    $product = new Product();
+    $product->setIdentifiant($data->getIdentifiant());
+    $product->setNom($data->getNom());
+    $product->setCategory($data->getCategory());
+    $product->setUpdatedAt($data->getCreatedAt());
+    $product->setRef($data->getRef());
+    $this->addFlash(
+     'success',
+     'Votre produit a bien été crée.'
+    );
+    
+    $manager->persist($product);
+    $manager->flush();
+    $logger->info("{user} a créé un produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat} heure de création : {date}", [
+        'user' => $this->getUser(),
+        'NumSerie'=>$product->getIdentifiant(),
+        'ref'=>$product->getRef(),
+        'mod'=>$product->getNom(),
+        'cat'=>$product->getCategory(),
+        'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
+    ]);
+}
+
+
+Private function processProduitEntry($logger){
+    $logger->info("{user} est rentré dans la page d'édition de Produit | heure => {date}", [
+        'user' => $this->getUser(),
+        'date' => (new \DateTime())->format('d/m/Y H:i:s'),
+    ]);
+}
+
+Private function processProduitCreationEntry($logger){
+    $logger->info("{user} est rentré dans la page d'ajout de Produit | heure => {date}", [
+        'user' => $this->getUser(),
+        'date' => (new \DateTime())->format('d/m/Y H:i:s'),
+    ]);
+}
 }
