@@ -109,7 +109,7 @@ public function sendEmail($id, LoggerInterface $logger, AttributionRepository $a
     $attribution = $attributionRepository->find($id);
     $collaborateur = $attribution->getCollaborateur();
     $collaborateurEmail = $collaborateur ? $collaborateur->getEmail() : 'it@secours-islamique.org';
-    $pdfContent = $pdfGenerator->generatePdfContent($id, $collaborateurRepository, $productRepository, $attributionRepository, $userRepository);
+    $pdfContent = $pdfGenerator->generatePdfContent($id, $collaborateurRepository, $productRepository, $attributionRepository, $userRepository, $logger);
     $filename = 'Bon de commande N°' . $id . '.pdf';
     $email = (new TemplatedEmail())
         ->from('it@secours-islamique.org')
