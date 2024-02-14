@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Psr\Log\LoggerInterface;
  
 class PdfGeneratorController extends AbstractController
 {
@@ -35,6 +36,7 @@ class PdfGeneratorController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(
         $id,
+        LoggerInterface $logger,
         CollaborateurRepository $collaborateurRepository,
         ProductRepository $productRepository,
         AttributionRepository $attributionRepository,

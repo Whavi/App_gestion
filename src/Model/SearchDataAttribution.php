@@ -9,5 +9,9 @@ class SearchDataAttribution
 
     /** @var string */
     public string $id = ""; 
+    public function getId()
+    {
+        return $this->id;
+    }
 
 }

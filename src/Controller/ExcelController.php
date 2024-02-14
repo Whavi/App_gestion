@@ -10,13 +10,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Psr\Log\LoggerInterface;
 
 class ExcelController extends AbstractController
 {
     #[Route('/gestion/{currentFunction}/attribution/exportExcel', name: 'user_gestion_attribution_excel')]
     #[IsGranted('ROLE_USER')]
-    public function exportExcel(EntityManagerInterface $entityManager, $currentFunction): Response
+    public function exportExcel(LoggerInterface $logger, EntityManagerInterface $entityManager, $currentFunction): Response
     {
         if ($currentFunction === 'nouvellesAttributions') {
             $data = $entityManager->getRepository(Attribution::class)->findAllOrderedByAttributionId();

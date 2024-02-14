@@ -17,13 +17,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Psr\Log\LoggerInterface;
+
 
 
 class UserController extends AbstractController
 {
     #[Route('/gestion/compte/utilisateur', name: 'user_gestion_utilisateur')]
     #[IsGranted('ROLE_USER')]
-    public function gestion_cpt_utilisateur(UserRepository $UserRepository, Request $request, PaginatorInterface $paginatorInterface) {
+    public function gestion_cpt_utilisateur(LoggerInterface $logger, UserRepository $UserRepository, Request $request, PaginatorInterface $paginatorInterface) {
 
         $users = $UserRepository->findAllOrderedByRank();
 
@@ -61,7 +63,7 @@ class UserController extends AbstractController
     
     #[Route('/gestion/compte/utilisateur/delete/{id}', name: 'user_gestion_utilisateur_delete', methods: ['GET', 'DELETE'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function gestionUserDelete($id, UserRepository $userRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
+    public function gestionUserDelete($id,LoggerInterface $logger,  UserRepository $userRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
         $user = $userRepository->find($id);
         if ($user === null) {
             return $this->redirectToRoute('user_gestion_utilisateur');
@@ -76,7 +78,7 @@ class UserController extends AbstractController
 
     #[Route('/gestion/compte/utilisateur/edit/{id}', name: 'user_gestion_utilisateur_edit')]
     #[IsGranted('ROLE_ADMIN')]
-    public function gestionUserEdit($id, UserRepository $userRepository, Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $userPasswordHasher) : Response {
+    public function gestionUserEdit($id,LoggerInterface $logger, UserRepository $userRepository, Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $userPasswordHasher) : Response {
        $utilisateur = $userRepository->find($id);
 
         $form = $this->createForm(EditFormUserType::class, $utilisateur);
@@ -110,7 +112,7 @@ class UserController extends AbstractController
 
     #[Route('/gestion/compte/utilisateur/addUser', name: 'user_gestion_newItemUser')]
     #[IsGranted('ROLE_ADMIN')]
-    public function addItemUser(EntityManagerInterface $em, Request $request, UserPasswordHasherInterface $userPasswordHasher) : Response {
+    public function addItemUser(LoggerInterface $logger, EntityManagerInterface $em, Request $request, UserPasswordHasherInterface $userPasswordHasher) : Response {
         
         $form = $this->createForm(UserFormItemType::class);
 

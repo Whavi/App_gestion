@@ -15,6 +15,9 @@
         <li><a href="{{path ("user_gestion_utilisateur")}}">User</a></li>
         <li><a href="{{path ("user_gestion_departement")}}">Département</a></li>
         <li><a href="{{path ("user_gestion_attribution")}}">Affectation</a></li>
+        {% if is_granted('ROLE_ADMIN') %}
+        <li><a href="{{path ("user_gestion_attribution")}}">Log</a></li>
+        {% endif %}
       </ul>
     </nav>
     

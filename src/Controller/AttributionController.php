@@ -24,19 +24,27 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Controller\PdfGeneratorController;
+use Psr\Log\LoggerInterface;
 
 
 class AttributionController extends AbstractController
 {
     #[Route('/gestion/{currentFunction}/attribution/', name: 'user_gestion_attribution', defaults: ['currentFunction' => 'nouvellesAttributions'])]    
     #[IsGranted('ROLE_USER')]
-    public function gestionAttribution( AttributionRepository $attributionRepository, Request $request, PaginatorInterface $paginatorInterface, $currentFunction) {
-
+    public function gestionAttribution( AttributionRepository $attributionRepository, Request $request, PaginatorInterface $paginatorInterface, LoggerInterface $logger ,$currentFunction) {
+        $currentDateTime = new \DateTime();
         if ($currentFunction === 'nouvellesAttributions') {
             $attribution = $attributionRepository->findAllOrderedByAttributionId();
         } else {
             $attribution = $attributionRepository->findOldAttributions();
         }
+
+        $logger->info("{user} est rentré dans la page d'accueil {cfunc} | heure => {date}", 
+        [
+        'user'=>$this->getUser(),
+        'cfunc'=>$currentFunction, 
+        'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+    ]);
     
 
         $posts = $paginatorInterface->paginate(
@@ -55,6 +63,12 @@ class AttributionController extends AbstractController
                     $data,
                     $request->query->getInt('page', 1),
                     12);
+                $logger->info("{user} fait une recherche dans la page Attribution | recherche => {rech} | heure => {date}", 
+                [
+                'user'=>$this->getUser(),
+                'rech'=>$searchDataAttribution->getId(),
+                'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+            ]);
 
         return $this->render('pages/user/attribution.html.twig', [
             'form' => $form->createView(),
@@ -73,7 +87,9 @@ class AttributionController extends AbstractController
 
     #[Route('/gestion/attribution/delete/{id}', name: 'user_gestion_attribution_delete', methods: ['GET', 'DELETE'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function gestionAttributionDelete($id, AttributionRepository $attributionRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
+    public function gestionAttributionDelete($id, LoggerInterface $logger,  AttributionRepository $attributionRepository, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine) : Response {
+        
+        $currentDateTime = new \DateTime();
         $attribution = $attributionRepository->find($id);
         if ($attribution === null) {
             return $this->redirectToRoute('user_gestion_attribution');
@@ -83,15 +99,35 @@ class AttributionController extends AbstractController
         $manager = $doctrine->getManager();
         $manager->remove($attribution);
         $manager->flush();
+        $logger->info("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | date d'attribution => {att} | date de restitution => {res} | heure de suppréssion => {date}", 
+        ['id'=> $id,
+        'user'=>$this->getUser(),
+        'collab'=>$attribution->getCollaborateur(),
+        'mod'=>$attribution->getProduct()->getNom(),
+        'cat'=>$attribution->getProduct()->getCategory(),
+        'att'=>$attribution->getDateAttribution()->format('d/m/Y H:i:s'),
+        'res'=>$attribution->getDateRestitution()->format('d/m/Y H:i:s'), 
+        'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+    ]);
         return $this->redirectToRoute('user_gestion_attribution');
     }
 
 
     #[Route('/gestion/attribution/edit/{id}', name: 'user_gestion_attribution_edit')]
     #[IsGranted('ROLE_USER')]
-    public function gestionAttributionEdit($id,AttributionRepository $attributionRepository, Request $request, EntityManagerInterface $manager) : Response {
+    public function gestionAttributionEdit($id, LoggerInterface $logger, AttributionRepository $attributionRepository, Request $request, EntityManagerInterface $manager) : Response {
         $attribution = $attributionRepository->find($id);
-
+        $currentDateTime = new \DateTime();
+        $logger->info("{user} est rentré dans la page d'édition de l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure : {date}", 
+        ['id'=> $id,
+        'user'=>$this->getUser(),
+        'collab'=>$attribution->getCollaborateur(),
+        'mod'=>$attribution->getProduct()->getNom(),
+        'cat'=>$attribution->getProduct()->getCategory(),
+        'des'=>$attribution->getDescriptionProduct(),
+        'rem'=>$attribution->getRemarque(),
+        'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+    ]);
         $form = $this->createForm(EditFormAttributionType::class, $attribution);
         $form->handleRequest($request);
 
@@ -107,8 +143,20 @@ class AttributionController extends AbstractController
 
             $manager->persist($data);
             $manager->flush();
+            $logger->info("{user} à modifier l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure de changement : {date}", 
+                ['id'=> $id,
+                'user'=>$this->getUser(),
+                'collab'=>$attribution->getCollaborateur(),
+                'mod'=>$attribution->getProduct()->getNom(),
+                'cat'=>$attribution->getProduct()->getCategory(),
+                'des'=>$attribution->getDescriptionProduct(),
+                'rem'=>$attribution->getRemarque(),
+                'att'=>$attribution->getDateAttribution()->format('d/m/Y H:i:s'),
+                'res'=>$attribution->getDateRestitution()->format('d/m/Y H:i:s'), 
+                'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+            ]);
             return $this->redirectToRoute('user_gestion_attribution');
-
+            
 
         }
        return $this->render('pages/user/edit/editAttribution.html.twig', [
@@ -121,10 +169,10 @@ class AttributionController extends AbstractController
 
     #[Route('/gestion/attribution/send-email/{id}', name: 'user_gestion_send_mail')]
     #[IsGranted('ROLE_USER')]
-    public function sendEmail($id,AttributionRepository $attributionRepository, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, UserRepository $userRepository, PdfGeneratorController $pdfGenerator, MailerInterface $mailer): Response
+    public function sendEmail($id, LoggerInterface $logger, AttributionRepository $attributionRepository, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, UserRepository $userRepository, PdfGeneratorController $pdfGenerator, MailerInterface $mailer): Response
     {
+        $currentDateTime = new \DateTime();
         $attribution = $attributionRepository->find($id);
-
         $collaborateur = $attribution->getCollaborateur();
         $collaborateurEmail = $collaborateur ? $collaborateur->getEmail() : 'it@secours-islamique.org';
 
@@ -154,15 +202,31 @@ class AttributionController extends AbstractController
             'success',
             "L'email a bien été envoyer."
         );
-
+        $logger->info("{user} a envoyer un email à l'id : {id} | Collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | heure d'envoi du mail : {date}", 
+        ['id'=> $id,
+        'user'=>$this->getUser(),
+        'collab'=>$attribution->getCollaborateur(),
+        'mail'=>$attribution->getCollaborateur()->getEmail(),
+        'cat'=>$attribution->getPdfName(),
+        'dep'=>$attribution->getCollaborateur()->getDepartement(),
+        'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+    ]);
         return $this->redirectToRoute('user_gestion_attribution');
     }
 
+
+
     #[Route('/gestion/attribution/addAttribution', name: 'user_gestion_newItemAttribution')]
     #[IsGranted('ROLE_USER')]
-    public function addItemAttribution(EntityManagerInterface $em, Request $request, AttributionRepository $attributionRepository) : Response {
-        
+    public function addItemAttribution(LoggerInterface $logger ,EntityManagerInterface $em, Request $request) : Response {
+        $currentDateTime = new \DateTime();
         $attribution = null; 
+
+        $logger->info("{user} est rentré dans la page d'ajout d'Attribution | heure : {date}", 
+        [
+        'user'=>$this->getUser(),
+        'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+    ]);
 
         $form = $this->createForm(UserFormAttributionType::class);
         $form->handleRequest($request);
@@ -191,6 +255,15 @@ class AttributionController extends AbstractController
             $attribution->setPdfName("Bon de commande N°" . $attribution->getId() . ".pdf");
             $em->persist($attribution);
             $em->flush();
+            $logger->info("{user} a crée une attribution à au collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | heure de création : {date}", 
+                [
+                'user'=>$this->getUser(),
+                'collab'=>$attribution->getCollaborateur(),
+                'mail'=>$attribution->getCollaborateur()->getEmail(),
+                'cat'=>$attribution->getId(),
+                'dep'=>$attribution->getCollaborateur()->getDepartement(),
+                'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+            ]);
 
             return $this->redirectToRoute('user_gestion_attribution');
     }
@@ -203,6 +276,7 @@ class AttributionController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function signature(
         $id,
+        LoggerInterface $logger,
         PdfGeneratorController $pdfGeneratorController,
         CollaborateurRepository $collaborateurRepository,
         ProductRepository $productRepository,
@@ -210,7 +284,7 @@ class AttributionController extends AbstractController
         UserRepository $userRepository,
         YousignService $yousignService,
     ): Response {
-        
+        $currentDateTime = new \DateTime();
         $collaborateurs = $collaborateurRepository->findAllOrderedByInnerJoin_Name_Mail_ContentContrat($id);
         foreach ($collaborateurs as $collaborateur) {
             $email = $collaborateur->getEmail();
@@ -261,6 +335,18 @@ class AttributionController extends AbstractController
 
         $yousignService->activateSignatureRequest($attribut->getSignatureId());
 
+        $logger->info("{user} a crée une signature au collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | signature_id => {signId} | Document_id => {docId} | signer_id => {sID} | heure de création : {date}", 
+                [
+                'user'=>$this->getUser(),
+                'collab'=>$attribut->getCollaborateur(),
+                'mail'=>$attribut->getCollaborateur()->getEmail(),
+                'cat'=>$attribut->getId(),
+                'dep'=>$attribut->getCollaborateur()->getDepartement(),
+                'signId'=>$attribut->getSignatureId(),
+                'docId'=>$attribut->getDocumentId(),
+                'sID'=>$attribut->getSignerId(),
+                'date'=>$currentDateTime->format('d/m/Y H:i:s'),
+            ]);
         return $this->redirectToRoute('user_gestion_attribution');
 
     }

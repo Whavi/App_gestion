@@ -9,5 +9,8 @@ class SearchDataDepartement
 
     /** @var string */
     public string $nom = '';
-
+    public function getRecherche()
+    {
+        return $this->nom;
+    }
 }

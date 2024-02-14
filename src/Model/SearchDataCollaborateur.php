@@ -16,4 +16,9 @@ class SearchDataCollaborateur
 
     public string $id = '';
 
+    public function getRecherche()
+    {
+        return $this->nom;
+    }
+
 }
