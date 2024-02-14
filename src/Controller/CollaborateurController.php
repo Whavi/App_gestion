@@ -81,8 +81,7 @@ class CollaborateurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            $collab = $form->getData();
-            $this->processCollaborateurEdit($collaborateur, $collab, $manager, $logger); //LOG
+            $this->processCollaborateurEdit($collaborateur, $form->getData(), $manager, $logger); //LOG
             return $this->redirectToRoute('user_gestion_collaborateur');
         }
 

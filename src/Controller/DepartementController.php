@@ -28,7 +28,7 @@ class DepartementController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function gestionDepartement(LoggerInterface $logger, DepartementRepository $departementRepository, Request $request, PaginatorInterface $paginatorInterface) {
         $users = $departementRepository->findAllOrderedByDepartementRank();
-        $this->processDepartementAccueil($logger, $request); //LOG
+        $this->processDepartementAccueil($request, $logger); //LOG
         $posts = $paginatorInterface->paginate(
             $users,
             $request->query->getInt('page', 1),
@@ -45,7 +45,7 @@ class DepartementController extends AbstractController
                     $data,
                     $request->query->getInt('page', 1),
                     12);
-                $this->processDepartementRecherche($logger, $searchDataDepartement); //LOG
+                $this->processDepartementRecherche($searchDataDepartement, $logger); //LOG
 
         return $this->render('pages/user/departement.html.twig', [
             'form' => $form->createView(),
@@ -83,8 +83,7 @@ class DepartementController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            $data = $form->getData(); 
-            $this->processDepartementEdit($departement, $data, $manager, $logger); //LOG
+            $this->processDepartementEdit($departement, $form->getData(), $manager, $logger); //LOG
             return $this->redirectToRoute('user_gestion_departement');
         }
 
@@ -126,12 +125,12 @@ class DepartementController extends AbstractController
 
 
 
-    
+
 ############################################################################################################################
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
-    private function processDepartementAccueil(LoggerInterface $logger, Request $request){   
+    private function processDepartementAccueil($request, $logger, ){   
         $page = $request->query->getInt('page', 1);
         $logger->info("{user} est rentré dans la page $page d'accueil du département | heure => {date}", [
             'user' => $this->getUser(),
@@ -139,7 +138,7 @@ class DepartementController extends AbstractController
         ]);
 }
 
-    private function processDepartementRecherche(LoggerInterface $logger, SearchDataDepartement $searchDataDepartement){
+    private function processDepartementRecherche( $searchDataDepartement, $logger,){
         $logger->info("{user} fait une recherche dans la page département | recherche => {rech} | heure => {date}", [
             'user' => $this->getUser(),
             'rech' => $searchDataDepartement->getRecherche(),
