@@ -29,17 +29,25 @@ class LogEntryRepository extends ServiceEntityRepository
            ->getResult()
        ;
    }
-   public function filterByLevelsAndCategories($levels, $categories)
-    {
-        return $this->createQueryBuilder('l')
+   public function filterByLevelsAndCategories($levels = null, $categories = null)
+{
+    $queryBuilder = $this->createQueryBuilder('l')
+        ->orderBy('l.id', 'DESC');
+
+    if ($levels !== null) {
+        $queryBuilder
             ->andWhere('l.level IN (:levels)')
-            ->andWhere('l.channel IN (:channels)')
-            ->setParameter('levels', $levels)
-            ->setParameter('channels', $categories)
-            ->orderBy('l.id', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->setParameter('levels', $levels);
     }
+
+    if ($categories !== null) {
+        $queryBuilder
+            ->andWhere('l.channel IN (:channels)')
+            ->setParameter('channels', $categories);
+    }
+
+    return $queryBuilder->getQuery()->getResult();
+}
 
 //    /**
 //     * @return LogEntry[] Returns an array of LogEntry objects

@@ -195,7 +195,7 @@ private function processAttributionAccueilEntry($currentFunction, $doctrine,$req
     $this->LogToDatabase("{user} est rentré dans la page $page d'accueil {cfunc} ", [
         'user'=>$this->getUser(),
         'cfunc'=>$currentFunction, 
-    ],"ATTRIBUTION", $doctrine);
+    ],"ATTRIBUTION", $doctrine,0);
 
     $logger->info("{user} est rentré dans la page $page d'accueil {cfunc} | heure => {date}", [
         'user'=>$this->getUser(),
@@ -209,7 +209,7 @@ private function processAttributionRecherche($searchDataAttribution, $doctrine, 
     $this->LogToDatabase("{user} fait une recherche dans la page Attribution | recherche => {rech}", [
         'user'=>$this->getUser(),
         'rech'=>$searchDataAttribution->getId(),
-    ], "ATTRIBUTION", $doctrine);
+    ], "ATTRIBUTION", $doctrine,4);
 
     $logger->info("{user} fait une recherche dans la page Attribution | recherche => {rech} | heure => {date}", [
         'user'=>$this->getUser(),
@@ -227,7 +227,7 @@ private function processAttributionDelete($attribution, $manager, $id, $doctrine
         'cat'=>$attribution->getProduct()->getCategory(),
         'att'=>$attribution->getDateAttribution()->format('d/m/Y H:i:s'),
         'res'=>$attribution->getDateRestitution()->format('d/m/Y H:i:s'), 
-        ],"ATTRIBUTION", $doctrine);
+        ],"ATTRIBUTION", $doctrine,3);
        
     $logger->info("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | date d'attribution => {att} | date de restitution => {res} | heure de suppréssion => {date}", [
     'id'=> $id,
@@ -263,7 +263,7 @@ private function processAttributionEdit($attribution, $data, $manager, $doctrine
         'rem'=>$attribution->getRemarque(),
         'att'=>$attribution->getDateAttribution()->format('d/m/Y H:i:s'),
         'res'=>$attribution->getDateRestitution()->format('d/m/Y H:i:s'), 
-    ],"ATTRIBUTION", $doctrine);
+    ],"ATTRIBUTION", $doctrine,2);
 
     $logger->info("{user} à modifier l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure de changement : {date}", [
         'id'=> $id,
@@ -294,7 +294,7 @@ private function processAttributionSenMail($attribution, $id, $doctrine, $logger
         'mail'=>$attribution->getCollaborateur()->getEmail(),
         'cat'=>$attribution->getPdfName(),
         'dep'=>$attribution->getCollaborateur()->getDepartement(),
-        ], "ATTRIBUTION", $doctrine);
+        ], "ATTRIBUTION", $doctrine,1);
 
     $logger->info("{user} a envoyer un email à l'id : {id} | Collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | heure d'envoi du mail : {date}", [
     'id'=> $id,
@@ -409,7 +409,7 @@ private function procressAttributionSiganture($attribut,$collaborateurs,$email, 
 private function processAttributionCreationEntry( $doctrine,$logger){
     $this->logToDatabase("{user} est rentré dans la page d'ajout d'Attribution", [
         'user'=>$this->getUser(),
-     ],"ATTRIBUTION", $doctrine);
+     ],"ATTRIBUTION", $doctrine,0);
     $logger->info("{user} est rentré dans la page d'ajout d'Attribution | heure : {date}", [
         'user'=>$this->getUser(),
         'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
@@ -426,7 +426,7 @@ private function processAttributionEditEntry( $doctrine,$attribution, $id, $logg
         'cat'=>$attribution->getProduct()->getCategory(),
         'des'=>$attribution->getDescriptionProduct(),
         'rem'=>$attribution->getRemarque(),
-        ],"ATTRIBUTION", $doctrine);
+        ],"ATTRIBUTION", $doctrine,0);
     $logger->info("{user} est rentré dans la page d'édition de l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure : {date}", [
     'id'=> $id,
     'user'=>$this->getUser(),

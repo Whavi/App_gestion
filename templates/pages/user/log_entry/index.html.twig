@@ -54,32 +54,6 @@
 </div>
 
 		<div class="mt-4 text-center">
-			{{ knp_pagination_render(log) }}
+			{{ knp_pagination_render(log_entries) }}
 		</div>
-
- <style>
-        /* Your custom CSS styles go here */
-        .my-checkbox {
-            /* Add your checkbox styles */
-            margin-right: 10px;
-        }
-
-        .form_label {
-            /* Add your label styles */
-            font-weight: bold;
-            color: #333;
-        }
-
-        .btn-primary {
-            /* Add your submit button styles */
-            background-color: #007bff;
-            color: #fff;
-            border: 1px solid #007bff;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border: 1px solid #0056b3;
-        }
-    </style>
 	{% endblock %}

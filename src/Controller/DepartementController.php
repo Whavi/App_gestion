@@ -145,7 +145,7 @@ private function processDepartementAccueil($request,$doctrine ,$logger){
     $page = $request->query->getInt('page', 1);
     $this->logToDatabase("{user} est rentré dans la page $page d'accueil du département", [
         'user' => $this->getUser(),
-    ], "DÉPARTEMENT",$doctrine);
+    ], "DÉPARTEMENT",$doctrine,0);
 
     $logger->info("{user} est rentré dans la page $page d'accueil du département | heure => {date}", [
         'user' => $this->getUser(),
@@ -157,7 +157,7 @@ private function processDepartementRecherche( $searchDataDepartement,$doctrine,$
     $this->logToDatabase("{user} fait une recherche dans la page département | recherche => {rech}", [
         'user' => $this->getUser(),
         'rech' => $searchDataDepartement->getRecherche(),
-    ], "DÉPARTEMENT", $doctrine);
+    ], "DÉPARTEMENT", $doctrine,4);
 
     $logger->info("{user} fait une recherche dans la page département | recherche => {rech} | heure => {date}", [
         'user' => $this->getUser(),
@@ -171,7 +171,7 @@ private function processDepartementDelete($departement, $manager, $doctrine, $lo
         'id' => $departement->getId(),
         'user' => $this->getUser(),
         'dep' => $departement->getNom(),
-    ], "DÉPARTEMENT", $doctrine);
+    ], "DÉPARTEMENT", $doctrine,3);
 
     $logger->info("{user} a supprimé le département {dep} | heure de suppression => {date}", [
         'id' => $departement->getId(),
@@ -196,7 +196,7 @@ private function processDepartementEdit($departement, $data, $manager, $doctrine
     $this->logToDatabase("{user} a modifié le département => {dep}", [
         'user' => $this->getUser(),
         'dep' => $departement->getNom(),
-    ], "DÉPARTEMENT", $doctrine);
+    ], "DÉPARTEMENT", $doctrine,2);
 
     $logger->info("{user} a modifié le département => {dep} | heure de changement : {date}", [
         'user' => $this->getUser(),
@@ -231,7 +231,7 @@ private function processDepartementCreation($data, $manager,$doctrine, $logger)
 Private function processDeparementCreationEntry($doctrine, $logger){
     $this->logToDatabase("{user} est rentré dans la page d'ajout de département", [
         'user' => $this->getUser(),
-    ], "DÉPARTEMENT", $doctrine);
+    ], "DÉPARTEMENT", $doctrine,0);
 
     $logger->info("{user} est rentré dans la page d'ajout de département | heure => {date}", [
         'user' => $this->getUser(),
@@ -242,7 +242,7 @@ Private function processDeparementCreationEntry($doctrine, $logger){
 Private function processDeparementEditEntry($doctrine, $logger){
     $this->logToDatabase("{user} est rentré dans la page d'édition de département", [
         'user' => $this->getUser(),
-    ], "DÉPARTEMENT", $doctrine);
+    ], "DÉPARTEMENT", $doctrine,0);
 
     $logger->info("{user} est rentré dans la page d'édition de département | heure => {date}", [
         'user' => $this->getUser(),

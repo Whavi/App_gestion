@@ -145,7 +145,7 @@ private function processProduitAccueil($request, $doctrine,$logger ){
     $page = $request->query->getInt('page', 1);
     $this->LogToDatabase("{user} est rentré dans la page $page d'accueil Produit", [
         'user' => $this->getUser(),
-    ],"PRODUIT",$doctrine);
+    ],"PRODUIT",$doctrine,0);
     $logger->info("{user} est rentré dans la page $page d'accueil Produit | heure => {date}", [
         'user' => $this->getUser(),
         'date' => (new \DateTime())->format('d/m/Y H:i:s'),
@@ -156,7 +156,7 @@ private function processProductRecherche($searchDataProduct, $doctrine, $logger)
     $this->logToDatabase("{user} fait une recherche dans la page Produit | recherche => {rech}", [
         'user' => $this->getUser(),
         'rech' => $searchDataProduct->getRecherche(),
-    ],"PRODUIT",$doctrine);
+    ],"PRODUIT",$doctrine,4);
     $logger->info("{user} fait une recherche dans la page Produit | recherche => {rech} | heure => {date}", [
         'user' => $this->getUser(),
         'rech' => $searchDataProduct->getRecherche(),
@@ -171,7 +171,7 @@ public function processProduitDelete($product, $manager, $doctrine, $logger){
         'ref'=>$product->getRef(),
         'mod'=>$product->getNom(),
         'cat'=>$product->getCategory(),
-        ],"PRODUIT",$doctrine);
+        ],"PRODUIT",$doctrine,3);
 
     $logger->info("{user} a supprimer le produit suivant : Numéro de série {NumSeri} | Réf.Log => {ref} | Modèle => {mod} | catégorie => {cat} | heure de suppréssion => {date}", [
         'user'=>$this->getUser(),
@@ -203,7 +203,7 @@ private function processProduitEdit($product, $data, $manager, $doctrine, $logge
         'ref'=>$product->getRef(),
         'mod'=>$product->getNom(),
         'cat'=>$product->getCategory(),
-    ],"PRODUIT",$doctrine);
+    ],"PRODUIT",$doctrine,2);
     $logger->info("{user} a modifié le produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat} | heure de changement : {date}", [
         'user'=>$this->getUser(),
         'NumSerie'=>$product->getIdentifiant(),
@@ -253,7 +253,7 @@ Private function processProduitEntry($product, $doctrine, $logger){
         'ref'=>$product->getRef(),
         'mod'=>$product->getNom(),
         'cat'=>$product->getCategory(),
-    ],"PRODUIT",$doctrine);
+    ],"PRODUIT",$doctrine,0);
     $logger->info("{user} est rentré dans la page d'édition de Produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat} | heure => {date}", [
         'user' => $this->getUser(),
         'NumSerie'=>$product->getIdentifiant(),
@@ -267,7 +267,7 @@ Private function processProduitEntry($product, $doctrine, $logger){
 Private function processProduitCreationEntry($doctrine, $logger){
     $this->logToDatabase("{user} est rentré dans la page d'ajout de Produit", [
         'user' => $this->getUser(),
-    ],"PRODUIT",$doctrine);
+    ],"PRODUIT",$doctrine,0);
     $logger->info("{user} est rentré dans la page d'ajout de Produit | heure => {date}", [
         'user' => $this->getUser(),
         'date' => (new \DateTime())->format('d/m/Y H:i:s'),

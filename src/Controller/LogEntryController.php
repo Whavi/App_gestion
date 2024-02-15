@@ -16,6 +16,8 @@ class LogEntryController extends AbstractController
     public function index(LogEntryRepository $logEntryRepository, PaginatorInterface $paginatorInterface, Request $request): Response
     { 
         $data = $logEntryRepository->findAllOrderedByLogNumber();
+        $posts = $paginatorInterface->paginate($data, $request->query->getInt('page', 1), 30);
+
         $form = $this->createForm(LogFilterType::class); 
         $form->handleRequest($request);
 
@@ -25,19 +27,16 @@ class LogEntryController extends AbstractController
 
             // Filtrer les résultats en fonction des niveaux et catégories sélectionnés
             $filteredData = $logEntryRepository->filterByLevelsAndCategories($formData->getLevel(),$formData->getChannel());
-            $posts = $paginatorInterface->paginate($filteredData, $request->query->getInt('page', 1), 12);
+            $posts = $paginatorInterface->paginate($filteredData, $request->query->getInt('page', 1), 30);
 
             return $this->render('pages/user/log_entry/index.html.twig', [
-                'log_entries' => $filteredData,
-                'log' => $posts,
+                'log_entries' => $posts,
                 'form' => $form->createView(),
             ]);
         }
 
-        $posts = $paginatorInterface->paginate($data, $request->query->getInt('page', 1), 12);
         return $this->render('pages/user/log_entry/index.html.twig', [
-            'log_entries' => $data,
-            'log' => $posts,
+            'log_entries' => $posts,
             'form' => $form->createView(),
         ]);
     }

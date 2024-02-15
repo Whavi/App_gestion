@@ -17,9 +17,10 @@ class LogFilterType extends AbstractType
             ->add('level', ChoiceType::class, [
                 'choices' => [
                     'Entry' => 0,
-                    'Add' => 1,
+                    'Creation' => 1,
                     'Edit' => 2,
                     'Delete' => 3,
+                    'Recherche' => 4,
                 ],
                 'label' => 'Niveau : ',
                 'label_attr' => [
@@ -27,6 +28,7 @@ class LogFilterType extends AbstractType
                 ],
                 'expanded' => true,
                 'multiple' => false,
+                'required' => false,
             ])
             ->add('channel', ChoiceType::class, [
                 'choices' => [
@@ -43,6 +45,7 @@ class LogFilterType extends AbstractType
                 ],
                 'expanded' => true,
                 'multiple' => false,
+                'required' => false,
             ])
             ->add('Submit', SubmitType::class,[
                 'attr' => [
