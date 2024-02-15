@@ -21,6 +21,26 @@ class LogEntryRepository extends ServiceEntityRepository
         parent::__construct($registry, LogEntry::class);
     }
 
+    public function findAllOrderedByLogNumber(): array
+   {
+       return $this->createQueryBuilder('l')
+           ->orderBy('l.id', 'DESC')
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+   public function filterByLevelsAndCategories($levels, $categories)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.level IN (:levels)')
+            ->andWhere('l.channel IN (:channels)')
+            ->setParameter('levels', $levels)
+            ->setParameter('channels', $categories)
+            ->orderBy('l.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return LogEntry[] Returns an array of LogEntry objects
 //     */
