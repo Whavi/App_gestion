@@ -30,7 +30,6 @@ class LogFilterType extends AbstractType
                     'class' => 'form-check form-check-block'
                 ],
                 'expanded' => true,
-                'multiple' => false,
                 'required' => false,
             ])
             ->add('channel', ChoiceType::class, [
@@ -50,7 +49,6 @@ class LogFilterType extends AbstractType
                     'class' => 'form-check form-check-block'
                 ],
                 'expanded' => true,
-                'multiple' => false,
                 'required' => false,
             ])
             ->add('Submit', SubmitType::class,[

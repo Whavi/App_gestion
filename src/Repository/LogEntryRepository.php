@@ -29,23 +29,24 @@ class LogEntryRepository extends ServiceEntityRepository
            ->getResult()
        ;
    }
-   public function filterByLevelsAndCategories($levels = null, $categories = null)
+   public function filterByLevelsAndCategories($levels, $categories, $createdAt)
 {
     $queryBuilder = $this->createQueryBuilder('l')
         ->orderBy('l.id', 'DESC');
-
     if ($levels !== null) {
         $queryBuilder
             ->andWhere('l.level IN (:levels)')
             ->setParameter('levels', $levels);
     }
-
     if ($categories !== null) {
         $queryBuilder
             ->andWhere('l.channel IN (:channels)')
             ->setParameter('channels', $categories);
     }
-
+    if ($createdAt !== null) {
+        $queryBuilder->andWhere('l.createdAt = :createdAt')
+            ->setParameter('createdAt', $createdAt);
+    }
     return $queryBuilder->getQuery()->getResult();
 }
 
