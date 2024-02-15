@@ -25,6 +25,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Controller\PdfGeneratorController;
 use Psr\Log\LoggerInterface;
+use App\Entity\LogEntry;
+
 
 
 class AttributionController extends AbstractController
@@ -34,7 +36,7 @@ class AttributionController extends AbstractController
 ############################################################################################################################
 #[Route('/gestion/{currentFunction}/attribution/', name: 'user_gestion_attribution', defaults: ['currentFunction' => 'nouvellesAttributions'])]    
 #[IsGranted('ROLE_USER')]
-public function gestionAttribution( AttributionRepository $attributionRepository, Request $request, PaginatorInterface $paginatorInterface, LoggerInterface $logger ,$currentFunction) {
+public function gestionAttribution( AttributionRepository $attributionRepository, Request $request, PersistenceManagerRegistry $doctrine, PaginatorInterface $paginatorInterface, LoggerInterface $logger ,$currentFunction) {
     if ($currentFunction === 'nouvellesAttributions') { $attribution = $attributionRepository->findAllOrderedByAttributionId();
     } else { $attribution = $attributionRepository->findOldAttributions(); }
 
@@ -46,7 +48,7 @@ public function gestionAttribution( AttributionRepository $attributionRepository
     if($form->isSubmitted() && $form->isValid()){
         $data = $attributionRepository->findAllOrderedByNameAttribution($searchDataAttribution);
         $posts = $paginatorInterface->paginate($data, $request->query->getInt('page', 1), 12);
-        $this->processAttributionRecherche($searchDataAttribution, $logger);
+        $this->processAttributionRecherche($searchDataAttribution, $doctrine, $logger);
         return $this->render('pages/user/attribution.html.twig', [
             'form' => $form->createView(),
             'attributions' => $posts,
@@ -54,7 +56,7 @@ public function gestionAttribution( AttributionRepository $attributionRepository
             ],
         );
     }
-    $this->processAttributionAccueilEntry($currentFunction, $logger);
+    $this->processAttributionAccueilEntry($currentFunction, $doctrine, $request,$logger);
     return $this->render('pages/user/attribution.html.twig', [
         'form' => $form->createView(),
         'attributions' => $posts,
@@ -79,15 +81,15 @@ public function gestionAttributionDelete($id, LoggerInterface $logger,  Attribut
 ############################################################################################################################
 #[Route('/gestion/attribution/edit/{id}', name: 'user_gestion_attribution_edit')]
 #[IsGranted('ROLE_USER')]
-public function gestionAttributionEdit($id, LoggerInterface $logger, AttributionRepository $attributionRepository, Request $request, EntityManagerInterface $manager) : Response {
+public function gestionAttributionEdit($id, LoggerInterface $logger, AttributionRepository $attributionRepository, Request $request,PersistenceManagerRegistry $doctrine, EntityManagerInterface $manager) : Response {
     $attribution = $attributionRepository->find($id);
     $form = $this->createForm(EditFormAttributionType::class, $attribution);
     $form->handleRequest($request);
     if ($form->isSubmitted() && $form->isValid()){
-        $this->processAttributionEdit($attribution, $form->getData(), $manager, $id, $logger);
+        $this->processAttributionEdit($attribution, $form->getData(), $manager,  $doctrine,$id, $logger);
         return $this->redirectToRoute('user_gestion_attribution');
     }
-    $this->processAttributionEditEntry($attribution, $id, $logger);
+    $this->processAttributionEditEntry( $doctrine,$attribution, $id, $logger);
     return $this->render('pages/user/edit/editAttribution.html.twig', [
         'attributions' => $attribution,
         'form' => $form->createView()
@@ -101,7 +103,7 @@ public function gestionAttributionEdit($id, LoggerInterface $logger, Attribution
 
 #[Route('/gestion/attribution/send-email/{id}', name: 'user_gestion_send_mail')]
 #[IsGranted('ROLE_USER')]
-public function sendEmail($id, LoggerInterface $logger, AttributionRepository $attributionRepository, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, UserRepository $userRepository, PdfGeneratorController $pdfGenerator, MailerInterface $mailer): Response
+public function sendEmail($id, LoggerInterface $logger,PersistenceManagerRegistry $doctrine, AttributionRepository $attributionRepository, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, UserRepository $userRepository, PdfGeneratorController $pdfGenerator, MailerInterface $mailer): Response
 {
     $attribution = $attributionRepository->find($id);
     $collaborateur = $attribution->getCollaborateur();
@@ -116,7 +118,7 @@ public function sendEmail($id, LoggerInterface $logger, AttributionRepository $a
         ->attach($pdfContent, $filename, 'application/pdf')
         ->htmlTemplate('pages/user/mail/mailpdf.html.twig');  
     $mailer->send($email);    
-    $this->processAttributionSenMail($attribution, $id, $logger);
+    $this->processAttributionSenMail($attribution, $id, $doctrine, $logger);
     return $this->redirectToRoute('user_gestion_attribution');
 }
 
@@ -125,15 +127,15 @@ public function sendEmail($id, LoggerInterface $logger, AttributionRepository $a
 ############################################################################################################################
 #[Route('/gestion/attribution/addAttribution', name: 'user_gestion_newItemAttribution')]
 #[IsGranted('ROLE_USER')]
-public function addItemAttribution(LoggerInterface $logger ,EntityManagerInterface $manager, Request $request) : Response {
+public function addItemAttribution(LoggerInterface $logger ,PersistenceManagerRegistry $doctrine,EntityManagerInterface $manager, Request $request) : Response {
     $attribution = null; 
     $form = $this->createForm(UserFormAttributionType::class);
     $form->handleRequest($request);
     if ($form->isSubmitted() && $form->isValid()) {
-        $this->processAttributionCreation($attribution, $form->getData(), $manager, $logger);            
+        $this->processAttributionCreation($attribution, $form->getData(), $doctrine, $manager, $logger);            
         return $this->redirectToRoute('user_gestion_attribution');
     }
-    $this->processAttributionCreationEntry($logger);
+    $this->processAttributionCreationEntry( $doctrine,$logger);
     return $this->render('pages/user/newItem/Attribution.html.twig', [
         'attributions' => $attribution,
         'form' => $form->createView()]);
@@ -143,7 +145,7 @@ public function addItemAttribution(LoggerInterface $logger ,EntityManagerInterfa
 ############################################################################################################################
 #[Route('/gestion/attribution/signature/{id}', name: 'user_gestion_sign')]
 #[IsGranted('ROLE_USER')]
-public function signature( $id,LoggerInterface $logger, PdfGeneratorController $pdfGeneratorController, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, AttributionRepository $attributionRepository, UserRepository $userRepository, YousignService $yousignService): Response {
+public function signature( $id,LoggerInterface $logger,PersistenceManagerRegistry $doctrine, PdfGeneratorController $pdfGeneratorController, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, AttributionRepository $attributionRepository, UserRepository $userRepository, YousignService $yousignService): Response {
     $collaborateurs = $collaborateurRepository->findAllOrderedByInnerJoin_Name_Mail_ContentContrat($id);
     foreach ($collaborateurs as $collaborateur) {
         $email = $collaborateur->getEmail();
@@ -151,7 +153,7 @@ public function signature( $id,LoggerInterface $logger, PdfGeneratorController $
         $nom = $collaborateur->getNom();
     }
     $attribut = $attributionRepository->find($id);
-    $this->procressAttributionSiganture($attribut, $collaborateurs, $email, $prenom, $nom, $attributionRepository, $collaborateurRepository, $pdfGeneratorController, $userRepository, $productRepository, $yousignService, $logger);
+    $this->procressAttributionSiganture($attribut, $collaborateurs ,$email, $prenom, $nom, $attributionRepository, $collaborateurRepository, $pdfGeneratorController, $userRepository, $productRepository, $yousignService,$doctrine, $logger);
     return $this->redirectToRoute('user_gestion_attribution');
 }
 
@@ -167,8 +169,35 @@ public function signature( $id,LoggerInterface $logger, PdfGeneratorController $
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
-private function processAttributionAccueilEntry($currentFunction, $logger){
-    $logger->info("{user} est rentré dans la page d'accueil {cfunc} | heure => {date}", [
+private function logToDatabase(string $message, array $context = [], $channel,  ?PersistenceManagerRegistry $doctrine = null, $level = 1 ): void
+    {
+         // Merge context parameters into the message
+         foreach ($context as $key => $value) {
+            $message = str_replace("{{$key}}", $value, $message);
+        }
+
+        $logEntry = new LogEntry();
+        $logEntry->setMessage($message);
+        $logEntry->setCreatedAt(new \DateTime());
+        $logEntry->setChannel($channel);
+        $logEntry->setLevel($level);
+        
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($logEntry);
+        $entityManager->flush();
+    }
+
+
+private function processAttributionAccueilEntry($currentFunction, $doctrine,$request, $logger){
+    $page = $request->query->getInt('page', 1);
+
+    $this->LogToDatabase("{user} est rentré dans la page $page d'accueil {cfunc} ", [
+        'user'=>$this->getUser(),
+        'cfunc'=>$currentFunction, 
+    ],"ATTRIBUTION", $doctrine);
+
+    $logger->info("{user} est rentré dans la page $page d'accueil {cfunc} | heure => {date}", [
         'user'=>$this->getUser(),
         'cfunc'=>$currentFunction, 
         'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
@@ -176,7 +205,12 @@ private function processAttributionAccueilEntry($currentFunction, $logger){
 }
 
 
-private function processAttributionRecherche($searchDataAttribution, $logger){
+private function processAttributionRecherche($searchDataAttribution, $doctrine, $logger){
+    $this->LogToDatabase("{user} fait une recherche dans la page Attribution | recherche => {rech}", [
+        'user'=>$this->getUser(),
+        'rech'=>$searchDataAttribution->getId(),
+    ], "ATTRIBUTION", $doctrine);
+
     $logger->info("{user} fait une recherche dans la page Attribution | recherche => {rech} | heure => {date}", [
         'user'=>$this->getUser(),
         'rech'=>$searchDataAttribution->getId(),
@@ -185,10 +219,16 @@ private function processAttributionRecherche($searchDataAttribution, $logger){
 }
 
 private function processAttributionDelete($attribution, $manager, $id, $doctrine, $logger){
-    $this->addFlash('success',"Le département a été supprimer");
-    $manager = $doctrine->getManager();
-    $manager->remove($attribution);
-    $manager->flush();
+    $this->LogToDatabase("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | date d'attribution => {att} | date de restitution => {res}", [
+        'id'=> $id,
+        'user'=>$this->getUser(),
+        'collab'=>$attribution->getCollaborateur(),
+        'mod'=>$attribution->getProduct()->getNom(),
+        'cat'=>$attribution->getProduct()->getCategory(),
+        'att'=>$attribution->getDateAttribution()->format('d/m/Y H:i:s'),
+        'res'=>$attribution->getDateRestitution()->format('d/m/Y H:i:s'), 
+        ],"ATTRIBUTION", $doctrine);
+       
     $logger->info("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | date d'attribution => {att} | date de restitution => {res} | heure de suppréssion => {date}", [
     'id'=> $id,
     'user'=>$this->getUser(),
@@ -199,19 +239,32 @@ private function processAttributionDelete($attribution, $manager, $id, $doctrine
     'res'=>$attribution->getDateRestitution()->format('d/m/Y H:i:s'), 
     'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
     ]);
+
+    $manager = $doctrine->getManager();
+    $manager->remove($attribution);
+    $manager->flush();
+
+    $this->addFlash('success',"Le département a été supprimer");
+
 }
 
-private function processAttributionEdit($attribution, $data, $manager,$id, $logger){
+private function processAttributionEdit($attribution, $data, $manager, $doctrine,$id, $logger){
     $attribution->setUpdatedAt(new \DateTime());
     $attribution->setByUser($this->getUser()); 
 
-    $this->addFlash(
-        'success',
-        'Votre attribution a bien été modifier.'
-    );
 
-    $manager->persist($data);
-    $manager->flush();
+    $this->LogToDatabase("{user} à modifier l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem}", [
+        'id'=> $id,
+        'user'=>$this->getUser(),
+        'collab'=>$attribution->getCollaborateur(),
+        'mod'=>$attribution->getProduct()->getNom(),
+        'cat'=>$attribution->getProduct()->getCategory(),
+        'des'=>$attribution->getDescriptionProduct(),
+        'rem'=>$attribution->getRemarque(),
+        'att'=>$attribution->getDateAttribution()->format('d/m/Y H:i:s'),
+        'res'=>$attribution->getDateRestitution()->format('d/m/Y H:i:s'), 
+    ],"ATTRIBUTION", $doctrine);
+
     $logger->info("{user} à modifier l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure de changement : {date}", [
         'id'=> $id,
         'user'=>$this->getUser(),
@@ -224,14 +277,25 @@ private function processAttributionEdit($attribution, $data, $manager,$id, $logg
         'res'=>$attribution->getDateRestitution()->format('d/m/Y H:i:s'), 
         'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
     ]);
+
+    $manager->persist($data);
+    $manager->flush();
+
+    $this->addFlash('success','Votre attribution a bien été modifier.');
+
 }
 
-private function processAttributionSenMail($attribution, $id, $logger){
-    $this->addFlash(
-        'success',
-        "L'email a bien été envoyer."
-    );
-    
+private function processAttributionSenMail($attribution, $id, $doctrine, $logger){
+    $this->addFlash('success', "L'email a bien été envoyer.");
+    $this->LogToDatabase("{user} a envoyer un email à l'id : {id} | Collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep}", [
+        'id'=> $id,
+        'user'=>$this->getUser(),
+        'collab'=>$attribution->getCollaborateur(),
+        'mail'=>$attribution->getCollaborateur()->getEmail(),
+        'cat'=>$attribution->getPdfName(),
+        'dep'=>$attribution->getCollaborateur()->getDepartement(),
+        ], "ATTRIBUTION", $doctrine);
+
     $logger->info("{user} a envoyer un email à l'id : {id} | Collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | heure d'envoi du mail : {date}", [
     'id'=> $id,
     'user'=>$this->getUser(),
@@ -244,7 +308,7 @@ private function processAttributionSenMail($attribution, $id, $logger){
 }
 
 
-private function processAttributionCreation($attribution, $data, $manager, $logger){
+private function processAttributionCreation($attribution, $data,  $doctrine,$manager, $logger){
     $attribution = new Attribution();
     $attribution->setCreatedAt(new \DateTime());
     $attribution->setUpdatedAt(new \DateTime());
@@ -256,13 +320,20 @@ private function processAttributionCreation($attribution, $data, $manager, $logg
     $attribution->setByUser($this->getUser()); 
     $attribution->setProduct($data->getProduct()); 
 
-    $this->addFlash('success', 'Votre attribution a bien été crée.');
     $manager->persist($attribution);
     $manager->flush();
 
     $attribution->setPdfName("Bon de commande N°" . $attribution->getId() . ".pdf");
     $manager->persist($attribution);
     $manager->flush();
+
+    $this->LogToDatabase("{user} a crée une attribution à au collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep}", [
+        'user'=>$this->getUser(),
+        'collab'=>$attribution->getCollaborateur(),
+        'mail'=>$attribution->getCollaborateur()->getEmail(),
+        'cat'=>$attribution->getId(),
+        'dep'=>$attribution->getCollaborateur()->getDepartement(),
+    ],"ATTRIBUTION", $doctrine);
 
     $logger->info("{user} a crée une attribution à au collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | heure de création : {date}", [
         'user'=>$this->getUser(),
@@ -272,10 +343,13 @@ private function processAttributionCreation($attribution, $data, $manager, $logg
         'dep'=>$attribution->getCollaborateur()->getDepartement(),
         'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
     ]);
+
+    $this->addFlash('success', 'Votre attribution a bien été crée.');
+
 }
 
-private function procressAttributionSiganture($attribut,$collaborateurs, $email, $prenom, $nom, $attributionRepository, $collaborateurRepository, $pdfGeneratorController, $userRepository, $productRepository, $yousignService, $logger){
-    $pdfContent = $pdfGeneratorController->generatePdfContent($attribut->getId(), $collaborateurRepository, $productRepository, $attributionRepository, $userRepository);
+private function procressAttributionSiganture($attribut,$collaborateurs,$email, $prenom, $nom, $attributionRepository, $collaborateurRepository, $pdfGeneratorController, $userRepository, $productRepository, $yousignService, $doctrine, $logger){
+    $pdfContent = $pdfGeneratorController->generatePdfContent($attribut->getId(), $collaborateurRepository, $productRepository, $attributionRepository, $userRepository, $logger);
     
     $filename = 'Bon de commande N°' . $attribut->getId() . '.pdf';
     $pdfFilePath = $this->getParameter('kernel.project_dir') . '/public/' . $filename;
@@ -292,7 +366,7 @@ private function procressAttributionSiganture($attribut,$collaborateurs, $email,
     $attributionRepository->save($attribut, true);
 
     foreach ($collaborateurs as $collaborateur) {
-        $signerId = $yousignService->addSigner(
+            $signerId = $yousignService->addSigner(
             $attribut->getSignatureId(),
             $attribut->getDocumentId(),
             $email,
@@ -307,6 +381,17 @@ private function procressAttributionSiganture($attribut,$collaborateurs, $email,
 
     $yousignService->activateSignatureRequest($attribut->getSignatureId());
 
+    $this->LogToDatabase("{user} a crée une signature au collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | signature_id => {signId} | Document_id => {docId} | signer_id => {sID}", 
+    [
+    'user' => $this->getUser(),
+    'collab' => $attribut->getCollaborateur(),
+    'mail' => $attribut->getCollaborateur()->getEmail(),
+    'cat' => $attribut->getId(),
+    'dep' => $attribut->getCollaborateur()->getDepartement(),
+    'signId' => $attribut->getSignatureId(),
+    'docId' => $attribut->getDocumentId(),
+    'sID' => $attribut->getSignerId(),
+],"ATTRIBUTION", $doctrine);
     $logger->info("{user} a crée une signature au collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | signature_id => {signId} | Document_id => {docId} | signer_id => {sID} | heure de création : {date}", 
         [
         'user' => $this->getUser(),
@@ -321,7 +406,10 @@ private function procressAttributionSiganture($attribut,$collaborateurs, $email,
     ]);
 }
 
-private function processAttributionCreationEntry($logger){
+private function processAttributionCreationEntry( $doctrine,$logger){
+    $this->logToDatabase("{user} est rentré dans la page d'ajout d'Attribution", [
+        'user'=>$this->getUser(),
+     ],"ATTRIBUTION", $doctrine);
     $logger->info("{user} est rentré dans la page d'ajout d'Attribution | heure : {date}", [
         'user'=>$this->getUser(),
         'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
@@ -329,7 +417,16 @@ private function processAttributionCreationEntry($logger){
 
 }
 
-private function processAttributionEditEntry($attribution, $id, $logger){
+private function processAttributionEditEntry( $doctrine,$attribution, $id, $logger){
+    $this->logToDatabase("{user} est rentré dans la page d'édition de l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem}", [
+        'id'=> $id,
+        'user'=>$this->getUser(),
+        'collab'=>$attribution->getCollaborateur(),
+        'mod'=>$attribution->getProduct()->getNom(),
+        'cat'=>$attribution->getProduct()->getCategory(),
+        'des'=>$attribution->getDescriptionProduct(),
+        'rem'=>$attribution->getRemarque(),
+        ],"ATTRIBUTION", $doctrine);
     $logger->info("{user} est rentré dans la page d'édition de l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure : {date}", [
     'id'=> $id,
     'user'=>$this->getUser(),
