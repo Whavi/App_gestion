@@ -11,12 +11,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use App\Entity\LogEntry;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
+
 
 class ExcelController extends AbstractController
 {
 #[Route('/gestion/{currentFunction}/attribution/exportExcel', name: 'user_gestion_attribution_excel')]
 #[IsGranted('ROLE_USER')]
-public function exportExcel(LoggerInterface $logger, EntityManagerInterface $entityManager, $currentFunction): Response
+public function exportExcel(LoggerInterface $logger, EntityManagerInterface $entityManager, PersistenceManagerRegistry $doctrine, $currentFunction): Response
 {
     if ($currentFunction === 'nouvellesAttributions') {
         $data = $entityManager->getRepository(Attribution::class)->findAllOrderedByAttributionId();
@@ -93,7 +96,7 @@ public function exportExcel(LoggerInterface $logger, EntityManagerInterface $ent
     $writer = new Xlsx($spreadsheet);
     $excelFileName = 'Inventaire_data.xlsx';
     $writer->save($excelFileName);
-    $this->processExcelLog($currentFunction, $logger);
+    $this->processExcelLog($currentFunction,$doctrine, $logger);
     // Retourner le fichier Excel en réponse
     return $this->file($excelFileName, 'Inventaire.xlsx');
 }
@@ -103,7 +106,31 @@ public function exportExcel(LoggerInterface $logger, EntityManagerInterface $ent
 ############################################################################################################################
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
-private function processExcelLog($currentFunction, $logger){
+
+private function logToDatabase(string $message, array $context = [], $channel,  ?PersistenceManagerRegistry $doctrine = null, $level = 1 ): void
+    {
+         // Merge context parameters into the message
+         foreach ($context as $key => $value) {
+            $message = str_replace("{{$key}}", $value, $message);
+        }
+
+        $logEntry = new LogEntry();
+        $logEntry->setMessage($message);
+        $logEntry->setCreatedAt(new \DateTime());
+        $logEntry->setChannel($channel);
+        $logEntry->setLevel($level);
+        
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($logEntry);
+        $entityManager->flush();
+    }
+
+private function processExcelLog($currentFunction, $doctrine, $logger){
+    $this->logToDatabase("{user} a exporté les données vers un fichier Excel pour {function}", [
+        'user' => $this->getUser(),
+        'function' => $currentFunction,
+    ],"ATTRIBUTION", $doctrine);
     $logger->info("{user} a exporté les données vers un fichier Excel pour {function} le {date}", [
         'user' => $this->getUser(),
         'function' => $currentFunction,
