@@ -24,7 +24,10 @@ class LogFilterType extends AbstractType
                 ],
                 'label' => 'Niveau : ',
                 'label_attr' => [
-                    'class' => 'form-check form-check-inline form-check-label'
+                    'class' => 'form-label'
+                ],
+                'attr' => [
+                    'class' => 'form-check form-check-block'
                 ],
                 'expanded' => true,
                 'multiple' => false,
@@ -42,6 +45,9 @@ class LogFilterType extends AbstractType
                 'label' => 'Catégorie : ',
                 'label_attr' => [
                     'class' => 'form-label mt-1'
+                ],
+                'attr' => [
+                    'class' => 'form-check form-check-block'
                 ],
                 'expanded' => true,
                 'multiple' => false,
