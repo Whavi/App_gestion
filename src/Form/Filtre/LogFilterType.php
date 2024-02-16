@@ -62,6 +62,7 @@ class LogFilterType extends AbstractType
                 'label_attr' => [
                     'class' => 'form_label mt-1'
                 ], 
+                'label' => 'Filtre date : ',
                 'data_class' => null,
                 'data' => new \DateTime(), // Définit la date par défaut sur aujourd'hui
                 'required' => false,
