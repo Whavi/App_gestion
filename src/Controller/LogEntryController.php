@@ -25,10 +25,9 @@ class LogEntryController extends AbstractController
         $data = $logEntryRepository->findAllOrderedByLogNumber();
         $posts = $paginatorInterface->paginate($data, $request->query->getInt('page', 1), 30);
 
-        $form = $this->createForm(LogFilterType::class); 
+        $form = $this->createForm(LogFilterType::class,null); 
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {         
             // Récupérer les données du formulaire
             $formData = $form->getData();
             $this->processFiltreLog($formData,$doctrine,$logger);
@@ -81,14 +80,16 @@ private function processLogsAccueilEntry($doctrine,$request, $logger){
 
 
 private function processFiltreLog($log,$doctrine,$logger){
-    $this->logToDatabase('{user} a appliqué le filtre : Niveau => {level} | Catégorie => {channel}', [
+    $this->logToDatabase('{user} a appliqué le filtre : Niveau => {level} | Catégorie => {channel} | date du filtre => {date}', [
         'user' => $this->getUser(),
+        'date' => $log->getCreatedAt()->format('Y/m/d'),
         'level' => $log->getLevel() ?: 'Aucune valeur',
         'channel' => $log->getChannel() ?: 'Aucune valeur',
     ], 'LOG', $doctrine, 4);
 
-    $logger->info("{user} a appliqué le filtre : Niveau => {level} | Catégorie => {channel} | heure => {date}", [
+    $logger->info("{user} a appliqué le filtre : Niveau => {level} | Catégorie => {channel} | date du filtre => {dateFiltre} | heure => {date}", [
         'user' => $this->getUser(),
+        'dateFiltre' => $log->getCreatedAt()->format('Y/m/d'),
         'level' => $log->getLevel() ?: 'Aucune valeur',
         'channel' => $log->getChannel() ?: 'Aucune valeur',
         'date' => (new \DateTime)->format('d/m/Y H:i:s'),

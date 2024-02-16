@@ -6,6 +6,8 @@ use App\Entity\LogEntry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -50,6 +52,33 @@ class LogFilterType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => false,
+            ])
+
+            ->add('createdAt', DateType::class, [
+                'widget' => 'single_text',
+                'attr' => [
+                    'class' => 'form-control',
+                ],
+                'label_attr' => [
+                    'class' => 'form_label mt-1'
+                ], 
+                'data_class' => null,
+                'data' => new \DateTime(), // Définit la date par défaut sur aujourd'hui
+                'required' => false,
+                
+            ])
+            ->add('reset', ButtonType::class, [
+                'attr' => [
+                    'class' => 'btn btn-secondary mt-4',
+                    'onclick' => 'isClickedField()',
+                ],
+                'label' => 'Reset',
+            ])
+            ->add('isClicked', \Symfony\Component\Form\Extension\Core\Type\HiddenType::class, [
+                'mapped' => false,
+                'attr' => [
+                    'id' => 'isClickedField',
+                ],
             ])
             ->add('Submit', SubmitType::class,[
                 'attr' => [

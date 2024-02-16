@@ -44,8 +44,12 @@ class LogEntryRepository extends ServiceEntityRepository
             ->setParameter('channels', $categories);
     }
     if ($createdAt !== null) {
-        $queryBuilder->andWhere('l.createdAt = :createdAt')
-            ->setParameter('createdAt', $createdAt);
+         // Ajoutez un jour à la date spécifiée
+         $nextDay = (clone $createdAt)->modify('+1 day');
+
+         $queryBuilder
+             ->andWhere('l.createdAt <= :nextDay')      
+             ->setParameter('nextDay', $nextDay);
     }
     return $queryBuilder->getQuery()->getResult();
 }
