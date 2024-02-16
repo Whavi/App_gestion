@@ -67,19 +67,6 @@ class LogFilterType extends AbstractType
                 'required' => false,
                 
             ])
-            ->add('reset', ButtonType::class, [
-                'attr' => [
-                    'class' => 'btn btn-secondary mt-4',
-                    'onclick' => 'isClickedField()',
-                ],
-                'label' => 'Reset',
-            ])
-            ->add('isClicked', \Symfony\Component\Form\Extension\Core\Type\HiddenType::class, [
-                'mapped' => false,
-                'attr' => [
-                    'id' => 'isClickedField',
-                ],
-            ])
             ->add('Submit', SubmitType::class,[
                 'attr' => [
                     'class' => 'btn btn-primary mt-4'
