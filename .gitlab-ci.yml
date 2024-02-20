@@ -1,0 +1,36 @@
+stages:
+  - build
+
+variables:
+  COMPOSER_ALLOW_SUPERUSER: "1"
+  SYMFONY_PHPUNIT_VERSION: 9.5
+  NODE_VERSION: "14"
+
+before_script:
+  - apt-get update -qy
+  - apt-get install -y wget unzip
+  - wget https://get.symfony.com/cli/installer -O - | bash
+  - mv /root/.symfony /root/.config
+  - export PATH="$HOME/.symfony/bin:$PATH"
+  - symfony --version
+  - apt-get install -y nodejs npm
+  - node -v
+  - npm -v
+
+cache:
+  paths:
+    - $HOME/.composer/cache
+    - node_modules
+
+build:
+  stage: build
+  script:
+    - composer install --no-scripts --no-interaction
+    - npm install
+    - symfony console doctrine:migrations:migrate --no-interaction
+    - symfony console doctrine:fixtures:load --no-interaction
+    - symfony console cache:clear --env=prod
+    - npm run watch &
+    - symfony server:start --daemon
+  only:
+    - master
