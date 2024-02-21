@@ -48,18 +48,19 @@ class LogEntryController extends AbstractController
     }
 
 
-private function logToDatabase(string $message, array $context = [], $channel,  ?PersistenceManagerRegistry $doctrine = null, $level = 1 ): void
+private function logToDatabase(string $message, string $channel, ?PersistenceManagerRegistry $doctrine = null, array $context = [], int $level = 1): void
 {
-     // Merge context parameters into the message
-     foreach ($context as $key => $value) {
+    // Merge context parameters into the message
+    foreach ($context as $key => $value) {
         $message = str_replace("{{$key}}", $value, $message);
     }
+
     $logEntry = new LogEntry();
     $logEntry->setMessage($message);
     $logEntry->setCreatedAt(new \DateTime());
     $logEntry->setChannel($channel);
     $logEntry->setLevel($level);
-    
+
     $entityManager = $doctrine->getManager();
     $entityManager->persist($logEntry);
     $entityManager->flush();
@@ -68,9 +69,9 @@ private function logToDatabase(string $message, array $context = [], $channel,  
 private function processLogsAccueilEntry($doctrine,$request, $logger){
     $page = $request->query->getInt('page', 1);
 
-    $this->LogToDatabase("{user} est rentré dans la page $page d'accueil des LOGS ", [
+    $this->LogToDatabase("{user} est rentré dans la page $page d'accueil des LOGS ","LOG", $doctrine, [
         'user'=>$this->getUser(),
-    ],"LOG", $doctrine,0);
+    ],0);
 
     $logger->info("{user} est rentré dans la page $page d'accueil des LOGS | heure => {date}", [
         'user'=>$this->getUser(),
@@ -80,12 +81,12 @@ private function processLogsAccueilEntry($doctrine,$request, $logger){
 
 
 private function processFiltreLog($log,$doctrine,$logger){
-    $this->logToDatabase('{user} a appliqué le filtre : Niveau => {level} | Catégorie => {channel} | date du filtre => {date}', [
+    $this->logToDatabase('{user} a appliqué le filtre : Niveau => {level} | Catégorie => {channel} | date du filtre => {date}','LOG', $doctrine,  [
         'user' => $this->getUser(),
         'date' => $log->getCreatedAt()->format('Y/m/d'),
         'level' => $log->getLevel() ?: 'Aucune valeur',
         'channel' => $log->getChannel() ?: 'Aucune valeur',
-    ], 'LOG', $doctrine, 4);
+    ], 4);
 
     $logger->info("{user} a appliqué le filtre : Niveau => {level} | Catégorie => {channel} | date du filtre => {dateFiltre} | heure => {date}", [
         'user' => $this->getUser(),
