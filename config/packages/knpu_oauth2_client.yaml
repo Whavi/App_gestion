@@ -1,0 +1,11 @@
+knpu_oauth2_client:
+    clients:
+        azure:
+            type: generic
+            provider_class: KnpU\OAuth2ClientBundle\Client\Provider\AzureResourceOwner
+            client_id: '%env(AZURE_OAUTH_CLIENT_ID)%'
+            client_secret: '%env(AZURE_OAUTH_CLIENT_SECRET)%'
+            redirect_route: connect_azure_check
+            redirect_params: {}
+            custom_options:
+                resource: https://graph.microsoft.com/ 

@@ -1,3 +1,7 @@
+connect_azure_check:
+    path: /connect/azure/check
+    controller: 'KnpU\OAuth2ClientBundle\Controller\OAuth2ClientController::connectCheckAction'
+
 controllers:
     resource:
         path: ../src/Controller/
