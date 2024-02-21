@@ -307,7 +307,6 @@ private function processAttributionSenMail($attribution, $id, $doctrine, $logger
     ]);
 }
 
-
 private function processAttributionCreation($attribution, $data,  $doctrine,$manager, $logger){
     $attribution = new Attribution();
     $attribution->setCreatedAt(new \DateTime());
