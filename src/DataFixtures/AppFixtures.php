@@ -6,17 +6,9 @@ use App\Entity\User;
 use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class AppFixtures extends Fixture
 {
-    private $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
     public function load(ObjectManager $manager): void
     {
         // Users
