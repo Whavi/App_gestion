@@ -122,30 +122,30 @@ public function addItemDepartement(LoggerInterface $logger,EntityManagerInterfac
 
 
 
-private function logToDatabase(string $message, array $context = [], $channel,  ?PersistenceManagerRegistry $doctrine = null, $level = 1 ): void
-    {
-         // Merge context parameters into the message
-         foreach ($context as $key => $value) {
-            $message = str_replace("{{$key}}", $value, $message);
-        }
-
-        $logEntry = new LogEntry();
-        $logEntry->setMessage($message);
-        $logEntry->setCreatedAt(new \DateTime());
-        $logEntry->setChannel($channel);
-        $logEntry->setLevel($level);
-        
-
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($logEntry);
-        $entityManager->flush();
+private function logToDatabase(string $message, string $channel, ?PersistenceManagerRegistry $doctrine = null, array $context = [], int $level = 1): void
+{
+    // Merge context parameters into the message
+    foreach ($context as $key => $value) {
+        $message = str_replace("{{$key}}", $value, $message);
     }
+
+    $logEntry = new LogEntry();
+    $logEntry->setMessage($message);
+    $logEntry->setCreatedAt(new \DateTime());
+    $logEntry->setChannel($channel);
+    $logEntry->setLevel($level);
+
+    $entityManager = $doctrine->getManager();
+    $entityManager->persist($logEntry);
+    $entityManager->flush();
+}
+
 
 private function processDepartementAccueil($request,$doctrine ,$logger){   
     $page = $request->query->getInt('page', 1);
-    $this->logToDatabase("{user} est rentré dans la page $page d'accueil du département", [
+    $this->logToDatabase("{user} est rentré dans la page $page d'accueil du département", "DÉPARTEMENT",$doctrine, [
         'user' => $this->getUser(),
-    ], "DÉPARTEMENT",$doctrine,0);
+    ],0);
 
     $logger->info("{user} est rentré dans la page $page d'accueil du département | heure => {date}", [
         'user' => $this->getUser(),
@@ -154,10 +154,10 @@ private function processDepartementAccueil($request,$doctrine ,$logger){
 }   
 
 private function processDepartementRecherche( $searchDataDepartement,$doctrine,$logger){
-    $this->logToDatabase("{user} fait une recherche dans la page département | recherche => {rech}", [
+    $this->logToDatabase("{user} fait une recherche dans la page département | recherche => {rech}", "DÉPARTEMENT", $doctrine,[
         'user' => $this->getUser(),
         'rech' => $searchDataDepartement->getRecherche(),
-    ], "DÉPARTEMENT", $doctrine,4);
+    ],4);
 
     $logger->info("{user} fait une recherche dans la page département | recherche => {rech} | heure => {date}", [
         'user' => $this->getUser(),
@@ -167,11 +167,11 @@ private function processDepartementRecherche( $searchDataDepartement,$doctrine,$
 }
 
 private function processDepartementDelete($departement, $manager, $doctrine, $logger){
-    $this->logToDatabase("{user} a supprimé le département {dep} qui a pour ID => {id}", [
+    $this->logToDatabase("{user} a supprimé le département {dep} qui a pour ID => {id}", "DÉPARTEMENT", $doctrine, [
         'id' => $departement->getId(),
         'user' => $this->getUser(),
         'dep' => $departement->getNom(),
-    ], "DÉPARTEMENT", $doctrine,3);
+    ],3);
 
     $logger->info("{user} a supprimé le département {dep} | heure de suppression => {date}", [
         'id' => $departement->getId(),
@@ -193,10 +193,10 @@ private function processDepartementEdit($departement, $data, $manager, $doctrine
     $manager->persist($data);
     $manager->flush();
 
-    $this->logToDatabase("{user} a modifié le département => {dep}", [
+    $this->logToDatabase("{user} a modifié le département => {dep}", "DÉPARTEMENT", $doctrine,[
         'user' => $this->getUser(),
         'dep' => $departement->getNom(),
-    ], "DÉPARTEMENT", $doctrine,2);
+    ],2);
 
     $logger->info("{user} a modifié le département => {dep} | heure de changement : {date}", [
         'user' => $this->getUser(),
@@ -217,10 +217,10 @@ private function processDepartementCreation($data, $manager,$doctrine, $logger)
     $manager->persist($departement);
     $manager->flush();
 
-    $this->logToDatabase("{user} a créé un département => {dep}", [
+    $this->logToDatabase("{user} a créé un département => {dep}",  "DÉPARTEMENT", $doctrine,[
         'user' => $this->getUser(),
         'dep' => $departement->getNom(),
-    ], "DÉPARTEMENT", $doctrine);
+    ],1);
 
     $logger->info("{user} a créé un département => {dep} | heure de création : {date}", [
         'user' => $this->getUser(),
@@ -229,9 +229,9 @@ private function processDepartementCreation($data, $manager,$doctrine, $logger)
     ]);
 }
 Private function processDeparementCreationEntry($doctrine, $logger){
-    $this->logToDatabase("{user} est rentré dans la page d'ajout de département", [
+    $this->logToDatabase("{user} est rentré dans la page d'ajout de département","DÉPARTEMENT", $doctrine, [
         'user' => $this->getUser(),
-    ], "DÉPARTEMENT", $doctrine,0);
+    ], 0);
 
     $logger->info("{user} est rentré dans la page d'ajout de département | heure => {date}", [
         'user' => $this->getUser(),
@@ -240,9 +240,9 @@ Private function processDeparementCreationEntry($doctrine, $logger){
 }
 
 Private function processDeparementEditEntry($doctrine, $logger){
-    $this->logToDatabase("{user} est rentré dans la page d'édition de département", [
+    $this->logToDatabase("{user} est rentré dans la page d'édition de département", "DÉPARTEMENT", $doctrine, [
         'user' => $this->getUser(),
-    ], "DÉPARTEMENT", $doctrine,0);
+    ],0);
 
     $logger->info("{user} est rentré dans la page d'édition de département | heure => {date}", [
         'user' => $this->getUser(),

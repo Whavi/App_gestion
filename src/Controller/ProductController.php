@@ -122,30 +122,30 @@ public function add_item(LoggerInterface $logger, EntityManagerInterface $manage
 ############################################################################################################################
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
-private function logToDatabase(string $message, array $context = [], $channel,  ?PersistenceManagerRegistry $doctrine = null, $level = 1 ): void
-    {
-         // Merge context parameters into the message
-         foreach ($context as $key => $value) {
-            $message = str_replace("{{$key}}", $value, $message);
-        }
-
-        $logEntry = new LogEntry();
-        $logEntry->setMessage($message);
-        $logEntry->setCreatedAt(new \DateTime());
-        $logEntry->setChannel($channel);
-        $logEntry->setLevel($level);
-        
-
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($logEntry);
-        $entityManager->flush();
+private function logToDatabase(string $message, string $channel, ?PersistenceManagerRegistry $doctrine = null, array $context = [], int $level = 1): void
+{
+    // Merge context parameters into the message
+    foreach ($context as $key => $value) {
+        $message = str_replace("{{$key}}", $value, $message);
     }
+
+    $logEntry = new LogEntry();
+    $logEntry->setMessage($message);
+    $logEntry->setCreatedAt(new \DateTime());
+    $logEntry->setChannel($channel);
+    $logEntry->setLevel($level);
+
+    $entityManager = $doctrine->getManager();
+    $entityManager->persist($logEntry);
+    $entityManager->flush();
+}
+
 
 private function processProduitAccueil($request, $doctrine,$logger ){   
     $page = $request->query->getInt('page', 1);
-    $this->LogToDatabase("{user} est rentré dans la page $page d'accueil Produit", [
+    $this->LogToDatabase("{user} est rentré dans la page $page d'accueil Produit", "PRODUIT",$doctrine,[
         'user' => $this->getUser(),
-    ],"PRODUIT",$doctrine,0);
+    ],0);
     $logger->info("{user} est rentré dans la page $page d'accueil Produit | heure => {date}", [
         'user' => $this->getUser(),
         'date' => (new \DateTime())->format('d/m/Y H:i:s'),
@@ -153,10 +153,10 @@ private function processProduitAccueil($request, $doctrine,$logger ){
 }
 
 private function processProductRecherche($searchDataProduct, $doctrine, $logger){
-    $this->logToDatabase("{user} fait une recherche dans la page Produit | recherche => {rech}", [
+    $this->logToDatabase("{user} fait une recherche dans la page Produit | recherche => {rech}","PRODUIT",$doctrine, [
         'user' => $this->getUser(),
         'rech' => $searchDataProduct->getRecherche(),
-    ],"PRODUIT",$doctrine,4);
+    ],4);
     $logger->info("{user} fait une recherche dans la page Produit | recherche => {rech} | heure => {date}", [
         'user' => $this->getUser(),
         'rech' => $searchDataProduct->getRecherche(),
@@ -165,13 +165,13 @@ private function processProductRecherche($searchDataProduct, $doctrine, $logger)
 }
 
 public function processProduitDelete($product, $manager, $doctrine, $logger){
-    $this->logToDatabase("{user} a supprimer le produit suivant : Numéro de série {NumSeri} | Réf.Log => {ref} | Modèle => {mod} | catégorie => {cat}", [
+    $this->logToDatabase("{user} a supprimer le produit suivant : Numéro de série {NumSeri} | Réf.Log => {ref} | Modèle => {mod} | catégorie => {cat}","PRODUIT",$doctrine, [
         'user'=>$this->getUser(),
         'NumSeri'=>$product->getIdentifiant(),
         'ref'=>$product->getRef(),
         'mod'=>$product->getNom(),
         'cat'=>$product->getCategory(),
-        ],"PRODUIT",$doctrine,3);
+        ],3);
 
     $logger->info("{user} a supprimer le produit suivant : Numéro de série {NumSeri} | Réf.Log => {ref} | Modèle => {mod} | catégorie => {cat} | heure de suppréssion => {date}", [
         'user'=>$this->getUser(),
@@ -197,13 +197,13 @@ private function processProduitEdit($product, $data, $manager, $doctrine, $logge
     $manager->persist($data);
     $manager->flush();
 
-    $this->logToDatabase("{user} a modifié le produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat}", [
+    $this->logToDatabase("{user} a modifié le produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat}", "PRODUIT",$doctrine,[
         'user'=>$this->getUser(),
         'NumSerie'=>$product->getIdentifiant(),
         'ref'=>$product->getRef(),
         'mod'=>$product->getNom(),
         'cat'=>$product->getCategory(),
-    ],"PRODUIT",$doctrine,2);
+    ],2);
     $logger->info("{user} a modifié le produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat} | heure de changement : {date}", [
         'user'=>$this->getUser(),
         'NumSerie'=>$product->getIdentifiant(),
@@ -227,13 +227,13 @@ private function processProduitCreation($data, $manager,$doctrine, $logger)
     $manager->persist($product);
     $manager->flush();
 
-    $this->logToDatabase("{user} a créé un produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat}", [
+    $this->logToDatabase("{user} a créé un produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat}", "PRODUIT",$doctrine,[
         'user' => $this->getUser(),
         'NumSerie'=>$product->getIdentifiant(),
         'ref'=>$product->getRef(),
         'mod'=>$product->getNom(),
         'cat'=>$product->getCategory(),
-    ],"PRODUIT",$doctrine);
+    ],1);
     $logger->info("{user} a créé un produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat} | heure de création : {date}", [
         'user' => $this->getUser(),
         'NumSerie'=>$product->getIdentifiant(),
@@ -247,13 +247,13 @@ private function processProduitCreation($data, $manager,$doctrine, $logger)
 
 
 Private function processProduitEntry($product, $doctrine, $logger){
-    $this->logToDatabase("{user} est rentré dans la page d'édition de Produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat} ", [
+    $this->logToDatabase("{user} est rentré dans la page d'édition de Produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat} ", "PRODUIT",$doctrine,[
         'user' => $this->getUser(),
         'NumSerie'=>$product->getIdentifiant(),
         'ref'=>$product->getRef(),
         'mod'=>$product->getNom(),
         'cat'=>$product->getCategory(),
-    ],"PRODUIT",$doctrine,0);
+    ],0);
     $logger->info("{user} est rentré dans la page d'édition de Produit : numéro de série => {NumSerie} | Rf. Log {ref} | Modèle => {mod} | category => {cat} | heure => {date}", [
         'user' => $this->getUser(),
         'NumSerie'=>$product->getIdentifiant(),
@@ -265,9 +265,9 @@ Private function processProduitEntry($product, $doctrine, $logger){
 }
 
 Private function processProduitCreationEntry($doctrine, $logger){
-    $this->logToDatabase("{user} est rentré dans la page d'ajout de Produit", [
+    $this->logToDatabase("{user} est rentré dans la page d'ajout de Produit", "PRODUIT",$doctrine,[
         'user' => $this->getUser(),
-    ],"PRODUIT",$doctrine,0);
+    ],0);
     $logger->info("{user} est rentré dans la page d'ajout de Produit | heure => {date}", [
         'user' => $this->getUser(),
         'date' => (new \DateTime())->format('d/m/Y H:i:s'),

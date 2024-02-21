@@ -120,30 +120,30 @@ public function addItemUser(LoggerInterface $logger, EntityManagerInterface $man
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
-private function logToDatabase(string $message, array $context = [], $channel,  ?PersistenceManagerRegistry $doctrine = null, $level = 1 ): void
-    {
-         // Merge context parameters into the message
-         foreach ($context as $key => $value) {
-            $message = str_replace("{{$key}}", $value, $message);
-        }
-
-        $logEntry = new LogEntry();
-        $logEntry->setMessage($message);
-        $logEntry->setCreatedAt(new \DateTime());
-        $logEntry->setChannel($channel);
-        $logEntry->setLevel($level);
-        
-
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($logEntry);
-        $entityManager->flush();
+private function logToDatabase(string $message, string $channel, ?PersistenceManagerRegistry $doctrine = null, array $context = [], int $level = 1): void
+{
+    // Merge context parameters into the message
+    foreach ($context as $key => $value) {
+        $message = str_replace("{{$key}}", $value, $message);
     }
+
+    $logEntry = new LogEntry();
+    $logEntry->setMessage($message);
+    $logEntry->setCreatedAt(new \DateTime());
+    $logEntry->setChannel($channel);
+    $logEntry->setLevel($level);
+
+    $entityManager = $doctrine->getManager();
+    $entityManager->persist($logEntry);
+    $entityManager->flush();
+}
+
 
 private function processUserAccueil($request,$doctrine, $logger){
     $page = $request->query->getInt('page', 1);
-    $this->logToDatabase("{user} est rentré dans la page $page d'accueil Utilisateur", [
+    $this->logToDatabase("{user} est rentré dans la page $page d'accueil Utilisateur", "USER",$doctrine,[
         'user' => $this->getUser(),
-    ],"USER",$doctrine,0);
+    ],0);
     $logger->info("{user} est rentré dans la page $page d'accueil Utilisateur | heure => {date}", [
         'user' => $this->getUser(),
         'date' => (new \DateTime())->format('d/m/Y H:i:s'),
@@ -152,10 +152,10 @@ private function processUserAccueil($request,$doctrine, $logger){
 
 
 private function processUserRecherche($logger,$doctrine, $searchDataUser){
-    $this->logToDatabase("{user} fait une recherche dans la page Utilisateur | recherche => {rech}", [
+    $this->logToDatabase("{user} fait une recherche dans la page Utilisateur | recherche => {rech}","USER",$doctrine, [
         'user' => $this->getUser(),
         'rech' => $searchDataUser->getRecherche(),
-    ],"USER",$doctrine,4);
+    ],4);
     $logger->info("{user} fait une recherche dans la page Utilisateur | recherche => {rech} | heure => {date}", [
         'user' => $this->getUser(),
         'rech' => $searchDataUser->getRecherche(),
@@ -164,12 +164,12 @@ private function processUserRecherche($logger,$doctrine, $searchDataUser){
 }
 
 private function processUserDelete($user, $id, $manager, $doctrine, $logger){
-    $this->logToDatabase("{user} a supprimer l'utilisateur {utilisateur} | Email => {mail} | id => {id}", [
+    $this->logToDatabase("{user} a supprimer l'utilisateur {utilisateur} | Email => {mail} | id => {id}","USER",$doctrine, [
         'id'=> $id,
         'user'=>$this->getUser(),
         'utilisateur'=>strtoupper($user->getNom()). " ".$user->getPrenom(),
         'mail'=>$user->getEmail(),
-        ],"USER",$doctrine,3);
+        ],3);
     $logger->info("{user} a supprimer l'utilisateur {utilisateur} | Email => {mail} | id => {id} | heure de suppréssion => {date}", [
         'id'=> $id,
         'user'=>$this->getUser(),
@@ -192,11 +192,11 @@ private function processUserEdit($user, $data, $manager,$userPasswordHashed,$doc
     $manager->persist($data);
     $manager->flush();
 
-    $this->logToDatabase("{user} à modifier l'utilisateur : {utilisateur} | email => {mail}", [
+    $this->logToDatabase("{user} à modifier l'utilisateur : {utilisateur} | email => {mail}", "USER",$doctrine,[
         'user'=>$this->getUser(),
         'utilisateur'=>strtoupper($user->getNom()). " ".$user->getPrenom(),
         'mail'=>$user->getEmail(),
-    ],"USER",$doctrine,2);
+    ],2);
     $logger->info("{user} à modifier l'utilisateur : {utilisateur} | email => {mail} | heure de changement : {date}", [
         'user'=>$this->getUser(),
         'utilisateur'=>strtoupper($user->getNom()). " ".$user->getPrenom(),
@@ -217,12 +217,12 @@ private function processUserCreate($data, $manager, $userPasswordHashed, $doctri
     $manager->persist($userItem);
     $manager->flush();
 
-    $this->logToDatabase("{user} a créé un Utilisateur => {utilisateur} | email => {mail} | rôles => {roles}", [
+    $this->logToDatabase("{user} a créé un Utilisateur => {utilisateur} | email => {mail} | rôles => {roles}","USER",$doctrine, [
         'user' => $this->getUser(),
         'utilisateur' => strtoupper($userItem->getNom()) . " " . $userItem->getPrenom(),
         'mail' => $userItem->getEmail(),
         'roles' => implode(', ', $userItem->getRoles()),
-    ],"USER",$doctrine);
+    ],1);
     $logger->info("{user} a créé un Utilisateur => {utilisateur} | email => {mail} | rôles => {roles} | heure de création : {date}", [
         'user' => $this->getUser(),
         'utilisateur' => strtoupper($userItem->getNom()) . " " . $userItem->getPrenom(),
@@ -232,11 +232,11 @@ private function processUserCreate($data, $manager, $userPasswordHashed, $doctri
     ]);
 }
 private function processUserEditEntry($user,$doctrine,$logger){
-    $this->logToDatabase("{user} est rentré dans la page d'édition de l'Utilisateur {utilisateur} | email => {mail}", [
+    $this->logToDatabase("{user} est rentré dans la page d'édition de l'Utilisateur {utilisateur} | email => {mail}", "USER",$doctrine,[
         'user'=>$this->getUser(),
         'utilisateur'=>strtoupper($user->getNom()). " ".$user->getPrenom(),
         'mail'=>$user->getEmail(),
-   ],"USER",$doctrine,0);
+   ],0);
     $logger->info("{user} est rentré dans la page d'édition de l'Utilisateur {utilisateur} | email => {mail} | heure => {date}", [
         'user'=>$this->getUser(),
         'utilisateur'=>strtoupper($user->getNom()). " ".$user->getPrenom(),
@@ -246,9 +246,9 @@ private function processUserEditEntry($user,$doctrine,$logger){
 }
 
 private function processUserCreateEntry($doctrine,$logger){
-    $this->logToDatabase("{user} est rentré dans la page d'ajout de l'Utilisateur", [
+    $this->logToDatabase("{user} est rentré dans la page d'ajout de l'Utilisateur","USER",$doctrine, [
         'user'=>$this->getUser(),
-   ],"USER",$doctrine,0);
+   ],0);
     $logger->info("{user} est rentré dans la page d'ajout de l'Utilisateur | heure => {date}", [
         'user'=>$this->getUser(),
         'date'=>(new \DateTime())->format('d/m/Y H:i:s'),

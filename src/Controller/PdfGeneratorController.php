@@ -40,24 +40,24 @@ public function generatePdfContent($id, CollaborateurRepository $collaborateurRe
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
-private function logToDatabase(string $message, array $context = [], $channel,  ?PersistenceManagerRegistry $doctrine = null, $level = 1 ): void
-    {
-         // Merge context parameters into the message
-         foreach ($context as $key => $value) {
-            $message = str_replace("{{$key}}", $value, $message);
-        }
-
-        $logEntry = new LogEntry();
-        $logEntry->setMessage($message);
-        $logEntry->setCreatedAt(new \DateTime());
-        $logEntry->setChannel($channel);
-        $logEntry->setLevel($level);
-        
-
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($logEntry);
-        $entityManager->flush();
+private function logToDatabase(string $message, string $channel, ?PersistenceManagerRegistry $doctrine = null, array $context = [], int $level = 1): void
+{
+    // Merge context parameters into the message
+    foreach ($context as $key => $value) {
+        $message = str_replace("{{$key}}", $value, $message);
     }
+
+    $logEntry = new LogEntry();
+    $logEntry->setMessage($message);
+    $logEntry->setCreatedAt(new \DateTime());
+    $logEntry->setChannel($channel);
+    $logEntry->setLevel($level);
+
+    $entityManager = $doctrine->getManager();
+    $entityManager->persist($logEntry);
+    $entityManager->flush();
+}
+
 
 
 private function imageToBase64($path){
@@ -101,10 +101,10 @@ private function generatePdfResponse($html, $id, $doctrine, $logger): Response{
     $dompdf->render();
     $filename = 'Bon de commande N°' . $id . '.pdf';
 
-    $this->logToDatabase("{user} a généré un PDF pour le bon de commande N°{id}", [
+    $this->logToDatabase("{user} a généré un PDF pour le bon de commande N°{id}",  "ATTRIBUTION",$doctrine,[
         'user' => $this->getUser(),
         'id' => $id,
-    ], "ATTRIBUTION",$doctrine);
+    ],1);
 
     $logger->info("{user} a généré un PDF pour le bon de commande N°{id} le {date}", [
         'user' => $this->getUser(),
@@ -126,9 +126,9 @@ private function generatePdfOutput($html,$doctrine, $logger): string{
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
 
-    $this->logToDatabase("{user} a généré un PDF", [
+    $this->logToDatabase("{user} a généré un PDF", "ATTRIBUTION", $doctrine,[
         'user' => $this->getUser(),
-    ],"ATTRIBUTION", $doctrine);
+    ],1);
 
     $logger->info("{user} a généré un PDF le {date}", [
         'user' => $this->getUser(),

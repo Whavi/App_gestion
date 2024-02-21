@@ -126,30 +126,30 @@ public function addItemCollaborateur(LoggerInterface $logger, EntityManagerInter
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
-private function logToDatabase(string $message, array $context = [], $channel,  ?PersistenceManagerRegistry $doctrine = null, $level = 1 ): void
-    {
-         // Merge context parameters into the message
-         foreach ($context as $key => $value) {
-            $message = str_replace("{{$key}}", $value, $message);
-        }
-
-        $logEntry = new LogEntry();
-        $logEntry->setMessage($message);
-        $logEntry->setCreatedAt(new \DateTime());
-        $logEntry->setChannel($channel);
-        $logEntry->setLevel($level);
-        
-
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($logEntry);
-        $entityManager->flush();
+private function logToDatabase(string $message, string $channel, ?PersistenceManagerRegistry $doctrine = null, array $context = [], int $level = 1): void
+{
+    // Merge context parameters into the message
+    foreach ($context as $key => $value) {
+        $message = str_replace("{{$key}}", $value, $message);
     }
+
+    $logEntry = new LogEntry();
+    $logEntry->setMessage($message);
+    $logEntry->setCreatedAt(new \DateTime());
+    $logEntry->setChannel($channel);
+    $logEntry->setLevel($level);
+
+    $entityManager = $doctrine->getManager();
+    $entityManager->persist($logEntry);
+    $entityManager->flush();
+}
+
 
 private function processCollaborateurAccueil($request, $doctrine ,$logger, ){   
     $page = $request->query->getInt('page', 1);
-    $this->logToDatabase("{user} est rentré dans la page $page d'accueil Collaborateur", [
+    $this->logToDatabase("{user} est rentré dans la page $page d'accueil Collaborateur","COLLABORATEUR",$doctrine,[
         'user' => $this->getUser(),
-    ],"COLLABORATEUR",$doctrine,0);
+    ],0);
     $logger->info("{user} est rentré dans la page $page d'accueil Collaborateur | heure => {date}", [
         'user' => $this->getUser(),
         'date' => (new \DateTime())->format('d/m/Y H:i:s'),
@@ -157,10 +157,10 @@ private function processCollaborateurAccueil($request, $doctrine ,$logger, ){
 }
 
 private function processCollaborateurRecherche($searchDataCollaborateur, $doctrine , $logger ){
-    $this->logToDatabase("{user} fait une recherche dans la page Collaborateur | recherche => {rech}", [
+    $this->logToDatabase("{user} fait une recherche dans la page Collaborateur | recherche => {rech}", "COLLABORATEUR",$doctrine,[
         'user' => $this->getUser(),
         'rech' => $searchDataCollaborateur->getRecherche(),
-    ],"COLLABORATEUR",$doctrine,4);
+    ],4);
     $logger->info("{user} fait une recherche dans la page Collaborateur | recherche => {rech} | heure => {date}", [
         'user' => $this->getUser(),
         'rech' => $searchDataCollaborateur->getRecherche(),
@@ -169,14 +169,14 @@ private function processCollaborateurRecherche($searchDataCollaborateur, $doctri
 }
 
 private function processCollaborateurtDelete($collaborateur, $id, $manager, $doctrine, $logger){
-    $this->logToDatabase("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Email => {mail} | Affectation => {Countaffec} | Département => {dep}", [
+    $this->logToDatabase("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Email => {mail} | Affectation => {Countaffec} | Département => {dep}", "COLLABORATEUR",$doctrine,[
         'id'=> $id,
         'user'=>$this->getUser(),
         'collab'=>strtoupper($collaborateur->getNom()). " ".$collaborateur->getPrenom(),
         'mail'=>$collaborateur->getEmail(),
         'Countaffec'=>count($collaborateur->getAttributions()),
         'dep'=>$collaborateur->getDepartement(),
-        ],"COLLABORATEUR",$doctrine,3);
+        ],3);
 
     $logger->info("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Email => {mail} | Affectation => {Countaffec} | Département => {dep} | heure de suppréssion => {date}", [
     'id'=> $id,
@@ -199,12 +199,12 @@ private function processCollaborateurtDelete($collaborateur, $id, $manager, $doc
         $manager->persist($data);
         $manager->flush();
 
-        $this->logToDatabase("{user} à modifier le Collaborateur => {collab} | email => {mail} | Département => {dep}", [
+        $this->logToDatabase("{user} à modifier le Collaborateur => {collab} | email => {mail} | Département => {dep}", "COLLABORATEUR",$doctrine,[
             'user'=>$this->getUser(),
             'collab'=>strtoupper($collaborateur->getNom()). " ".$collaborateur->getPrenom(),
             'mail'=>$collaborateur->getEmail(),
             'dep'=>$collaborateur->getDepartement(),
-        ],"COLLABORATEUR",$doctrine,2);
+        ],2);
 
         $logger->info("{user} à modifier le Collaborateur => {collab} | email => {mail} | Département => {dep} | heure de changement : {date}", [
         'user'=>$this->getUser(),
@@ -215,12 +215,12 @@ private function processCollaborateurtDelete($collaborateur, $id, $manager, $doc
     ]);
     }
 private function processCollaborateurEditEntry($collaborateur,$doctrine, $logger){
-    $this->logToDatabase("{user} est rentré dans la page d'édition du Collaborateur {col} | email => {mail} | Département => {dep}", [
+    $this->logToDatabase("{user} est rentré dans la page d'édition du Collaborateur {col} | email => {mail} | Département => {dep}","COLLABORATEUR",$doctrine, [
         'user'=>$this->getUser(),
         'col'=>strtoupper($collaborateur->getNom()). " ".$collaborateur->getPrenom(),
         'mail'=>$collaborateur->getEmail(),
         'dep'=>$collaborateur->getDepartement(),
-    ],"COLLABORATEUR",$doctrine,0);
+    ],0);
 
     $logger->info("{user} est rentré dans la page d'édition du Collaborateur {col} | email => {mail} | Département => {dep} | heure => {date}", [
         'user'=>$this->getUser(),
@@ -232,9 +232,9 @@ private function processCollaborateurEditEntry($collaborateur,$doctrine, $logger
 }
 
 private function processCollaborateurCreationEntry($doctrine, $logger){
-    $this->logToDatabase("{user} est rentré dans la page d'ajout de Collaborateur", [
+    $this->logToDatabase("{user} est rentré dans la page d'ajout de Collaborateur", "COLLABORATEUR", $doctrine,[
         'user'=>$this->getUser(),
-        ],"COLLABORATEUR", $doctrine,0);
+        ],0);
     $logger->info("{user} est rentré dans la page d'ajout de Collaborateur | heure => {date}", [
         'user'=>$this->getUser(),
         'date'=>(new \DateTime())->format('d/m/Y H:i:s'),
@@ -250,13 +250,13 @@ private function processCollaborateurCreation($data, $manager,$doctrine, $logger
     $manager->persist($collaborateur);
     $manager->flush();
     $this->addFlash('success', 'Votre collaborateur a bien été crée.');
-    $this->logToDatabase("{user} a crée un collaborateur => {collab} | email => {mail} | numéro de commande => Aucune affectation | département => {dep}", [
+    $this->logToDatabase("{user} a crée un collaborateur => {collab} | email => {mail} | numéro de commande => Aucune affectation | département => {dep}","COLLABORATEUR",$doctrine,[
         'user'=>$this->getUser(),
         'collab'=>strtoupper($collaborateur->getNom()). " ".$collaborateur->getPrenom(),
         'mail'=>$collaborateur->getEmail(),
         'affec'=>$collaborateur->getAttributions(),
         'dep'=>$collaborateur->getDepartement(),
-        ],"COLLABORATEUR",$doctrine);
+    ],1);
 
     $logger->info("{user} a crée un collaborateur => {collab} | email => {mail} | numéro de commande => Aucune affectation | département => {dep} | heure de création : {date}", [
     'user'=>$this->getUser(),

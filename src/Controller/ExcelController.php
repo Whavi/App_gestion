@@ -107,30 +107,30 @@ public function exportExcel(LoggerInterface $logger, EntityManagerInterface $ent
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
-private function logToDatabase(string $message, array $context = [], $channel,  ?PersistenceManagerRegistry $doctrine = null, $level = 1 ): void
-    {
-         // Merge context parameters into the message
-         foreach ($context as $key => $value) {
-            $message = str_replace("{{$key}}", $value, $message);
-        }
-
-        $logEntry = new LogEntry();
-        $logEntry->setMessage($message);
-        $logEntry->setCreatedAt(new \DateTime());
-        $logEntry->setChannel($channel);
-        $logEntry->setLevel($level);
-        
-
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($logEntry);
-        $entityManager->flush();
+private function logToDatabase(string $message, string $channel, ?PersistenceManagerRegistry $doctrine = null, array $context = [], int $level = 1): void
+{
+    // Merge context parameters into the message
+    foreach ($context as $key => $value) {
+        $message = str_replace("{{$key}}", $value, $message);
     }
 
+    $logEntry = new LogEntry();
+    $logEntry->setMessage($message);
+    $logEntry->setCreatedAt(new \DateTime());
+    $logEntry->setChannel($channel);
+    $logEntry->setLevel($level);
+
+    $entityManager = $doctrine->getManager();
+    $entityManager->persist($logEntry);
+    $entityManager->flush();
+}
+
+
 private function processExcelLog($currentFunction, $doctrine, $logger){
-    $this->logToDatabase("{user} a exporté les données vers un fichier Excel pour {function}", [
+    $this->logToDatabase("{user} a exporté les données vers un fichier Excel pour {function}","ATTRIBUTION", $doctrine ,[
         'user' => $this->getUser(),
         'function' => $currentFunction,
-    ],"ATTRIBUTION", $doctrine);
+    ],1);
     $logger->info("{user} a exporté les données vers un fichier Excel pour {function} le {date}", [
         'user' => $this->getUser(),
         'function' => $currentFunction,
