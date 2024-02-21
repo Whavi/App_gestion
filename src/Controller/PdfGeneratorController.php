@@ -136,5 +136,4 @@ private function generatePdfOutput($html,$doctrine, $logger): string{
     ]);
     return $dompdf->output();
 }
-
 }

@@ -188,7 +188,6 @@ private function logToDatabase(string $message, string $channel, ?PersistenceMan
 }
 
 
-
 private function processAttributionAccueilEntry($currentFunction, $doctrine,$request, $logger){
     $page = $request->query->getInt('page', 1);
 

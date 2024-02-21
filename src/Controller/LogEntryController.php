@@ -96,5 +96,4 @@ private function processFiltreLog($log,$doctrine,$logger){
     ]);
     
 }
-
 }

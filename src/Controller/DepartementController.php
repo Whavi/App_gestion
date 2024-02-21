@@ -249,5 +249,4 @@ Private function processDeparementEditEntry($doctrine, $logger){
         'date' => (new \DateTime())->format('d/m/Y H:i:s'),
     ]);
 }
-
 }
