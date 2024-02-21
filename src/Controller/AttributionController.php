@@ -106,7 +106,7 @@ public function gestionAttributionEdit($id, LoggerInterface $logger, Attribution
 public function sendEmail($id, LoggerInterface $logger,PersistenceManagerRegistry $doctrine, AttributionRepository $attributionRepository, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, UserRepository $userRepository, PdfGeneratorController $pdfGenerator, MailerInterface $mailer): Response
 {
     $attribution = $attributionRepository->find($id);
-    $collaborateur = $attribution->getCollaborateur();
+    $collaborateur = $collaborateurRepository->find($id);
     $collaborateurEmail = $collaborateur ? $collaborateur->getEmail() : 'it@secours-islamique.org';
     $pdfContent = $pdfGenerator->generatePdfContent($id, $collaborateurRepository, $productRepository, $attributionRepository, $userRepository,$doctrine, $logger);
     $filename = 'Bon de commande N°' . $id . '.pdf';
@@ -169,33 +169,33 @@ public function signature( $id,LoggerInterface $logger,PersistenceManagerRegistr
 ######################################################   FONCTION PRIVÉE   #################################################
 ############################################################################################################################
 
-private function logToDatabase(string $message, array $context = [], $channel,  ?PersistenceManagerRegistry $doctrine = null, $level = 1 ): void
-    {
-         // Merge context parameters into the message
-         foreach ($context as $key => $value) {
-            $message = str_replace("{{$key}}", $value, $message);
-        }
-
-        $logEntry = new LogEntry();
-        $logEntry->setMessage($message);
-        $logEntry->setCreatedAt(new \DateTime());
-        $logEntry->setChannel($channel);
-        $logEntry->setLevel($level);
-        
-
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($logEntry);
-        $entityManager->flush();
+private function logToDatabase(string $message, string $channel, ?PersistenceManagerRegistry $doctrine = null, array $context = [], int $level = 1): void
+{
+    // Merge context parameters into the message
+    foreach ($context as $key => $value) {
+        $message = str_replace("{{$key}}", $value, $message);
     }
+
+    $logEntry = new LogEntry();
+    $logEntry->setMessage($message);
+    $logEntry->setCreatedAt(new \DateTime());
+    $logEntry->setChannel($channel);
+    $logEntry->setLevel($level);
+
+    $entityManager = $doctrine->getManager();
+    $entityManager->persist($logEntry);
+    $entityManager->flush();
+}
+
 
 
 private function processAttributionAccueilEntry($currentFunction, $doctrine,$request, $logger){
     $page = $request->query->getInt('page', 1);
 
-    $this->LogToDatabase("{user} est rentré dans la page $page d'accueil {cfunc} ", [
+    $this->LogToDatabase("{user} est rentré dans la page $page d'accueil {cfunc} ","ATTRIBUTION", $doctrine,[
         'user'=>$this->getUser(),
         'cfunc'=>$currentFunction, 
-    ],"ATTRIBUTION", $doctrine,0);
+    ],0);
 
     $logger->info("{user} est rentré dans la page $page d'accueil {cfunc} | heure => {date}", [
         'user'=>$this->getUser(),
@@ -206,10 +206,10 @@ private function processAttributionAccueilEntry($currentFunction, $doctrine,$req
 
 
 private function processAttributionRecherche($searchDataAttribution, $doctrine, $logger){
-    $this->LogToDatabase("{user} fait une recherche dans la page Attribution | recherche => {rech}", [
+    $this->LogToDatabase("{user} fait une recherche dans la page Attribution | recherche => {rech}", "ATTRIBUTION", $doctrine, [
         'user'=>$this->getUser(),
         'rech'=>$searchDataAttribution->getId(),
-    ], "ATTRIBUTION", $doctrine,4);
+    ],4);
 
     $logger->info("{user} fait une recherche dans la page Attribution | recherche => {rech} | heure => {date}", [
         'user'=>$this->getUser(),
@@ -219,7 +219,7 @@ private function processAttributionRecherche($searchDataAttribution, $doctrine, 
 }
 
 private function processAttributionDelete($attribution, $manager, $id, $doctrine, $logger){
-    $this->LogToDatabase("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | date d'attribution => {att} | date de restitution => {res}", [
+    $this->LogToDatabase("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | date d'attribution => {att} | date de restitution => {res}", "ATTRIBUTION", $doctrine,[
         'id'=> $id,
         'user'=>$this->getUser(),
         'collab'=>$attribution->getCollaborateur(),
@@ -227,7 +227,7 @@ private function processAttributionDelete($attribution, $manager, $id, $doctrine
         'cat'=>$attribution->getProduct()->getCategory(),
         'att'=>$attribution->getDateAttribution()->format('d/m/Y H:i:s'),
         'res'=>$attribution->getDateRestitution()->format('d/m/Y H:i:s'), 
-        ],"ATTRIBUTION", $doctrine,3);
+        ],3);
        
     $logger->info("{user} a supprimer l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | date d'attribution => {att} | date de restitution => {res} | heure de suppréssion => {date}", [
     'id'=> $id,
@@ -253,7 +253,7 @@ private function processAttributionEdit($attribution, $data, $manager, $doctrine
     $attribution->setByUser($this->getUser()); 
 
 
-    $this->LogToDatabase("{user} à modifier l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem}", [
+    $this->LogToDatabase("{user} à modifier l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem}", "ATTRIBUTION", $doctrine,[
         'id'=> $id,
         'user'=>$this->getUser(),
         'collab'=>$attribution->getCollaborateur(),
@@ -263,7 +263,7 @@ private function processAttributionEdit($attribution, $data, $manager, $doctrine
         'rem'=>$attribution->getRemarque(),
         'att'=>$attribution->getDateAttribution()->format('d/m/Y H:i:s'),
         'res'=>$attribution->getDateRestitution()->format('d/m/Y H:i:s'), 
-    ],"ATTRIBUTION", $doctrine,2);
+    ],2);
 
     $logger->info("{user} à modifier l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure de changement : {date}", [
         'id'=> $id,
@@ -287,14 +287,14 @@ private function processAttributionEdit($attribution, $data, $manager, $doctrine
 
 private function processAttributionSenMail($attribution, $id, $doctrine, $logger){
     $this->addFlash('success', "L'email a bien été envoyer.");
-    $this->LogToDatabase("{user} a envoyer un email à l'id : {id} | Collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep}", [
+    $this->LogToDatabase("{user} a envoyer un email à l'id : {id} | Collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep}", "ATTRIBUTION", $doctrine,[
         'id'=> $id,
         'user'=>$this->getUser(),
         'collab'=>$attribution->getCollaborateur(),
         'mail'=>$attribution->getCollaborateur()->getEmail(),
         'cat'=>$attribution->getPdfName(),
         'dep'=>$attribution->getCollaborateur()->getDepartement(),
-        ], "ATTRIBUTION", $doctrine,1);
+    ],1);
 
     $logger->info("{user} a envoyer un email à l'id : {id} | Collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | heure d'envoi du mail : {date}", [
     'id'=> $id,
@@ -327,13 +327,13 @@ private function processAttributionCreation($attribution, $data,  $doctrine,$man
     $manager->persist($attribution);
     $manager->flush();
 
-    $this->LogToDatabase("{user} a crée une attribution à au collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep}", [
+    $this->LogToDatabase("{user} a crée une attribution à au collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep}","ATTRIBUTION", $doctrine, [
         'user'=>$this->getUser(),
         'collab'=>$attribution->getCollaborateur(),
         'mail'=>$attribution->getCollaborateur()->getEmail(),
         'cat'=>$attribution->getId(),
         'dep'=>$attribution->getCollaborateur()->getDepartement(),
-    ],"ATTRIBUTION", $doctrine);
+    ],1);
 
     $logger->info("{user} a crée une attribution à au collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | heure de création : {date}", [
         'user'=>$this->getUser(),
@@ -382,16 +382,16 @@ private function procressAttributionSiganture($attribut,$collaborateurs,$email, 
     $yousignService->activateSignatureRequest($attribut->getSignatureId());
 
     $this->LogToDatabase("{user} a crée une signature au collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | signature_id => {signId} | Document_id => {docId} | signer_id => {sID}", 
-    [
-    'user' => $this->getUser(),
-    'collab' => $attribut->getCollaborateur(),
-    'mail' => $attribut->getCollaborateur()->getEmail(),
-    'cat' => $attribut->getId(),
-    'dep' => $attribut->getCollaborateur()->getDepartement(),
-    'signId' => $attribut->getSignatureId(),
-    'docId' => $attribut->getDocumentId(),
-    'sID' => $attribut->getSignerId(),
-],"ATTRIBUTION", $doctrine);
+    "ATTRIBUTION", $doctrine,[
+        'user' => $this->getUser(),
+        'collab' => $attribut->getCollaborateur(),
+        'mail' => $attribut->getCollaborateur()->getEmail(),
+        'cat' => $attribut->getId(),
+        'dep' => $attribut->getCollaborateur()->getDepartement(),
+        'signId' => $attribut->getSignatureId(),
+        'docId' => $attribut->getDocumentId(),
+        'sID' => $attribut->getSignerId(),
+    ],1);
     $logger->info("{user} a crée une signature au collaborateur => {collab} | email => {mail} | numéro de commande => {cat} | département => {dep} | signature_id => {signId} | Document_id => {docId} | signer_id => {sID} | heure de création : {date}", 
         [
         'user' => $this->getUser(),
@@ -407,9 +407,9 @@ private function procressAttributionSiganture($attribut,$collaborateurs,$email, 
 }
 
 private function processAttributionCreationEntry( $doctrine,$logger){
-    $this->logToDatabase("{user} est rentré dans la page d'ajout d'Attribution", [
+    $this->logToDatabase("{user} est rentré dans la page d'ajout d'Attribution", "ATTRIBUTION", $doctrine,[
         'user'=>$this->getUser(),
-     ],"ATTRIBUTION", $doctrine,0);
+     ],0);
     $logger->info("{user} est rentré dans la page d'ajout d'Attribution | heure : {date}", [
         'user'=>$this->getUser(),
         'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
@@ -418,7 +418,7 @@ private function processAttributionCreationEntry( $doctrine,$logger){
 }
 
 private function processAttributionEditEntry( $doctrine,$attribution, $id, $logger){
-    $this->logToDatabase("{user} est rentré dans la page d'édition de l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem}", [
+    $this->logToDatabase("{user} est rentré dans la page d'édition de l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem}", "ATTRIBUTION", $doctrine,[
         'id'=> $id,
         'user'=>$this->getUser(),
         'collab'=>$attribution->getCollaborateur(),
@@ -426,7 +426,7 @@ private function processAttributionEditEntry( $doctrine,$attribution, $id, $logg
         'cat'=>$attribution->getProduct()->getCategory(),
         'des'=>$attribution->getDescriptionProduct(),
         'rem'=>$attribution->getRemarque(),
-        ],"ATTRIBUTION", $doctrine,0);
+        ],0);
     $logger->info("{user} est rentré dans la page d'édition de l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem} | heure : {date}", [
     'id'=> $id,
     'user'=>$this->getUser(),
