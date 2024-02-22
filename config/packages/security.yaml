@@ -16,14 +16,15 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            custom_authenticators:
+                - App\Security\MyAzureAuthenticator
+            entry_point: App\Security\MyAzureAuthenticator
             form_login:
                 login_path: security.login
                 check_path: security.login
             logout:
                 path: security.logout
-            custom_authenticators:
-                - App\Security\MyAzureAuthenticator
-            entry_point: App\Security\MyAzureAuthenticator
+            
 
         secured_area:
             form_login:
