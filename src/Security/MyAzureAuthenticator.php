@@ -4,7 +4,8 @@ namespace App\Security;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
+use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
+use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use KnpU\OAuth2ClientBundle\Client\Provider\AzureClient;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,8 +15,13 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-class MyAzureAuthenticator extends SocialAuthenticator
+
+
+class MyAzureAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
     private $clientRegistry;
     private $em;
@@ -28,7 +34,7 @@ class MyAzureAuthenticator extends SocialAuthenticator
         $this->router = $router;
     }
 
-    public function supports(Request $request)
+    public function supports(Request $request) : ?bool
     {
         // continue ONLY if the current ROUTE matches the check ROUTE
         return $request->attributes->get('_route') === 'connect_azure_check';
@@ -39,37 +45,38 @@ class MyAzureAuthenticator extends SocialAuthenticator
         return $this->fetchAccessToken($this->getAzureClient());
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function authenticate(Request $request): Passport
     {
-        /** @var User $AzureUser */
-        $AzureUser = $this->getAzureClient()
-            ->fetchUserFromToken($credentials);
+        $client = $this->clientRegistry->getClient('azure');
+        $accessToken = $this->fetchAccessToken($client);
 
-        $email = $AzureUser->getEmail();
+        return new SelfValidatingPassport(
+            new UserBadge($accessToken->getToken(), function() use ($accessToken, $client) {
+                /** @var User $azureUser */
+                $azureUser = $client->fetchUserFromToken($accessToken);
 
-        // 1) have they logged in with Facebook before? Easy!
-        $existingUser = $this->em->getRepository(User::class)
-            ->findOneBy(['facebookId' => $AzureUser->getId()]);
-        if ($existingUser) {
-            return $existingUser;
-        }
+                $email = $azureUser->getEmail();
 
-        // 2) do we have a matching user by email?
-        $user = $this->em->getRepository(User::class)
-            ->findOneBy(['email' => $email]);
+                // 1) have they logged in with Facebook before? Easy!
+                $existingUser = $this->em->getRepository(User::class)->findOneBy(['azureId' => $azureUser->getId()]);
 
-        // 3) Maybe you just want to "register" them by creating
-        // a User object
-        $user->setAzureId($AzureUser->getId());
-        $this->em->persist($user);
-        $this->em->flush();
+                if ($existingUser) {
+                    return $existingUser;
+                }
 
-        return $user;
+                // 2) do we have a matching user by email?
+                $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
+
+                // 3) Maybe you just want to "register" them by creating
+                // a User object
+                $user->setAzureId($azureUser->getId());
+                $this->em->persist($user);
+                $this->em->flush();
+
+                return $user;
+            })
+        );
     }
-
-    /**
-     * @return AzureClient
-     */
     private function getAzureClient()
     {
           /** @var AzureClient $client */
@@ -78,9 +85,8 @@ class MyAzureAuthenticator extends SocialAuthenticator
           return $client;
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // change "app_homepage" to some route in your app
         $targetUrl = $this->router->generate('user_gestion_attribution');
 
         return new RedirectResponse($targetUrl);
@@ -89,15 +95,14 @@ class MyAzureAuthenticator extends SocialAuthenticator
         //return null;
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $message = strtr($exception->getMessageKey(), $exception->getMessageData());
 
         return new Response($message, Response::HTTP_FORBIDDEN);
     }
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): Response
     {
         return new RedirectResponse( '/connect/', Response::HTTP_TEMPORARY_REDIRECT);
     }
-
 }
