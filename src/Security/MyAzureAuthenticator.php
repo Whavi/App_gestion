@@ -18,8 +18,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
-
-
+use TheNetworg\OAuth2\Client\Provider\AzureResourceOwner;
 
 class MyAzureAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
@@ -52,28 +51,22 @@ class MyAzureAuthenticator extends OAuth2Authenticator implements Authentication
 
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function() use ($accessToken, $client) {
-                /** @var User $azureUser */
+                /**
+                 * @var AzureResourceOwner $azureUser
+                 */
                 $azureUser = $client->fetchUserFromToken($accessToken);
 
-                $email = $azureUser->getEmail();
-
-                // 1) have they logged in with Facebook before? Easy!
-                $existingUser = $this->em->getRepository(User::class)->findOneBy(['azureId' => $azureUser->getId()]);
+                // 1) have they logged in with Microsoft Azure before? 
+                $existingUser = $this->em->getRepository(User::class)->findOneBy(['AzureId' => $azureUser->getUpn()]);
 
                 if ($existingUser) {
                     return $existingUser;
                 }
 
                 // 2) do we have a matching user by email?
-                $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
+                // $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
 
-                // 3) Maybe you just want to "register" them by creating
-                // a User object
-                $user->setAzureId($azureUser->getId());
-                $this->em->persist($user);
-                $this->em->flush();
-
-                return $user;
+                return $existingUser;
             })
         );
     }

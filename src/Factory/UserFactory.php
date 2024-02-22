@@ -46,12 +46,14 @@ final class UserFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
+        $email = self::faker()->email();
         return [
-            'email' => self::faker()->email(),
+            'email' => $email,
             'nom' => self::faker()->lastName(),
             'password' => self::faker()->password(),
             'prenom' => self::faker()->firstName(),
             'roles' => ['ROLE_USER'],
+            'AzureId' => $email,
         ];
 
             }

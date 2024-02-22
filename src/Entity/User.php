@@ -41,7 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'byUser', targetEntity: Attribution::class, orphanRemoval: true)]
     private Collection $attributions;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $AzureId = null;
 
     public function __construct()
