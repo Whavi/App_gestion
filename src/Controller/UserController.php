@@ -213,6 +213,7 @@ private function processUserCreate($data, $manager, $userPasswordHashed, $doctri
     $userItem->setPrenom($data->getPrenom());
     $userItem->setRoles($data->getRoles());
     $userItem->setEmail($data->getEmail());
+    $userItem->setAzureId($data->getEmail());
     $userItem->setPassword($userPasswordHashed);
     $manager->persist($userItem);
     $manager->flush();

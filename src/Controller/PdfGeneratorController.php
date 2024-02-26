@@ -26,10 +26,10 @@ public function index($id, PersistenceManagerRegistry $doctrine, LoggerInterface
         $html = $this->renderView('pages/user/pdf_generator/pdf.html.twig', $data);
         return $this->generatePdfResponse($html, $id, $doctrine, $logger);
 }
-public function generatePdfContent($id, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, AttributionRepository $attributionRepository, UserRepository $userRepository,PersistenceManagerRegistry $doctrine, LoggerInterface $logger): string{
+public function generatePdfContent($id, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, AttributionRepository $attributionRepository, UserRepository $userRepository, LoggerInterface $logger): string{
         $data = $this->getData($id, $collaborateurRepository, $productRepository, $attributionRepository, $userRepository);
         $html = $this->renderView('pages/user/pdf_generator/pdf.html.twig', $data);
-        return $this->generatePdfOutput($html, $doctrine, $logger);
+        return $this->generatePdfOutput($html, $logger);
     }
 
 
@@ -118,17 +118,13 @@ private function generatePdfResponse($html, $id, $doctrine, $logger): Response{
     );
 }
 
-private function generatePdfOutput($html,$doctrine, $logger): string{
+private function generatePdfOutput($html, $logger): string{
     $options = new Options();
     $options->set('isRemoteEnabled', true);
     $dompdf = new Dompdf($options);
     $dompdf->loadHtml($html);
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
-
-    $this->logToDatabase("{user} a généré un PDF", "ATTRIBUTION", $doctrine,[
-        'user' => $this->getUser(),
-    ],1);
 
     $logger->info("{user} a généré un PDF le {date}", [
         'user' => $this->getUser(),
