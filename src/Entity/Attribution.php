@@ -60,6 +60,9 @@ class Attribution
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $PdfName = null;
 
+    #[ORM\Column]
+    private ?bool $Rendu = null;
+
     
     public function __construct()
     {
@@ -229,6 +232,18 @@ class Attribution
     public function setPdfName(string $PdfName): static
     {
         $this->PdfName = $PdfName;
+
+        return $this;
+    }
+
+    public function isRendu(): ?bool
+    {
+        return $this->Rendu;
+    }
+
+    public function setRendu(bool $Rendu): static
+    {
+        $this->Rendu = $Rendu;
 
         return $this;
     }

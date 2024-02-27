@@ -53,6 +53,7 @@ final class AttributionFactory extends ModelFactory
             'collaborateur' => CollaborateurFactory::new(),
             'product' => ProductFactory::new(),
             'updatedAt' => self::faker()->dateTime(),
+            'Rendu' => self::faker()->boolean('FALSE'),
         ];
     }
 

@@ -33,6 +33,8 @@
 				<th class="w-auto">Category</th>
 				<th class="w-auto">Date d'attribution</th>
 				<th class="w-auto">Date de restitution</th>
+				<th class="w-auto">Rendu</th>
+
 			</tr>
 		</thead>
 
@@ -44,6 +46,11 @@
 				<td class="">{{ attribution.product.category }}</td>
 				<td class="">{{ attribution.dateAttribution | format_datetime(locale='fr', pattern="dd/MM/yyyy") }}</td>
 				<td class="">{{ attribution.dateRestitution | format_datetime(locale='fr', pattern="dd/MM/yyyy") }}</td> {#pattern="EEEE dd MMMM YYYY = Lundi 15 Janvier 2023#}
+				{% if attribution.Rendu == 0 %}
+    				<td class="">Non</td>
+				{% else %}
+    				<td class="">Oui</td>
+				{% endif %}
 			{% endfor %}
 		</table>
 
@@ -62,6 +69,11 @@
 							<p class="">Catégory du produit : {{ attribution.product.category }}</p>
 							<p class="">Date d'attribution : {{ attribution.dateAttribution | format_datetime(locale='fr', pattern="dd/MM/yyyy") }}</p>
 							<p class="">Date de restitution : {{ attribution.dateRestitution | format_datetime(locale='fr', pattern="dd/MM/yyyy") }}</p>
+							<p class="">Rendu : {% if attribution.Rendu == 0 %}
+    											Non
+												{% else %}
+												Oui
+												{% endif %}
 							<div style="background-color: gray;"><hr></div>
 
 							{% if is_granted('ROLE_ADMIN') %}
@@ -71,6 +83,7 @@
 							<a target="_blank" type="submit" href="{{ path('user_gestion_attribution_pdf', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">PDF</a>
 							<a type="submit" href="{{ path('user_gestion_sign', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">SIGNER</a>
 							<a type="submit" href="{{ path('user_gestion_send_mail', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">ENVOI MAIL</a>
+							<a type="submit" href="{{ path('user_gestion_attribution_rendu', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">RENDU</a>
 						</div>
 					</div>
 				</div>

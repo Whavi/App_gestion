@@ -96,6 +96,19 @@ public function gestionAttributionEdit($id, LoggerInterface $logger, Attribution
     ]);
 }
 
+############################################################################################################################
+#####################################################   RENDU   ############################################################
+############################################################################################################################
+#[Route('/gestion/attribution/rendu/{id}', name: 'user_gestion_attribution_rendu')]
+#[IsGranted('ROLE_USER')]
+
+public function gestionAttributionRendu($id, LoggerInterface $logger, AttributionRepository $attributionRepository, Request $request,PersistenceManagerRegistry $doctrine, EntityManagerInterface $manager) : Response {
+    $attribution = $attributionRepository->find($id);
+    
+    $this->processAttributionRendu($attribution, $manager, $doctrine,$id, $logger);
+    return $this->redirectToRoute('user_gestion_attribution');
+}
+
 
 ############################################################################################################################
 #####################################################   ENVOI MAIL  ########################################################
@@ -282,6 +295,32 @@ private function processAttributionEdit($attribution, $data, $manager, $doctrine
     $manager->flush();
 
     $this->addFlash('success','Votre attribution a bien été modifier.');
+
+}
+
+
+private function processAttributionRendu($attribution, $manager, $doctrine,$id, $logger){
+    $attribution->setUpdatedAt(new \DateTime());
+    $attribution->setRendu("1");
+
+
+    $this->LogToDatabase("{user} à modifier le bon de Commande N°{id} à Rendu = Oui | rendu => {rendu}", "ATTRIBUTION", $doctrine,[
+        'id'=> $id,
+        'user'=>$this->getUser(),
+        'rendu'=>$attribution->isRendu(),
+    ],2);
+
+    $logger->info("{user} à modifier le bon de Commande N°{id} à Rendu = Oui | rendu => {rendu} | heure de changement : {date}", [
+        'id'=> $id,
+        'user'=>$this->getUser(), 
+        'rendu'=>$attribution->isRendu(),
+        'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
+    ]);
+
+    $manager->persist($attribution);
+    $manager->flush();
+
+    $this->addFlash('success','Votre attribution a bien été Rendu.');
 
 }
 
