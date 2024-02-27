@@ -39,6 +39,8 @@
 							{{ collaborateur.id}}
 							{% if not loop.last %} - {% endif %}
 						{% endif %}
+						{% else %}
+						Aucune affectation
 					{% endfor %}
 				</td>
 				<td>{{collaborateur.departement}}</td>
@@ -60,12 +62,14 @@
 						<p>Collaborateur : {{collaborateur.nom|upper}} {{collaborateur.prenom}}</p>
 						<p>Email : {{collaborateur.email}}</p>
 						<p>Affectation :
-							{% for collaborateur in collaborateur.attributions %}
+    						{% for collaborateur in collaborateur.attributions %}
 								{% if collaborateur.id is not empty %}
 									{{ collaborateur.id}}
 									{% if not loop.last %} - {% endif %}
 								{% endif %}
-							{% endfor %}
+								{% else %}
+						Aucune affectation
+					{% endfor %}
 						</p>
 						<p>Département : {{collaborateur.departement}}</p>
 						<div style="background-color: gray;"><hr></div>

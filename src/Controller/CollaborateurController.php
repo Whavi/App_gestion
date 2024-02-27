@@ -254,7 +254,6 @@ private function processCollaborateurCreation($data, $manager,$doctrine, $logger
         'user'=>$this->getUser(),
         'collab'=>strtoupper($collaborateur->getNom()). " ".$collaborateur->getPrenom(),
         'mail'=>$collaborateur->getEmail(),
-        'affec'=>$collaborateur->getAttributions(),
         'dep'=>$collaborateur->getDepartement(),
     ],1);
 
@@ -262,7 +261,6 @@ private function processCollaborateurCreation($data, $manager,$doctrine, $logger
     'user'=>$this->getUser(),
     'collab'=>strtoupper($collaborateur->getNom()). " ".$collaborateur->getPrenom(),
     'mail'=>$collaborateur->getEmail(),
-    'affec'=>$collaborateur->getAttributions(),
     'dep'=>$collaborateur->getDepartement(),
     'date'=>(new \DateTime())->format('d/m/Y H:i:s'),
     ]);

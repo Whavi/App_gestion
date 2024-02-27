@@ -358,6 +358,7 @@ private function processAttributionCreation($attribution, $data,  $doctrine,$man
     $attribution->setCollaborateur($data->getCollaborateur());
     $attribution->setByUser($this->getUser()); 
     $attribution->setProduct($data->getProduct()); 
+    $attribution->setRendu("0");
 
     $manager->persist($attribution);
     $manager->flush();
