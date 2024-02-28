@@ -162,7 +162,7 @@
                     <td class = "vide-tableau3" >Receveur</td>
                     <td>{{collaborateur.nom | upper}} {{collaborateur.prenom}}</td>
                 {% endfor %}
-                    <td></td>
+                     <td> <img src="{{imageSignSrc}}" height="50" width="100"/></td>
                 {% for attribution in attributions %}
                     <td> {{attribution.dateAttribution | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")}} </td>
                 {% endfor %}

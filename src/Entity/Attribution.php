@@ -60,6 +60,9 @@ class Attribution
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $PdfName = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $signatureImg = null;
+
     #[ORM\Column]
     private ?bool $Rendu = null;
 
@@ -244,6 +247,18 @@ class Attribution
     public function setRendu(bool $Rendu): static
     {
         $this->Rendu = $Rendu;
+
+        return $this;
+    }
+
+    public function getSignatureImg(): ?string
+    {
+        return $this->signatureImg;
+    }
+
+    public function setSignatureImg(string $signatureImg): static
+    {
+        $this->signatureImg = $signatureImg;
 
         return $this;
     }

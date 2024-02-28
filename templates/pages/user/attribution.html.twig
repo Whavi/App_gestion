@@ -83,11 +83,36 @@
 							<a target="_blank" type="submit" href="{{ path('user_gestion_attribution_pdf', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">PDF</a>
 							<a type="submit" href="{{ path('user_gestion_sign', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">SIGNER</a>
 							<a type="submit" href="{{ path('user_gestion_send_mail', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">ENVOI MAIL</a>
-							<a type="submit" href="{{ path('user_gestion_attribution_rendu', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">RENDU</a>
+							<a type="submit" href="{{ path('user_gestion_attribution_rendu', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">RENDU</a>		
+							<a type="button" class="btn btn-outline-info btn-sm w-auto" data-toggle="modal" data-target="#signatureModal{{ attribution.id }}">Signature</a>
 						</div>
 					</div>
 				</div>
 			</div>
+			 <!-- Deuxième modal pour la signature -->
+    <div class="modal fade" id="signatureModal{{ attribution.id }}" tabindex="-1" role="dialog" aria-labelledby="signatureModalLabel{{ attribution.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signatureModalLabel{{ attribution.id }}">Signature</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <canvas id="signature-canvas"></canvas>
+                    
+                </div>
+                <div class="modal-footer">
+				<button id="clearSignature">Clear</button>
+				<form id="signature-form" action="{{ path('user_gestion_attribution_save_signature', {'id': attribution.id}) }}" method="POST">
+    				<input type="hidden" name="signature_data" id="signature_data">
+    				<button type="submit" class="btn btn-primary">Save Signature</button>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
 		{% endfor %}
 
 		<div class="mt-4 text-center">

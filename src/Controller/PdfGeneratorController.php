@@ -6,6 +6,7 @@ use App\Repository\AttributionRepository;
 use App\Repository\CollaborateurRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,7 @@ use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 use Dompdf\Options;
 use Psr\Log\LoggerInterface;
 use App\Entity\LogEntry;
+use Symfony\Component\HttpFoundation\Request;
  
 class PdfGeneratorController extends AbstractController
 {
@@ -32,6 +34,29 @@ public function generatePdfContent($id, CollaborateurRepository $collaborateurRe
         return $this->generatePdfOutput($html, $logger);
     }
 
+    
+############################################################################################################################
+########################################################  Signature   ######################################################
+############################################################################################################################
+
+
+#[Route('/gestion/attribution/{id}/signature/save-signature', name: 'user_gestion_attribution_save_signature', methods: ['POST'])]
+#[IsGranted('ROLE_USER')]
+public function saveSignature($id ,Request $request, EntityManagerInterface $entityManager, AttributionRepository $repositoryAttribution): Response{
+    $attribution = $repositoryAttribution->find($id);
+    $data = $request->request->get('signature_data'); 
+    $DataFinalB64 = base64_decode(explode(",", $data)[1]);   
+    $filename = 'signature_' . uniqid() . '.png';
+    $filePath = $this->getParameter('kernel.project_dir') . '/public/signature/' . $filename;
+    
+    file_put_contents($filePath, $DataFinalB64);
+    
+    $attribution->setSignatureImg($filename);
+    $entityManager->flush();
+
+    $this->addFlash('success', 'Signature saved successfully!');
+    return $this->redirectToRoute('user_gestion_attribution_pdf', ['signature' => $filename, "id" => $id]);
+}
 
 
 
@@ -79,6 +104,7 @@ private function getData($id, CollaborateurRepository $collaborateurRepository, 
     $user = $userRepository->findAllOrderedByInnerJoinNameContent($id);
     $name = $attributionRepository->findAllOrderedByInnerJoinNamePdfContent($id);
     $remarque = $attributionRepository->findAllOrderedByInnerJoinRemarqueContent($id);
+    $signature = $attributionRepository->find($id);
 
     return [
         'imageSrc' => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/navbar/images/SIF-Logo.png'),
@@ -89,6 +115,7 @@ private function getData($id, CollaborateurRepository $collaborateurRepository, 
         'names' => $name,
         'users' => $user,
         'remarques' => $remarque,
+        'imageSignSrc' => $this->ImageToBase64($this->getParameter('kernel.project_dir') . '/public/signature/ ' . $signature->getSignatureImg()),
     ];
 }
 

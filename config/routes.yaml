@@ -7,3 +7,17 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+user_gestion_attribution_signature:
+    path: '/gestion/attribution/{id}/signature'
+    controller: 'App\Controller\PdfGeneratorController::signature'
+    methods: ['GET']
+    requirements:
+        id: '\d+'
+
+user_gestion_attribution_save_signature:
+    path: '/gestion/attribution/{id}/signature/save-signature'
+    controller: 'App\Controller\PdfGeneratorController::saveSignature'
+    methods: ['POST']
+    requirements:
+        id: '\d+'
