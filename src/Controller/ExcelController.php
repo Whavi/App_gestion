@@ -46,6 +46,8 @@ public function exportExcel(LoggerInterface $logger, EntityManagerInterface $ent
     $sheet->setCellValue('J1', "Autre matériel");
     $sheet->setCellValue('K1', "Remarques");
     $sheet->setCellValue('L1', "Date de Restitution");
+    $sheet->setCellValue('M1', "Rendu");
+    $sheet->setCellValue('N1', "Signer");
     // Appliquer des styles aux en-têtes
     $headerStyle = [
         'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']], // Texte en gras, couleur blanc
@@ -57,7 +59,7 @@ public function exportExcel(LoggerInterface $logger, EntityManagerInterface $ent
         'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
     ];
     
-    $sheet->getStyle('A1:L1')->applyFromArray($headerStyle);
+    $sheet->getStyle('A1:n1')->applyFromArray($headerStyle);
     // Ajouter les données au fichier Excel
     $row = 2; // Commencer à la ligne 2 après les en-têtes
     foreach ($data as $item) {
@@ -73,6 +75,17 @@ public function exportExcel(LoggerInterface $logger, EntityManagerInterface $ent
         $sheet->setCellValue('J' . $row, $item->getDescriptionProduct());
         $sheet->setCellValue('K' . $row, $item->getRemarque());
         $sheet->setCellValue('L' . $row, $item->getDateRestitution()->format('d/m/Y')); 
+        if ($item->isRendu() == 'VRAI') {
+            $sheet->setCellValue('M' . $row, 'OUI');
+        } else {
+            $sheet->setCellValue('M' . $row, 'NON');
+        }
+        if ($item->getSignatureImg() !== null) {
+            $sheet->setCellValue('N' . $row, 'OUI');
+        } else {
+            $sheet->setCellValue('N' . $row, 'NON');
+        }
+    
         // Appliquer un style aux cellules de données
         $dataStyle = [
             'borders' => [
@@ -84,12 +97,12 @@ public function exportExcel(LoggerInterface $logger, EntityManagerInterface $ent
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             ],
         ];
-        $sheet->getStyle('A' . $row . ':L' . $row)->applyFromArray($dataStyle);
+        $sheet->getStyle('A' . $row . ':N' . $row)->applyFromArray($dataStyle);
         // Ajouter d'autres champs selon votre modèle de données
         $row++;
     }
     // Ajuster la largeur des colonnes en fonction du contenu
-    foreach (range('A', 'L') as $column) {
+    foreach (range('A', 'N') as $column) {
         $sheet->getColumnDimension($column)->setAutoSize(true);
     }
     // Enregistrer le fichier Excel
