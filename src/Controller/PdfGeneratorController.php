@@ -106,6 +106,12 @@ private function getData($id, CollaborateurRepository $collaborateurRepository, 
     $remarque = $attributionRepository->findAllOrderedByInnerJoinRemarqueContent($id);
     $signature = $attributionRepository->find($id);
 
+    if ($signature && $signature->getSignatureImg()) {
+        $imageSignSrc = $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/sign/' . $signature->getSignatureImg());
+    }else{
+        $imageSignSrc = null;
+    }
+    
     return [
         'imageSrc' => $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/navbar/images/SIF-Logo.png'),
         'collaborateurs' => $collaborateur,
@@ -115,7 +121,7 @@ private function getData($id, CollaborateurRepository $collaborateurRepository, 
         'names' => $name,
         'users' => $user,
         'remarques' => $remarque,
-        'imageSignSrc' => $this->ImageToBase64($this->getParameter('kernel.project_dir') . '/public/sign/' . $signature->getSignatureImg()),
+        'imageSignSrc' => $imageSignSrc,
     ];
 }
 
@@ -150,7 +156,7 @@ private function generatePdfOutput($html, $logger): string{
     $options->set('isRemoteEnabled', true);
     $dompdf = new Dompdf($options);
     $dompdf->loadHtml($html);
-    $dompdf->setPaper('a4', 'portrait');
+    $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
 
     $logger->info("{user} a généré un PDF le {date}", [

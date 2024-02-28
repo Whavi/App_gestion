@@ -94,7 +94,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="signatureModalLabel{{ attribution.id }}">Signature</h5>
+                    <h5 class="modal-title" id="signatureModalLabel{{ attribution.id }}">Signature : Bon de commande {{attribution.id}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -103,10 +103,10 @@
                     <canvas id="signature-canvas" width="460" style ="border:solid 3px white; "></canvas>
                 </div>
                 <div class="modal-footer">
-				<button id="clearSignature">Clear</button>
+				<button id="clear-signature">Clear</button>
 				<form target="_blank" id="signature-form" action="{{ path('user_gestion_attribution_save_signature', {'id': attribution.id}) }}" method="POST">
     				<input type="hidden" name="signature_data" id="signature_data">
-    				<button type="submit" class="btn btn-primary">Save Signature</button>
+    				<button type="submit" class="btn btn-primary" id="submit-signature">Save Signature</button>
 				</form>
                 </div>
             </div>

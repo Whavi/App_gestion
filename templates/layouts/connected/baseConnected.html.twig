@@ -14,46 +14,46 @@
 
         {% block javascripts %}
         <script src="https://unpkg.com/signature_pad"></script>
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    setTimeout(function () {
-                        var alert = document.querySelector('.alert-success');
-                        if (alert) {
-                            alert.remove();
-                        }
-                    }, 1000); // Adjust the time (in milliseconds) as needed
-                });
-            </script>
-            
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var canvas = document.getElementById('signature-canvas');
-            var signaturePad = new SignaturePad(canvas);
-
-            var clearButton = document.getElementById('clear-signature');
-            var signatureDataInput = document.getElementById('signature_data');
-            var signatureForm = document.getElementById('signature-form');
-
-            signatureForm.addEventListener('submit', function (event) {
-                event.preventDefault();
-                saveSignature(signatureDataInput);
-                 this.submit();
-            });
-
-            clearButton.addEventListener('click', function () {
-                signaturePad.clear();
-            });
-
-            function saveSignature(input) {
-                if (!signaturePad.isEmpty()) {
-                    input.value = signaturePad.toDataURL("image/png");
-                   
-                } else {
-                    alert('Please add your signature');
-                }
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+            var alertSuccess = document.querySelector('.alert-success');
+            if (alertSuccess) {
+                alertSuccess.remove();
             }
+        }, 1000); // Adjust the time (in milliseconds) as needed
+
+        var canvas = document.getElementById('signature-canvas');
+        var signaturePad = new SignaturePad(canvas);
+
+        var clearButton = document.getElementById('clear-signature');
+        var submitButton = document.getElementById('submit-signature');
+        var signatureDataInput = document.getElementById('signature_data');
+        var signatureForm = document.getElementById('signature-form');
+
+        signatureForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            saveSignature(signatureDataInput);
+            this.submit();
         });
-    </script>
+
+        clearButton.addEventListener('click', function () {
+            signaturePad.clear();
+        });
+
+        function saveSignature(input) {
+            if (!signaturePad.isEmpty()) {
+                input.value = signaturePad.toDataURL("image/png");
+            } else {
+                alert('Please add your signature');
+            }
+        }
+    });
+</script>
+
+
+           
+            
         {% endblock %}
     </head>
 
