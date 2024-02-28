@@ -109,6 +109,20 @@ public function gestionAttributionRendu($id, LoggerInterface $logger, Attributio
     return $this->redirectToRoute('user_gestion_attribution');
 }
 
+############################################################################################################################
+#####################################################   SIGNER   ###########################################################
+############################################################################################################################
+#[Route('/gestion/attribution/signer/{id}', name: 'user_gestion_attribution_signer')]
+#[IsGranted('ROLE_USER')]
+
+public function gestionAttributionSigner($id, LoggerInterface $logger, AttributionRepository $attributionRepository, Request $request,PersistenceManagerRegistry $doctrine, EntityManagerInterface $manager) : Response {
+    $attribution = $attributionRepository->find($id);
+    
+    $this->processAttributionSigner($attribution, $manager, $doctrine,$id, $logger);
+    return $this->redirectToRoute('user_gestion_attribution');
+}
+
+
 
 ############################################################################################################################
 #####################################################   ENVOI MAIL  ########################################################
@@ -321,6 +335,30 @@ private function processAttributionRendu($attribution, $manager, $doctrine,$id, 
     $manager->flush();
 
     $this->addFlash('success','Votre attribution a bien été Rendu.');
+
+}
+
+private function processAttributionSigner($attribution, $manager, $doctrine,$id, $logger){
+    $attribution->setUpdatedAt(new \DateTime());
+    $attribution->setSignatureImg("Signer par API Yousign");
+
+
+    $this->LogToDatabase("{user} à modifier le bon de Commande N°{id} à Signer = Oui ", "ATTRIBUTION", $doctrine,[
+        'id'=> $id,
+        'user'=>$this->getUser(),
+    
+    ],2);
+
+    $logger->info("{user} à modifier le bon de Commande N°{id} à Signer = Oui  | heure de changement : {date}", [
+        'id'=> $id,
+        'user'=>$this->getUser(), 
+        'date'=>(new \DateTime)->format('d/m/Y H:i:s'),
+    ]);
+
+    $manager->persist($attribution);
+    $manager->flush();
+
+    $this->addFlash('success','Votre attribution a bien été Signer.');
 
 }
 

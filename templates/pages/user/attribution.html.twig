@@ -30,10 +30,11 @@
 				<th class="w-auto">#</th>
 				<th class="w-auto">Collaborateur</th>
 				<th class="w-auto">Nom</th>
-				<th class="w-auto">Category</th>
+				<th class="w-auto">Categorie</th>
 				<th class="w-auto">Date d'attribution</th>
 				<th class="w-auto">Date de restitution</th>
 				<th class="w-auto">Rendu</th>
+				<th class="w-auto">Signer</th>
 
 			</tr>
 		</thead>
@@ -47,6 +48,11 @@
 				<td class="">{{ attribution.dateAttribution | format_datetime(locale='fr', pattern="dd/MM/yyyy") }}</td>
 				<td class="">{{ attribution.dateRestitution | format_datetime(locale='fr', pattern="dd/MM/yyyy") }}</td> {#pattern="EEEE dd MMMM YYYY = Lundi 15 Janvier 2023#}
 				{% if attribution.Rendu == 0 %}
+    				<td class="">Non</td>
+				{% else %}
+    				<td class="">Oui</td>
+				{% endif %}
+				{% if attribution.signatureImg == null %}
     				<td class="">Non</td>
 				{% else %}
     				<td class="">Oui</td>
@@ -74,6 +80,13 @@
 												{% else %}
 												Oui
 												{% endif %}
+							</p>
+							<p class="">Signé : {% if attribution.signatureImg == null %}
+    											Non
+												{% else %}
+												Oui
+												{% endif %}
+							</p>						
 							<div style="background-color: gray;"><hr></div>
 
 							{% if is_granted('ROLE_ADMIN') %}
@@ -84,6 +97,7 @@
 							<a type="submit" href="{{ path('user_gestion_sign', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">SIGNER</a>
 							<a type="submit" href="{{ path('user_gestion_send_mail', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">ENVOI MAIL</a>
 							<a type="submit" href="{{ path('user_gestion_attribution_rendu', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">RENDU</a>		
+							<a type="submit" href="{{ path('user_gestion_attribution_signer', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">SIGNER</a>	
 							<a type="button" class="btn btn-outline-info btn-sm w-auto" data-toggle="modal" data-target="#signatureModal{{ attribution.id }}">Signature</a>
 						</div>
 					</div>
