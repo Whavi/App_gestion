@@ -105,30 +105,79 @@
 			</div>
 			 <!-- Deuxième modal pour la signature -->
     <div class="modal fade" id="signatureModal{{ attribution.id }}" tabindex="-1" role="dialog" aria-labelledby="signatureModalLabel{{ attribution.id }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="signatureModalLabel{{ attribution.id }}">Signature : Bon de commande {{attribution.id}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <canvas id="signature-canvas" width="460" style ="border:solid 3px white; "></canvas>
-                </div>
-                <div class="modal-footer">
-				<button id="clear-signature">Clear</button>
-				<form target="_blank" id="signature-form" action="{{ path('user_gestion_attribution_save_signature', {'id': attribution.id}) }}" method="POST">
-    				<input type="hidden" name="signature_data" id="signature_data">
-    				<button type="submit" class="btn btn-primary" id="submit-signature">Save Signature</button>
-				</form>
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="signatureModalLabel{{ attribution.id }}">Signature : Bon de commande {{ attribution.id }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <canvas id="signature-canvas-{{ attribution.id }}" width="460" style="border:solid 3px white;"></canvas>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="clear-signature-{{ attribution.id }}">Clear</button>
+                        <form target="_blank" id="signature-form-{{ attribution.id }}" action="{{ path('user_gestion_attribution_save_signature', {'id': attribution.id}) }}" method="POST">
+                            <input type="hidden" name="signature_data" id="signature_data-{{ attribution.id }}">
+                            <button type="submit" class="btn btn-primary submit-signature">Save Signature</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-		{% endfor %}
+	{% endfor %}
 
 		<div class="mt-4 text-center">
 			{{ knp_pagination_render(attributions) }}
 		</div>
+
+
+{% block javascripts %}
+
+<script src="https://unpkg.com/signature_pad"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(function () {
+        var alertSuccess = document.querySelector('.alert-success');
+        if (alertSuccess) {
+            alertSuccess.remove();
+        }
+    }, 1000); // Ajustez le temps (en millisecondes) si nécessaire
+
+    // Itération sur les attributions
+    {% for attribution in attributions %}
+        var canvas{{ attribution.id }} = document.getElementById('signature-canvas-{{ attribution.id }}');
+        console.log(canvas{{ attribution.id }}); 
+        var signaturePad{{ attribution.id }} = new SignaturePad(canvas{{ attribution.id }});
+
+        var clearButton{{ attribution.id }} = document.getElementById('clear-signature-{{ attribution.id }}');
+        var submitButton{{ attribution.id }} = document.getElementById('submit-signature-{{ attribution.id }}');
+        var signatureDataInput{{ attribution.id }} = document.getElementById('signature_data-{{ attribution.id }}');
+        var signatureForm{{ attribution.id }} = document.getElementById('signature-form-{{ attribution.id }}');
+
+        signatureForm{{ attribution.id }}.addEventListener('submit', function (event) {
+            event.preventDefault();
+            saveSignature(signatureDataInput{{ attribution.id }}, signaturePad{{ attribution.id }});
+            this.submit();
+            window.location.reload();
+        });
+
+        clearButton{{ attribution.id }}.addEventListener('click', function () {
+            signaturePad{{ attribution.id }}.clear();
+        });
+
+        function saveSignature(input, pad) {
+            if (!pad.isEmpty()) {
+                input.value = pad.toDataURL("image/png");
+            } else {
+                alert('Please add your signature');
+            }
+        }
+    {% endfor %}
+});
+</script>
+{% endblock %}
 	{% endblock %}
