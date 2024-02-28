@@ -100,14 +100,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <canvas id="signature-canvas"></canvas>
-                    
+                    <canvas id="signature-canvas" width="460" style ="border:solid 3px white; "></canvas>
                 </div>
                 <div class="modal-footer">
 				<button id="clearSignature">Clear</button>
-				<form id="signature-form" action="{{ path('user_gestion_attribution_save_signature', {'id': attribution.id}) }}" method="POST">
+				<form target="_blank" id="signature-form" action="{{ path('user_gestion_attribution_save_signature', {'id': attribution.id}) }}" method="POST">
     				<input type="hidden" name="signature_data" id="signature_data">
-    				<button target="_blank"type="submit" class="btn btn-primary">Save Signature</button>
+    				<button type="submit" class="btn btn-primary">Save Signature</button>
 				</form>
                 </div>
             </div>

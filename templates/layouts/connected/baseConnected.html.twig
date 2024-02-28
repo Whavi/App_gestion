@@ -13,6 +13,7 @@
         {% endblock %}
 
         {% block javascripts %}
+        <script src="https://unpkg.com/signature_pad"></script>
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                     setTimeout(function () {
@@ -23,7 +24,7 @@
                     }, 1000); // Adjust the time (in milliseconds) as needed
                 });
             </script>
-            <script src="https://unpkg.com/signature_pad"></script>
+            
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var canvas = document.getElementById('signature-canvas');

@@ -150,7 +150,7 @@ private function generatePdfOutput($html, $logger): string{
     $options->set('isRemoteEnabled', true);
     $dompdf = new Dompdf($options);
     $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->setPaper('a4', 'portrait');
     $dompdf->render();
 
     $logger->info("{user} a généré un PDF le {date}", [
