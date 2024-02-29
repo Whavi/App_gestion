@@ -43,7 +43,7 @@ class SecurityController extends AbstractController
 
 
 
-    #[Route('/inscription', 'security.registration', methods: ['GET', 'POST'])]
+    #[Route('/inscription', name:'security.registration', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function registration(Request $request,UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $manager): Response
     {

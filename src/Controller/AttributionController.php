@@ -115,7 +115,18 @@ public function gestionAttributionRendu($id, LoggerInterface $logger, Attributio
 #[Route('/gestion/attribution/signer/{id}', name: 'user_gestion_attribution_signer')]
 #[IsGranted('ROLE_USER')]
 
-public function gestionAttributionSigner($id, LoggerInterface $logger, AttributionRepository $attributionRepository, Request $request,PersistenceManagerRegistry $doctrine, EntityManagerInterface $manager) : Response {
+public function gestionAttributionSigner($id, LoggerInterface $logger, AttributionRepository $attributionRepository,PersistenceManagerRegistry $doctrine, EntityManagerInterface $manager) : Response {
+    $attribution = $attributionRepository->find($id);
+    
+    $this->processAttributionSigner($attribution, $manager, $doctrine,$id, $logger);
+    return $this->redirectToRoute('user_gestion_attribution');
+}
+
+
+#[Route('/gestion/attribution/signer/{id}', name: 'user_gestion_attribution_signer')]
+#[IsGranted('ROLE_USER')]
+
+public function gestionAttributionSignerMailProtected($id, LoggerInterface $logger, AttributionRepository $attributionRepository, PersistenceManagerRegistry $doctrine, EntityManagerInterface $manager) : Response {
     $attribution = $attributionRepository->find($id);
     
     $this->processAttributionSigner($attribution, $manager, $doctrine,$id, $logger);
@@ -130,7 +141,7 @@ public function gestionAttributionSigner($id, LoggerInterface $logger, Attributi
 
 #[Route('/gestion/attribution/send-email/{id}', name: 'user_gestion_send_mail')]
 #[IsGranted('ROLE_USER')]
-public function sendEmail($id, LoggerInterface $logger,PersistenceManagerRegistry $doctrine, AttributionRepository $attributionRepository, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, UserRepository $userRepository, PdfGeneratorController $pdfGenerator, MailerInterface $mailer): Response
+public function sendEmail($id, LoggerInterface $logger,PersistenceManagerRegistry $doctrine, AttributionRepository $attributionRepository, CollaborateurRepository $collaborateurRepository, ProductRepository $productRepository, UserRepository $userRepository, PdfGeneratorController $pdfGenerator,EntityManagerInterface $manager ,MailerInterface $mailer): Response
 {
     $attribution = $attributionRepository->find($id);
     $collaborateur = $collaborateurRepository->find($id);
@@ -146,9 +157,18 @@ public function sendEmail($id, LoggerInterface $logger,PersistenceManagerRegistr
         ->htmlTemplate('pages/user/mail/mailpdf.html.twig');  
     $mailer->send($email);    
     $this->processAttributionSenMail($attribution, $id, $doctrine, $logger);
-    return $this->redirectToRoute('user_gestion_attribution');
-}
 
+    if($attribution->getSignatureImg() !== null) {
+    $signLocalToDelete = $this->getParameter('kernel.project_dir') . '/public/sign/' . $attribution->getSignatureImg();
+    if (file_exists($signLocalToDelete)) {
+        unlink($signLocalToDelete);
+    }
+    $attribution->setSignatureImg("mail envoyer");
+    $manager->persist($attribution);
+    $manager->flush();
+}
+return $this->redirectToRoute('user_gestion_attribution');
+}
 ############################################################################################################################
 ####################################################   PAGE D'AJOUT   ######################################################
 ############################################################################################################################

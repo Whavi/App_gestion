@@ -54,6 +54,8 @@
 				{% endif %}
 				{% if attribution.signatureImg == null %}
     				<td class="">Non</td>
+				{% elseif attribution.signatureImg == "mail envoyer" %}
+    				<td class="">Mailed</td>	
 				{% else %}
     				<td class="">Oui</td>
 				{% endif %}
@@ -83,22 +85,25 @@
 							</p>
 							<p class="">Signé : {% if attribution.signatureImg == null %}
     											Non
+												{% elseif attribution.signatureImg == "mail envoyer" %}
+												Mailed
 												{% else %}
-												Oui
+												Oui	
 												{% endif %}
 							</p>						
 							<div style="background-color: gray;"><hr></div>
 
 							{% if is_granted('ROLE_ADMIN') %}
 								<a type="submit" href="{{ path('user_gestion_attribution_delete', {'id': attribution.id }) }}" class="btn btn-danger btn-sm w-auto ">DELETE</a>
+								<a type="submit" href="{{ path('user_gestion_sign', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">SIGNER ELECTRONIQUE YOUSIGN</a>
+								<a type="submit" href="{{ path('user_gestion_attribution_signer', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">SIGNER SI YOUSIGN UTILISER</a>
 							{% endif %}
 							<a type="submit" href="{{ path('user_gestion_attribution_edit', {'id': attribution.id }) }}" class="btn btn-outline-primary btn-sm w-auto">EDIT</a>
 							<a target="_blank" type="submit" href="{{ path('user_gestion_attribution_pdf', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">PDF</a>
-							<a type="submit" href="{{ path('user_gestion_sign', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">SIGNER ELECTRONIQUE</a>
 							<a type="submit" href="{{ path('user_gestion_send_mail', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">ENVOI MAIL</a>
-							<a type="submit" href="{{ path('user_gestion_attribution_rendu', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">RENDU</a>		
-							<a type="submit" href="{{ path('user_gestion_attribution_signer', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">SIGNER VIA YOUSIGN</a>	
-							<a type="button" class="btn btn-outline-info btn-sm w-auto" data-toggle="modal" data-target="#signatureModal{{ attribution.id }}">Signature Local</a>
+							<a type="submit" href="{{ path('user_gestion_attribution_rendu', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">RENDU</a>									{% if attribution.signatureImg == null %}	
+							<a type="button" class="btn btn-outline-info btn-sm w-auto" data-toggle="modal" data-target="#signatureModal{{ attribution.id }}">Signature</a>
+							{% endif %}
 						</div>
 					</div>
 				</div>

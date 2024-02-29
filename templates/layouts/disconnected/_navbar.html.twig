@@ -19,8 +19,10 @@
     
     <div class="right-cta-menu text-right d-flex aligin-items-center col-6">
       <div class="ml-auto">
-        <a href="{{path ("security.registration")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Inscription</a>
-        <a href="{{path ("security.login")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Connexion</a>
+      {% if is_granted('ROLE_ADMIN') %}
+          <a href="{{path ("security.registration")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Inscription</a>
+      {% endif %}
+          <a href="{{path ("security.login")}}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"></span>Connexion</a>
       </div>
     </div>
   </div>

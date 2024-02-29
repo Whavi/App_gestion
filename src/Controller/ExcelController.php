@@ -82,7 +82,9 @@ public function exportExcel(LoggerInterface $logger, EntityManagerInterface $ent
         }
         if ($item->getSignatureImg() !== null) {
             $sheet->setCellValue('N' . $row, 'OUI');
-        } else {
+        } else if ($item->getSignatureImg() !== "mail envoyer"){
+            $sheet->setCellValue('N' . $row, 'MAILED');
+        } else{
             $sheet->setCellValue('N' . $row, 'NON');
         }
     
