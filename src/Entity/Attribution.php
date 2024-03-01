@@ -256,11 +256,10 @@ class Attribution
         return $this->signatureImg;
     }
 
-    public function setSignatureImg(string $signatureImg): static
+    public function setSignatureImg(?string $signatureImg): void
     {
         $this->signatureImg = $signatureImg;
 
-        return $this;
     }
 
 }

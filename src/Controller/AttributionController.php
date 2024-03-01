@@ -286,6 +286,8 @@ private function processAttributionDelete($attribution, $manager, $id, $doctrine
 private function processAttributionEdit($attribution, $data, $manager, $doctrine,$id, $logger){
     $attribution->setUpdatedAt(new \DateTime());
     $attribution->setByUser($this->getUser()); 
+    $attribution->setSignatureImg(null);
+    $attribution->setRendu("0");
 
 
     $this->LogToDatabase("{user} à modifier l'id : {id} | Collaborateur => {collab} | Modèle => {mod} | catégorie => {cat} | description => {des} | remarques => {rem}", "ATTRIBUTION", $doctrine,[
