@@ -99,9 +99,12 @@
 								<a type="submit" href="{{ path('user_gestion_attribution_signer', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">SIGNER SI YOUSIGN UTILISER</a>
 							{% endif %}
 							<a type="submit" href="{{ path('user_gestion_attribution_edit', {'id': attribution.id }) }}" class="btn btn-outline-primary btn-sm w-auto">EDIT</a>
+							{% if attribution.signatureImg is not same as "mail envoyer" or is_granted('ROLE_ADMIN')%}
 							<a target="_blank" type="submit" href="{{ path('user_gestion_attribution_pdf', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">PDF</a>
 							<a type="submit" href="{{ path('user_gestion_send_mail', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">ENVOI MAIL</a>
-							<a type="submit" href="{{ path('user_gestion_attribution_rendu', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">RENDU</a>									{% if attribution.signatureImg == null %}	
+							{% endif %}
+							<a type="submit" href="{{ path('user_gestion_attribution_rendu', {'id': attribution.id }) }}" class="btn btn-outline-info btn-sm w-auto ">RENDU</a>									
+							{% if attribution.signatureImg == null or is_granted('ROLE_ADMIN') %}	
 							<a type="button" class="btn btn-outline-info btn-sm w-auto" data-toggle="modal" data-target="#signatureModal{{ attribution.id }}">Signature</a>
 							{% endif %}
 						</div>

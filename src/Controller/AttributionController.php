@@ -123,18 +123,6 @@ public function gestionAttributionSigner($id, LoggerInterface $logger, Attributi
 }
 
 
-#[Route('/gestion/attribution/signer/{id}', name: 'user_gestion_attribution_signer')]
-#[IsGranted('ROLE_USER')]
-
-public function gestionAttributionSignerMailProtected($id, LoggerInterface $logger, AttributionRepository $attributionRepository, PersistenceManagerRegistry $doctrine, EntityManagerInterface $manager) : Response {
-    $attribution = $attributionRepository->find($id);
-    
-    $this->processAttributionSigner($attribution, $manager, $doctrine,$id, $logger);
-    return $this->redirectToRoute('user_gestion_attribution');
-}
-
-
-
 ############################################################################################################################
 #####################################################   ENVOI MAIL  ########################################################
 ############################################################################################################################
