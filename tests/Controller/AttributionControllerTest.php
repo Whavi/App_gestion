@@ -53,6 +53,19 @@ class AttributionControllerTest extends WebTestCase
         $this->client->request('GET', '/gestion/addItem');
         $this->assertResponseIsSuccessful();
     }
+    public function testProduitSearch()
+    {
+        $crawler = $this->client->request('GET', '/gestion');
+        $form = $crawler->selectButton('Rechercher')->form();
+        // foreach ($form->all() as $field) {
+        //     $name = $field->getName();
+        //     echo $name . "\n";
+        // }
+        $form['search_type_product[ref]']->setValue('456');
+
+        $this->client->submit($form);
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+    }
 
     public function testAddItemProduit()
     {
@@ -111,6 +124,16 @@ class AttributionControllerTest extends WebTestCase
     {
         $this->client->request('GET', '/gestion/compte/collaborateur');
         $this->assertResponseIsSuccessful();
+    }
+
+    public function testCollaborateurSearch()
+    {
+        $crawler = $this->client->request('GET', '/gestion/compte/collaborateur');
+        $form = $crawler->selectButton('Rechercher')->form();
+        $form['search_type_collaborateur[nom]']->setValue('456');
+
+        $this->client->submit($form);
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testCollaborateurEntry()
@@ -175,6 +198,16 @@ class AttributionControllerTest extends WebTestCase
     {
         $this->client->request('GET', '/gestion/compte/utilisateur');
         $this->assertResponseIsSuccessful();
+    }
+
+    public function testUserSearch()
+    {
+        $crawler = $this->client->request('GET', '/gestion/compte/utilisateur');
+        $form = $crawler->selectButton('Rechercher')->form();
+        $form['search_type_user[nom]']->setValue('456');
+
+        $this->client->submit($form);
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testUserEntry()
@@ -246,6 +279,16 @@ class AttributionControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    public function testDepartementSearch()
+    {
+        $crawler = $this->client->request('GET', '/gestion/departement');
+        $form = $crawler->selectButton('Rechercher')->form();
+        $form['search_type_departement[nom]']->setValue('456');
+
+        $this->client->submit($form);
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testDepartementEntry()
     {
         $this->client->request('GET', '/gestion/departement/addDepartement');
@@ -309,7 +352,6 @@ class AttributionControllerTest extends WebTestCase
         $this->client->request('GET', '/gestion/anciennesAttributions/attribution/');
         $this->assertResponseIsSuccessful();
     }
-
     
     public function testAddItemAttributionEntry()
     {

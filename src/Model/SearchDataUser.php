@@ -14,4 +14,9 @@ class SearchDataUser
 
     public string $email = '';
 
+    public function getRecherche()
+    {
+        return $this->nom;
+    }
+
 }
