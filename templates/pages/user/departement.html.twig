@@ -48,8 +48,9 @@
             	{% if is_granted('ROLE_ADMIN') %}
 							<div style="background-color: gray;"><hr></div>
 							<a type="submit" href="{{path('user_gestion_departement_delete', {'id': departement.id }) }}" class="btn btn-danger btn-sm w-auto">DELETE</a>
+							{% endif %}	
 							<a type="submit" href="{{path('user_gestion_departement_edit', {'id': departement.id }) }}" class="btn btn-outline-primary btn-sm w-auto">EDIT</a>
-							{%endif%}						
+												
             </div>
 					</div>
 				</div>

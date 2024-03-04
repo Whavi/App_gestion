@@ -18,7 +18,6 @@ class AttributionControllerTest extends WebTestCase
     private function login()
     {
         $crawler = $this->client->request('GET', '/connexion');
-
         $form = $crawler->selectButton('Se connecter')->form([
             '_username' => 'test@test.org',
             '_password' => '123',
@@ -83,26 +82,22 @@ class AttributionControllerTest extends WebTestCase
         $this->assertResponseRedirects('/gestion');
     }
 
-        
-    // A FAIRE PLUS TARD
-
-    // public function testEditionProduit()
-    // {
-    //     $crawler = $this->client->request('GET', '/gestion/edit/1'); 
-    //     dd($crawler->html());
-    //     $form = $crawler->selectButton('user_form_product[Submit]')->form();
-    //     $formData = [
-    //         'user_form_product[identifiant]' => '12345',
-    //         'user_form_product[nom]' => 'Nom du modèle',
-    //         'user_form_product[ref]' => 'Ref123',
-    //         'user_form_product[category]' => 'Ordinateur Portable',
-    //     ];
+    public function testProduitEdit()
+    {
+        $crawler = $this->client->request('GET', '/gestion/edit/2'); 
+        $form = $crawler->selectButton('Submit')->form();
+        $formData = [
+            'edit_form_product[identifiant]' => '76548915',
+            'edit_form_product[nom]' => 'Lenovo',
+            'edit_form_product[ref]' => 'Ref12345',
+            'edit_form_product[category]' => 'Ordinateur Fixe',
+        ];
     
-    //     $this->client->submit($form, $formData);
-    //     $this->assertTrue($this->client->getResponse()->isRedirect());
-    //     $this->client->followRedirect();
-    //     $this->assertTrue($this->client->getResponse()->isSuccessful());
-    // }
+        $this->client->submit($form, $formData);
+        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->client->followRedirect();
+        $this->assertTrue($this->client->getResponse()->isSuccessful());
+    }
 
 
 
@@ -158,25 +153,23 @@ class AttributionControllerTest extends WebTestCase
         $this->assertResponseRedirects('/gestion/compte/collaborateur');
     }
 
-    // A FAIRE PLUS TARD
 
-    // public function testCollaborateurProduit()
-    // {
-    //     $crawler = $this->client->request('GET', '/gestion/compte/collaborateur/edit/1'); 
-    //     dd($crawler->html());
-    //     $form = $crawler->selectButton('user_form_product[Submit]')->form();
-    //     $formData = [
-    //         'user_form_product[identifiant]' => '12345',
-    //         'user_form_product[nom]' => 'Nom du modèle',
-    //         'user_form_product[ref]' => 'Ref123',
-    //         'user_form_product[category]' => 'Ordinateur Portable',
-    //     ];
+    public function testCollaborateurEdit()
+    {
+        $crawler = $this->client->request('GET', '/gestion/compte/collaborateur/edit/2'); 
+        $form = $crawler->selectButton('Submit')->form();
+        $formData = [
+            'edit_form_collaborateur[nom]' => 'Dupont',
+            'edit_form_collaborateur[prenom]' => 'Gerard',
+            'edit_form_collaborateur[email]' => 'test@test.com',
+            'edit_form_collaborateur[departement]' => '5',
+        ];
     
-    //     $this->client->submit($form, $formData);
-    //     $this->assertTrue($this->client->getResponse()->isRedirect());
-    //     $this->client->followRedirect();
-    //     $this->assertTrue($this->client->getResponse()->isSuccessful());
-    // }
+        $this->client->submit($form, $formData);
+        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->client->followRedirect();
+        $this->assertTrue($this->client->getResponse()->isSuccessful());
+    }
 
 
     /* 
@@ -235,25 +228,24 @@ class AttributionControllerTest extends WebTestCase
         $this->assertResponseRedirects('/gestion/compte/utilisateur');
     }
 
-    // A FAIRE PLUS TARD
-
-    // public function testCollaborateurProduit()
-    // {
-    //     $crawler = $this->client->request('GET', '/gestion/compte/utilisateur/edit/1'); 
-    //     dd($crawler->html());
-    //     $form = $crawler->selectButton('user_form_product[Submit]')->form();
-    //     $formData = [
-    //         'user_form_product[identifiant]' => '12345',
-    //         'user_form_product[nom]' => 'Nom du modèle',
-    //         'user_form_product[ref]' => 'Ref123',
-    //         'user_form_product[category]' => 'Ordinateur Portable',
-    //     ];
+    public function testUserEdit()
+    {
+        $faker = Factory::create();
+        $crawler = $this->client->request('GET', '/gestion/compte/utilisateur/edit/2'); 
+        $form = $crawler->selectButton('Submit')->form();
+        $formData = [
+            'edit_form_user[nom]' => 'Dupont',
+            'edit_form_user[prenom]' => 'Gerard',
+            'edit_form_user[email]' => $faker->email(),
+            'edit_form_user[password][first]' => 'test',
+            'edit_form_user[password][second]' => 'test',
+        ];
     
-    //     $this->client->submit($form, $formData);
-    //     $this->assertTrue($this->client->getResponse()->isRedirect());
-    //     $this->client->followRedirect();
-    //     $this->assertTrue($this->client->getResponse()->isSuccessful());
-    // }
+        $this->client->submit($form, $formData);
+        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->client->followRedirect();
+        $this->assertTrue($this->client->getResponse()->isSuccessful());
+    }
 
 
     
@@ -308,25 +300,19 @@ class AttributionControllerTest extends WebTestCase
         $this->assertResponseRedirects('/gestion/departement');
     }
 
-     // A FAIRE PLUS TARD
-
-    // public function testCollaborateurProduit()
-    // {
-    //     $crawler = $this->client->request('GET', '/gestion/departement/edit/1'); 
-    //     dd($crawler->html());
-    //     $form = $crawler->selectButton('user_form_product[Submit]')->form();
-    //     $formData = [
-    //         'user_form_product[identifiant]' => '12345',
-    //         'user_form_product[nom]' => 'Nom du modèle',
-    //         'user_form_product[ref]' => 'Ref123',
-    //         'user_form_product[category]' => 'Ordinateur Portable',
-    //     ];
+    public function testDepartementEdit()
+    {
+        $crawler = $this->client->request('GET', '/gestion/departement/edit/2'); 
+        $form = $crawler->selectButton('Submit')->form();
+        $formData = [
+            'edit_form_departement[nom]' => 'Informatique',
+        ];
     
-    //     $this->client->submit($form, $formData);
-    //     $this->assertTrue($this->client->getResponse()->isRedirect());
-    //     $this->client->followRedirect();
-    //     $this->assertTrue($this->client->getResponse()->isSuccessful());
-    // }
+        $this->client->submit($form, $formData);
+        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->client->followRedirect();
+        $this->assertTrue($this->client->getResponse()->isSuccessful());
+    }
 
       
     /* 
@@ -386,23 +372,27 @@ class AttributionControllerTest extends WebTestCase
         $this->assertTrue($this->client->getResponse()->isRedirect('/gestion/nouvellesAttributions/attribution/'));
     }
 
-    public function testSendEmail()
+    public function testGestionAttributionEditPage()
     {
-        $this->client->request('GET', '/gestion/attribution/send-email/2');
-        var_dump($this->client->getResponse());
-        $this->assertResponseRedirects('/gestion/nouvellesAttributions/attribution/');
-    }
+        $faker = Factory::create();
+        $crawler =  $this->client->request('GET', '/gestion/attribution/edit/2');
+        $this->assertTrue($this->client->getResponse()->isSuccessful());
+        $form = $crawler->selectButton('Submit')->form();
+        $formData = [
+            'edit_form_attribution[collaborateur]' => '2',
+            'edit_form_attribution[Product]' => '3',
+            'edit_form_attribution[dateAttribution]' => (new \DateTime())->format('Y-m-d'), 
+            'edit_form_attribution[dateRestitution]' => $faker->dateTimeBetween('now', '+2 years')->format('Y-m-d'),
+            'edit_form_attribution[descriptionProduct]' => 'test1',
+            'edit_form_attribution[remarque]' => 'test1',
 
+        ];
     
-
-    // A FAIRE PLUS TARD
-
-    // public function testGestionAttributionEditPage()
-    // {
-    //     $this->client->request('GET', '/gestion/attribution/edit/1');
-    //     dump($this->client->getResponse()->getContent());
-    //     $this->assertResponseIsSuccessful();
-    // }
+        $this->client->submit($form, $formData);
+        $this->assertTrue($this->client->getResponse()->isRedirect());
+        $this->client->followRedirect();
+        $this->assertTrue($this->client->getResponse()->isSuccessful());
+    }
 
     public function testGestionAttributionRendu()
     {
@@ -410,6 +400,16 @@ class AttributionControllerTest extends WebTestCase
         $this->assertTrue($this->client->getResponse()->isRedirect('/gestion/nouvellesAttributions/attribution/'));
     }
 
+
+    
+
+
+    // public function testSendEmail()
+    // {
+    //     $this->client->request('GET', '/gestion/attribution/send-email/2');
+    //     var_dump($this->client->getResponse());
+    //     $this->assertResponseRedirects('/gestion/nouvellesAttributions/attribution/');
+    // }
 
 
       
@@ -426,9 +426,6 @@ class AttributionControllerTest extends WebTestCase
         $this->client->request('GET', '/log/entry');
         $this->assertResponseIsSuccessful();
     }
-
-
-
 
 
     // public function testSignature()
