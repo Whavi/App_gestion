@@ -47,7 +47,7 @@ public function saveSignature($id ,Request $request, EntityManagerInterface $ent
     $data = $request->request->get('signature_data'); 
     $DataFinalB64 = base64_decode(explode(",", $data)[1]);   
     $filename = "signature_" . uniqid() . '.png';
-    $filePath = $this->getParameter('kernel.project_dir') . '/public/sign/' . $filename;
+    $filePath = $this->getParameter('kernel.project_dir') . '\public/sign\\' . $filename;
     
     file_put_contents($filePath, $DataFinalB64);
     
@@ -106,9 +106,9 @@ private function getData($id, CollaborateurRepository $collaborateurRepository, 
     $remarque = $attributionRepository->findAllOrderedByInnerJoinRemarqueContent($id);
     $signature = $attributionRepository->find($id);
 
-    if ($signature && $signature->getSignatureImg()) {
+    if ($signature && $signature->getSignatureImg() !== "Signer par API Yousign" && $signature->getSignatureImg() !== null && file_exists($this->getParameter('kernel.project_dir') . '/public/sign/' . $signature->getSignatureImg())) {
         $imageSignSrc = $this->imageToBase64($this->getParameter('kernel.project_dir') . '/public/sign/' . $signature->getSignatureImg());
-    }else{
+    } else {
         $imageSignSrc = null;
     }
     

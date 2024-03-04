@@ -11,12 +11,6 @@ services:
       - '3307:3306'
   ###< doctrine/doctrine-bundle ###
 
-  # mailhog:
-  #   image: 'mailhog/mailhog:latest'
-  #   ports:
-  #     - '8025:8025'  # Web UI port
-  #     - '1025:1025'  # SMTP port
-
 volumes:
   ###> doctrine/doctrine-bundle ###
   database_data:

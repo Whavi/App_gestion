@@ -4,13 +4,6 @@ namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Faker\Factory;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Mime\Header\Headers;
-use Symfony\Component\Mime\Part\Multipart\AlternativePart;
-use Symfony\Component\Mime\Part\Multipart\MixedPart;
-use Symfony\Component\Mime\Part\TextPart;
-use Symfony\Component\Mime\TemplatedEmail;
 
 class AttributionControllerTest extends WebTestCase
 {
@@ -27,8 +20,8 @@ class AttributionControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/connexion');
 
         $form = $crawler->selectButton('Se connecter')->form([
-            '_username' => 'stage.it@secours-islamique.org',
-            '_password' => 'password',
+            '_username' => 'test@test.org',
+            '_password' => '123',
         ]);
 
         $this->client->submit($form);
@@ -393,20 +386,12 @@ class AttributionControllerTest extends WebTestCase
         $this->assertTrue($this->client->getResponse()->isRedirect('/gestion/nouvellesAttributions/attribution/'));
     }
 
-    // public function testSendEmail()
-    // {
-    //     $this->client->request('GET', '/gestion/attribution/send-email/1');
-
-    //     // Créez un double de l'objet MailerInterface
-    //     $mailerMock = $this->createMock(\Symfony\Component\Mailer\MailerInterface::class);
-
-    //     // Attendez-vous à ce que la méthode send soit appelée une fois
-    //     $mailerMock->expects($this->once())->method('send');
-
-    //     $this->client->getContainer()->set(\Symfony\Component\Mailer\MailerInterface::class, $mailerMock);
-
-    //     $this->assertResponseRedirects('/gestion/nouvellesAttributions/attribution/');
-    // }
+    public function testSendEmail()
+    {
+        $this->client->request('GET', '/gestion/attribution/send-email/2');
+        var_dump($this->client->getResponse());
+        $this->assertResponseRedirects('/gestion/nouvellesAttributions/attribution/');
+    }
 
     
 

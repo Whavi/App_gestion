@@ -117,7 +117,6 @@ public function gestionAttributionRendu($id, LoggerInterface $logger, Attributio
 
 public function gestionAttributionSigner($id, LoggerInterface $logger, AttributionRepository $attributionRepository,PersistenceManagerRegistry $doctrine, EntityManagerInterface $manager) : Response {
     $attribution = $attributionRepository->find($id);
-    
     $this->processAttributionSigner($attribution, $manager, $doctrine,$id, $logger);
     return $this->redirectToRoute('user_gestion_attribution');
 }
@@ -146,7 +145,7 @@ public function sendEmail($id, LoggerInterface $logger,PersistenceManagerRegistr
     $mailer->send($email);    
     $this->processAttributionSenMail($attribution, $id, $doctrine, $logger);
 
-    if($attribution->getSignatureImg() !== null) {
+    if($attribution->getSignatureImg() !== "Signer par API Yousign" && $attribution->getSignatureImg() !== null) {
     $signLocalToDelete = $this->getParameter('kernel.project_dir') . '/public/sign/' . $attribution->getSignatureImg();
     if (file_exists($signLocalToDelete)) {
         unlink($signLocalToDelete);
