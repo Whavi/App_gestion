@@ -20,12 +20,12 @@ class AttributionControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/connexion');
         $form = $crawler->selectButton('Se connecter')->form([
             // ["ROLE_USER"]
-            '_username' => 'test@test.org',
-            '_password' => '123',
+            // '_username' => 'test@test.org',
+            // '_password' => '123',
          
             // ["ROLE_USER","ROLE_ADMIN"]
-            // '_username' => 'stage.it@secours-islamique.org',
-            // '_password' => 'password',
+            '_username' => 'stage.it@secours-islamique.org',
+            '_password' => 'password',
           
         ]);
 
