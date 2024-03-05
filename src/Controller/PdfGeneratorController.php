@@ -144,11 +144,14 @@ private function generatePdfResponse($html, $id, $doctrine, $logger): Response{
         'id' => $id,
         'date' => (new \DateTime())->format('d/m/Y H:i:s'),
     ]);
-    return new Response(
-        $dompdf->stream($filename, ['Attachment' => false]),
+    $response = new Response(
+        $dompdf->output(),
         Response::HTTP_OK,
         ['Content-Type' => 'application/pdf']
     );
+    $response->headers->set('Content-Disposition', 'inline; filename="' . $filename . '"');
+
+    return $response;
 }
 
 private function generatePdfOutput($html, $logger): string{
