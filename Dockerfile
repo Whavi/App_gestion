@@ -28,18 +28,11 @@ RUN apt-get update && apt-get install -y \
     nodejs \
     npm
 
-# Install Mailcatcher
-RUN apt-get install -y ruby \
-    && gem install mailcatcher
-
 # Install project dependencies
 RUN composer install --no-scripts --no-interaction
 
-# Expose ports for Symfony, Mailcatcher, and any other ports your app might need
-EXPOSE 8000 1025 1080
+# Expose ports for Symfony and any other ports your app might need
+EXPOSE 8000
 
 # Run Symfony application
 CMD ["symfony", "server:start", "--no-tls"]
-
-# Run Mailcatcher
-CMD ["mailcatcher", "--ip=0.0.0.0", "--smtp-port=1025", "--http-port=1080"]
