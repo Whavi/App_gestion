@@ -1,95 +1,130 @@
 body {
   font-family: "Quicksand", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   background-color: #fff;
-  }
+}
 
 a {
   font-size: 1.5rem;
   -webkit-transition: .3s all ease;
   -o-transition: .3s all ease;
-  transition: .3s all ease; }
+  transition: .3s all ease;
+}
 
-  a, a:hover {
-    text-decoration: none !important; }
+a, a:hover {
+  text-decoration: none !important;
+}
 
-  .site-navbar .site-logo {
-    left: 10%;
-    font-size: 2rem; }
+.site-navbar .site-logo {
+  left: 10%;
+  font-size: 2rem;
+}
 
-    .site-navbar .site-logo a {
-      color: #fff;
-      font-size: 2rem;
-      letter-spacing: .2rem;
-      text-transform: uppercase; }
-      
-      .site-navbar .site-logo a:hover {
-        text-decoration: none; }
-  .site-navbar .site-burger-menu, .site-navbar .right-cta-menu {
-    right: 5%; }
- 
-  .site-navbar .site-navigation {
-    position: absolute;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    -ms-transform: translateX(-50%);
-    transform: translateX(-50%);
-    z-index: 5;
-  }
+.site-navbar .site-logo a {
+  color: #fff;
+  font-size: 2rem;
+  letter-spacing: .2rem;
+  text-transform: uppercase;
+}
 
-    .site-navbar .site-navigation .site-menu {
-      margin-bottom: 0; }
+.site-navbar .site-logo a:hover {
+  text-decoration: none;
+}
 
-      .site-navbar .site-navigation .site-menu .active {
-        
-        color: #fff;
-        display: inline-block;
-        padding: 5px 20px; }
+.site-navbar .site-burger-menu, .site-navbar .right-cta-menu {
+  right: 5%;
+}
 
+.site-navbar .site-navigation {
+  position: absolute;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+  z-index: 5;
+}
 
-      .site-navbar .site-navigation .site-menu a {
-        text-decoration: none !important;
-        display: inline-block;
-        position: relative; }
+.site-navbar .site-navigation .site-menu {
+  margin-bottom: 0;
+}
 
+.site-navbar .site-navigation .site-menu .active {
+  color: #fff;
+  display: inline-block;
+  padding: 5px 20px;
+}
 
-      .site-navbar .site-navigation .site-menu > li {
-        display: inline-block; }
+.site-navbar .site-navigation .site-menu a {
+  text-decoration: none !important;
+  display: inline-block;
+  position: relative;
+}
 
+.site-navbar .site-navigation .site-menu > li {
+  display: inline-block;
+}
 
-        .site-navbar .site-navigation .site-menu > li > a {
-          padding: 20px 20px !important;
-          color: rgba(255, 255, 255, 0.5);
-          display: inline-block;
-          text-decoration: none !important; }
-          
-          .site-navbar .site-navigation .site-menu > li > a:hover {
-            color: #fff; }
+.site-navbar .site-navigation .site-menu > li > a {
+  padding: 20px 20px !important;
+  color: rgba(255, 255, 255, 0.5);
+  display: inline-block;
+  text-decoration: none !important;
+}
 
-            
+.site-navbar .site-navigation .site-menu > li > a:hover {
+  color: #fff;
+}
+
 .hero {
   height: 85vh;
   width: 100%;
   background-image: url("../images/SIF.jpeg");
   background-size: cover;
   background-position: center center;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
   transition: transform .1s;
 }
 
-.hero:hover{
-  -ms-transform: scale(0.99); /* IE 9 */
-  -webkit-transform: scale(0.99); /* Safari 3-8 */
+.hero:hover {
+  -ms-transform: scale(0.99);
+  -webkit-transform: scale(0.99);
   transform: scale(0.99);
 }
-  
+
 .btn:after, .btn:before {
-  display: none; }
+  display: none;
+}
 
 .btn.btn-primary {
   color: #fff;
   background: #89ba16;
-  border-color: #89ba16; }
-  .btn.btn-primary:hover {
-    background: #90c317;
-    border-color: #90c317; }
+  border-color: #89ba16;
+}
 
+.btn.btn-primary:hover {
+  background: #90c317;
+  border-color: #90c317;
+}
+
+@media (max-width: 768px) {
+  .site-navbar .site-logo {
+    font-size: 1.5rem;
+  }
+
+  .site-navbar .site-navigation {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .site-navbar .site-navigation .site-menu {
+    margin-top: 20px;
+  }
+
+  .site-navbar .site-navigation .site-menu > li {
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  .site-navbar .right-cta-menu {
+    display: none;
+  }
+}
