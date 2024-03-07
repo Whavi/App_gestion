@@ -12,16 +12,22 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Psr\Log\LoggerInterface;
+use App\Entity\LogEntry;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
+
 
 
 
 class SecurityController extends AbstractController
 {
     #[Route('/connexion', name: 'security.login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils,PersistenceManagerRegistry $doctrine, LoggerInterface $logger): Response
     {
 
-        if ($this->getUser()) {return $this->redirectToRoute('user_gestion'); }
+        if ($this->getUser()) {
+            $this->processConnexion($doctrine, $logger);
+            return $this->redirectToRoute('user_gestion'); }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -44,7 +50,7 @@ class SecurityController extends AbstractController
 
     #[Route('/inscription', name:'security.registration', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function registration(Request $request,UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $manager): Response
+    public function registration(Request $request,UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $manager, PersistenceManagerRegistry $doctrine, LoggerInterface $logger): Response
     {
         $user = new User();
         $user->setRoles(['ROLE_USER']);
@@ -59,14 +65,12 @@ class SecurityController extends AbstractController
                     $user,
                     $form->get('password')->getData()
                 ));
-            
-            $this->addFlash(
-                'success',
-                'Votre compte a bien été créé.'
-            );
+            $user->setAzureId($user->getEmail());
 
             $manager->persist($user);
             $manager->flush();
+
+            $this->processInscription($user, $doctrine, $logger);
 
             return $this->redirectToRoute('security.login');
         }
@@ -75,4 +79,50 @@ class SecurityController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+
+
+    private function logToDatabase(string $message, string $channel, ?PersistenceManagerRegistry $doctrine = null, array $context = [], int $level = 1): void
+{
+    // Merge context parameters into the message
+    foreach ($context as $key => $value) {
+        $message = str_replace("{{$key}}", $value, $message);
+    }
+
+    $logEntry = new LogEntry();
+    $logEntry->setMessage($message);
+    $logEntry->setCreatedAt(new \DateTime());
+    $logEntry->setChannel($channel);
+    $logEntry->setLevel($level);
+
+    $entityManager = $doctrine->getManager();
+    $entityManager->persist($logEntry);
+    $entityManager->flush();
+}
+
+
+private function processInscription($user,$doctrine,$logger){
+    $this->logToDatabase("Le compte {user} à été crée | email => {mail} | Nom et prenom => {utilisateur}", "INSCRIPTION",$doctrine,[
+        'user'=>$this->getUser(),
+        'utilisateur'=>strtoupper($user->getNom()). " ".$user->getPrenom(),
+        'mail'=>$user->getEmail(),
+   ],1);
+    $logger->info("Le compte {user} à été crée | email => {mail} | Nom et prenom => {utilisateur} | heure => {date}", [
+        'user'=>$this->getUser(),
+        'utilisateur'=>strtoupper($user->getNom()). " ".$user->getPrenom(),
+        'mail'=>$user->getEmail(),
+        'date'=>(new \DateTime())->format('d/m/Y H:i:s'),
+   ]);
+}
+
+private function processConnexion($doctrine,$logger){
+    $this->logToDatabase("L'utilisateur {user} s'est connecté", "INSCRIPTION",$doctrine,[
+        'user'=>$this->getUser(),
+   ],1);
+    $logger->info("L'utilisateur {user} s'est connecté | heure => {date}", [
+        'user'=>$this->getUser(),
+        'date'=>(new \DateTime())->format('d/m/Y H:i:s'),
+   ]);
+}
+
 }
