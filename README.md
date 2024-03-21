@@ -65,11 +65,14 @@ symfony d:f:l ou php bin/console d:f:l
 
 
 
-Et c'est fini votre application est enfin en marche vous pouvez vous connecté grace a l'email :
+Et c'est fini, votre application est enfin en marche. Vous pouvez vous connecter grâce à l'email :
 ```
 username: stage.it@secours-islamique.org
 password: password
 ```
+
+Ainsi, si vous voulez voir la partie utilisateur, il faudra vous créer un compte et vous y connecter :
+Cliquez sur le bouton User -> New Account
 
 
 
