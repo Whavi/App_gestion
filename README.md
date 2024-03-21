@@ -15,7 +15,7 @@ Pour les installations importante vous avez besoin de docker, composer, le frame
 
 Lorsque vous avez un problème, n'hésitez pas à regarder dans les messages d'erreur dans la console. Généralement, cela provient sûrement des lignes en commentaire dans le php.ini qu'il faut décommenter.
 
-dans le public il y a un dossier 'sign' a mettre pour les signatures electronique en local
+dans le public il y a un dossier `sign` a mettre pour les signatures electronique en local
 
 ----------------
 
