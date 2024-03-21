@@ -18,45 +18,48 @@ Pour les installations importante vous avez besoin de docker, composer, le frame
 ## Installation  :
 
 Commencer a faire ces commandes dans l'ordre :
+1)
 ```
 npm install
 ```
-
+2)
 ```
 composer install
 ```
+3)
 ```
 docker compose build
 ```
-
+4)
 ```
 symfony server:ca:install
 ```
-
+5)
 ```
 docker compose up -d
 ```
-
+6)
 S'il y a une erreur avec le HTTPS installez :
 ```
 composer require amphp/http-client:^4.2.1
 ```
-
+7)
 ```
 symfony serve:start ou php bin/console symfony serve:start
 ```
-
+8)
 ```
 symfony d:m:m ou php bin/console d:m:m
 ```
 
 (d:m:m -> doctrine:make:migration)
-
+9)
 ```
 symfony d:f:l ou php bin/console d:f:l 
 ```
 (d:f:l -> doctrine:fixture:load)
 
+----------------
 
 
 
