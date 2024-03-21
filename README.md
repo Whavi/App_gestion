@@ -13,6 +13,8 @@ Pour la base de donnée rendez-vous sur [DB](https://dbdiagram.io/d/65ae31cdac84
 
 Pour les installations importante vous avez besoin de docker, composer, le framework de Symfony ainsi que npm si vous voulez utiliser le bundle symfony/encore
 
+Lorsque vous avez un problème, n'hésitez pas à regarder dans les messages d'erreur dans la console. Généralement, cela provient sûrement des lignes en commentaire dans le php.ini qu'il faut décommenter.
+
 ----------------
 
 ## Installation  :
