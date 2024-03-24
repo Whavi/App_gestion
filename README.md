@@ -52,13 +52,17 @@ composer require amphp/http-client:^4.2.1
 ```
 symfony serve:start ou php bin/console symfony serve:start
 ```
-8)
+8) Decommenter l'une de ces 3 variables selon l'environnement utilisé 
+```
+DATABASE_URL="mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=8.0.32&charset=utf8mb4"
+```
+9)
 ```
 symfony d:m:m ou php bin/console d:m:m
 ```
 
 (d:m:m -> doctrine:make:migration)
-9)
+10)
 ```
 symfony d:f:l ou php bin/console d:f:l 
 ```
